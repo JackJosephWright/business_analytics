@@ -14,6 +14,7 @@ raw<-raw%>%select(-INDEX)
 raw<-raw%>%select(-TEAM_BATTING_HBP)
 df_new<-raw%>%na.omit()
 ggplot(df_new,aes(x=TEAM_PITCHING_SO,y=TEAM_BATTING_SO))+geom_point()+geom_abline(slope=.96,intercept = -120, color='red')
+#ggplot(df_new,aes(x=TEAM_PITCHING_SO,y=TEAM_BATTING_SO))+geom_point()+geom_abline(slope=.96,intercept = -120, color='red')
 
 #adding in my stats BATTING
 
@@ -42,6 +43,7 @@ df_new <- df_new %>%
 visdat::vis_miss(df_new, sort_miss = TRUE)
 ggpairs(data=df_new,
         mapping=ggplot2::aes(colour = SO_factor, alpha=.2))
+#ggpairs(data=df_new,mapping=ggplot2::aes(colour = SO_factor, alpha=.2))
 
 c<-cor(df_new[-26])
 
@@ -62,8 +64,6 @@ summary(lm_med)
 #DF_HIGH
 
 #eliminating unecessary variables
-
-df_high_prune<-df_high%>%select(-TEAM_BATTING_BB,-TEAM_BATTING_SO,-TEAM_PITCHING_H,-TEAM_PITCHING_BB,-B_1B,-B_TB,-B_OPS,-P_NO_OUT,-B_NO_OUT,-TEAM_BATTING_H,-B_SLG,-TEAM_BATTING_HR,-AB,-B_OBP,-P_AB,-B_OBP,-TEAM_BASERUN_CS)
 
 ggpairs(data=df_high_prune%>%filter(SO_factor=='high'),
         mapping=ggplot2::aes(colour = SO_factor, alpha=.2))
