@@ -13,7 +13,7 @@ raw <- read.csv("./moneyball-training-data.csv")
 raw<-raw%>%select(-INDEX)
 raw<-raw%>%select(-TEAM_BATTING_HBP)
 df_new<-raw%>%na.omit()
-ggplot(df_new,aes(x=TEAM_PITCHING_SO,y=TEAM_BATTING_SO))+geom_point()+geom_abline(slope=.96,intercept = -120, color='red')
+#ggplot(df_new,aes(x=TEAM_PITCHING_SO,y=TEAM_BATTING_SO))+geom_point()+geom_abline(slope=.96,intercept = -120, color='red')
 
 #adding in my stats BATTING
 
@@ -32,6 +32,7 @@ df_new<-df_new%>%mutate(P_AB=162*27+TEAM_PITCHING_H+TEAM_PITCHING_BB)
 df_new<-df_new%>%mutate(P_NO_OUT=TEAM_PITCHING_H+TEAM_PITCHING_BB)
 df_new<-df_new%>%mutate(P_OBP=P_NO_OUT/P_AB)
 
+#MIGHT NEED TO CHANGE AFTER NORMALISING DATA, BUT I THINK THIS WILL BE OK
 df_new <- df_new %>%
   mutate(SO_factor = case_when(TEAM_BATTING_SO >= TEAM_PITCHING_SO*.96+10~ 'high',
                                (TEAM_BATTING_SO<TEAM_PITCHING_SO*.96+10 & TEAM_BATTING_SO>TEAM_PITCHING_SO*.96-50) ~'med_high',
@@ -39,9 +40,8 @@ df_new <- df_new %>%
                                TEAM_BATTING_SO<TEAM_PITCHING_SO*.96-120 ~'low'))
 
 
-visdat::vis_miss(df_new, sort_miss = TRUE)
-ggpairs(data=df_new,
-        mapping=ggplot2::aes(colour = SO_factor, alpha=.2))
+#visdat::vis_miss(df_new, sort_miss = TRUE)
+#ggpairs(data=df_new,mapping=ggplot2::aes(colour = SO_factor, alpha=.2))
 
 c<-cor(df_new[-26])
 
@@ -65,8 +65,7 @@ summary(lm_med)
 
 df_high_prune<-df_high%>%select(-TEAM_BATTING_BB,-TEAM_BATTING_SO,-TEAM_PITCHING_H,-TEAM_PITCHING_BB,-B_1B,-B_TB,-B_OPS,-P_NO_OUT,-B_NO_OUT,-TEAM_BATTING_H,-B_SLG,-TEAM_BATTING_HR,-AB,-B_OBP,-P_AB,-B_OBP,-TEAM_BASERUN_CS)
 
-ggpairs(data=df_high_prune%>%filter(SO_factor=='high'),
-        mapping=ggplot2::aes(colour = SO_factor, alpha=.2))
+#ggpairs(data=df_high_prune%>%filter(SO_factor=='high'),mapping=ggplot2::aes(colour = SO_factor, alpha=.2))
 lm_high_prune<-lm(TARGET_WINS~.,data=df_high_prune[-10])
 
 summary(lm_high_prune)
@@ -83,8 +82,7 @@ summary(lm_med_prune)
 
 
 
-ggpairs(data=df_med_prune,
-        mapping=ggplot2::aes(colour = SO_factor, alpha=.2))
+#ggpairs(data=df_med_prune,mapping=ggplot2::aes(colour = SO_factor, alpha=.2))
 
 
 
@@ -112,7 +110,7 @@ df_low_prune<-df_low%>%select(-TEAM_BATTING_H,-TEAM_BATTING_2B,-TEAM_BATTING_3B,
 lm_low_prune<-lm(TARGET_WINS~.,data=df_low_prune[-4])
 summary(lm_low_prune)
 
-ggpairs(data=df_low_prune)
+#ggpairs(data=df_low_prune)
 
 
 eval_raw<-read.csv('moneyball-evaluation-data.csv')
@@ -130,6 +128,27 @@ df_all_prune<-df_new%>%select(-TEAM_BATTING_BB,-TEAM_BATTING_SO,-TEAM_PITCHING_H
 lm_all<-lm(TARGET_WINS~., data=df_all_prune[-10])
 summary(lm_all)
 
-ggpairs(df_all_prune)
+#ggpairs(df_all_prune)
 
 
+#shapiro test on df_high_prune
+lshap<-lapply(df_high_prune[-10],shapiro.test)
+lres <- sapply(lshap, `[`, c("statistic","p.value"))
+as.data.frame(lres)
+
+
+#NORMALISING DATA (df_new)
+library(normalr)
+lambdas<-getLambda(df_new)
+dat<-normaliseData(df_new,lambda_high)
+
+
+dat%>%
+  gather() %>%
+  ggplot(aes(value)) +
+  facet_wrap(~ key, scales = "free") +
+  geom_density()
+
+lshap<-lapply(dat,shapiro.test)
+lres <- sapply(lshap, `[`, c("statistic","p.value"))
+as.data.frame(lres)

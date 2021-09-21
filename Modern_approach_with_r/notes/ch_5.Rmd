@@ -1,0 +1,201 @@
+---
+title: "ch_5_mARR"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+
+Multiple Linear Regression
+
+
+Polynomial Regression
+
+
+predictor is a single predictor and its polynomial powers
+
+
+polynomial regression, can display the results of multiple regression on single 2D graph
+
+
+
+
+## Example
+
+develop a regression equation to model the relationship between Y=salary and x= num years of experiance 
+
+
+THEN:
+
+find 95% prediction interval for Y when x=10.
+
+```{r}
+library(tidyverse)
+dat<-read.table("C:/Program Files/GitHub/business_analytics/Modern_approach_with_r/data/profsalary.txt", header = TRUE)
+```
+
+```{r}
+ggplot(dat, aes(x=Experience, y=Salary))+geom_point()
+```
+
+consider simple linear regression model
+
+```{r}
+summary(lm.model<-lm(Salary~Experience, data=dat))
+```
+```{r}
+library(ggResidpanel)
+resid_panel(lm.model, plots = 'all')
+```
+
+now with quadratic term
+
+```{r}
+(summary(lm.model<-lm(Salary~Experience+I(Experience^2), data=dat)))
+confint(lm.model)
+```
+
+prediction for 10 years experience
+
+```{r}
+predict(lm.model,newdata = data.frame(Experience=10), interval = 'predict' )
+```
+```{r}
+resid_panel(lm.model, plots='all')
+```
+
+
+## Estimation and Inference in Multiple Linear Regression
+
+
+
+
+## Matrix formulation of least squares
+
+
+matrix vector notation for least squares with multiple predictors
+
+that way you can write linear regression with matrix notation
+
+$$\mathbf{Y}=\mathbf{X}\beta+\mathbf{e}$$
+
+
+
+### properties of least squares estimates
+
+consider
+
+
+F-test is always used first to test for the existence of a linear association between Y and ANY of the p x-variables. 
+
+if F-tests is significant, then a natural question to ask
+
+"for which of the p x-variables is there evidence of a linear association with Y?
+
+
+**testing whether a specified subset of the predictors have regression coefficients equal to 0**
+
+achieved with F-tests
+
+
+let RSS(full) be residual sum of squares under the full model. (includes all the predictors)
+
+RSS(reduced) be sum of squares under reduced model (model that only includes predictors thought to be non-zero)
+
+
+F-statistic is given by
+
+$$F=\frac{RSS(Reduced)-RSS(full)/df_{reduced}-df_{full}}{RSS(full)/df_{full}}$$
+
+
+
+## Example Menu pricing in a new Italian restaurant in NYC
+
+
+```{r}
+dat<-read.csv("C:/Program Files/GitHub/business_analytics/Modern_approach_with_r/data/nyc.csv")
+```
+
+
+a. 
+
+develop regression model that directly predicts the price of dinner (in dollars) using a subset or all 4 of the potential predictiors
+
+```{r}
+summary(lm.model<-lm(Price~., data=dat%>%select(-c(Case, Restaurant,Service))))
+```
+
+```{r}
+ggpairs(dat%>%select(-c(Case,Restaurant)))
+```
+```{r}
+resid_panel(lm.model, plots = 'all')
+```
+
+Note: we say Decor has the largest effect on price since its regression coefficient is largest (it isnt'... maybe because it is more significant) (this might have to do with scale. since east is a binary)
+
+
+
+
+## Analysis of Covariance
+
+
+model response variable Y based on continuous predictor, x and dummy variable d. 
+
+Suppose the effect of x on Y is linear. Situation is simplest version of what is reffered to as Analysis of Covariance. since its predictors include both quantitative and qualitative variables. 
+
+
+**coincident regression lines**
+
+simplest model in the given situation is one in which the dummy variable has no effect on Y, that is, 
+
+$$Y=\beta_0+\beta_1 x +e$$
+
+** Parallel regression lines**
+
+another model to consider is one in which dummy variable produces only an additive change in Y
+
+(shifts the regression line up or down )
+
+**regression lines with equal intercepts but different slopes**
+
+*unrelated regression lines**
+
+In unrelated regression lines model, the regression coefficient measure hte additive change in Y due to the dummy variable. the other regression coefficent measures the change in the size of the effect of x on Y dues to the dummy variable. 
+
+
+## Example: Stylized example: amount spent on travel
+
+
+```{r}
+dat<-read.table("C:/Program Files/GitHub/business_analytics/Modern_approach_with_r/data/travel.txt", sep="\t", header=TRUE)
+
+dat$C<-as.factor(dat$C)
+```
+
+
+```{r}
+summary(lm.model<-lm(Amount~Age+C+Age:C, data=dat))
+```
+
+
+```{r}
+ggpairs(dat)
+```
+
+
+note that all regression coefficients are highly statistically significant, so we use them all
+
+
+So for customers in segment A: model predicts
+
+$$Amnt_Spent = 1814.54 - 20.32 x Age$$
+
+
+while for customers in segment C, the model predicts
+
+$$Amnt_Spent = 6.69+20.13XAge$$

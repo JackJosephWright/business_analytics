@@ -1,0 +1,91 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+## Exploratory analysis of money-ball.csv
+
+These are some notes on the data 
+
+```{r}
+library(tidyverse)
+#load data 
+dat<-read.csv('./data/moneyball-training-data.csv',header = TRUE)%>%select(-INDEX)
+dat<-dat%>%select(-TEAM_BATTING_HBP)
+```
+
+
+
+### This data is probably not real data. 
+
+I noticed while looking at *TEAM_BATTING_SO* that there were 64 non NA data points that were below the all time record for lowest team strikeouts, as well as many SO totals being zero, which is impossible. 
+
+
+fewest strikeouts all time 1921 Cincinnati Reds : 308
+
+https://www.baseball-almanac.com/recbooks/rb_strike2.shtml
+```{r}
+
+dat<-dat%>%filter(!is.na(TEAM_BATTING_SO))
+
+a<-dat%>%filter(TEAM_BATTING_SO<308)%>%count()
+b<-dat%>%filter(TEAM_BATTING_SO>1595)%>%count()
+data.frame('SO below all time'=as.integer(a),'SO above all time'=as.integer(b))
+```
+
+
+
+Note that they are not counted as outliers
+
+```{r}
+out_vals<-boxplot(dat$TEAM_BATTING_SO)$out
+
+out_vals
+```
+In this particular column, I wonder if they arent counted as outliers due to the bimodal nature of the distribution. 
+
+
+Having sliced up TEAM_BATTING_SO a couple of ways, I do not think that it will correlate with TEAM_WINS even if we can disentangle the factors causing the bimodality, but this should raise our suspicions of other features. 
+
+
+## NET_SB has higher correlation than TEAM_BASERUN_SB + TEAM_BASERUN_CS
+
+not a major difference, but might be worth putting in. 
+
+```{r}
+dat_sb<-dat%>%mutate(TEAM_NET_SB=TEAM_BASERUN_SB-TEAM_BASERUN_CS)
+dat_sb<-dat_sb%>%filter(!is.na(TEAM_BASERUN_CS & TEAM_BASERUN_SB))
+sb<-round(cor(dat_sb$TARGET_WINS,dat_sb$TEAM_BASERUN_SB),3)
+cs<-round(cor(dat_sb$TARGET_WINS,dat_sb$TEAM_BASERUN_CS),3)
+sb_cs<-sb+cs
+data.frame('NET_SB'=round(cor(dat_sb$TARGET_WINS,dat_sb$TEAM_NET_SB),3),'SB+CS'=sb_cs,'SB'=sb,'CS'=cs)
+```
+
+
+#Total bases with linear weights to replace TEAM_BATTING_H, TEAM_BATTING_2B, TEAM_BATTING_3B...etc
+
+
+I don't know if this is kosher, but if I use general linear weights developed by `baseball prospectus` and add all the hitting columns into a total bases column, I get a nice strong correlation. ( I can get a similar correlation with simpler weights (2B=2,3B=3,4B=4))
+
+This might save us big on the R^2 by using less features. 
+
+```{r}
+library(GGally)
+dat_tb<-dat%>%mutate(TEAM_BATTING_BASES=.7*(TEAM_BATTING_H-TEAM_BATTING_2B-TEAM_BATTING_3B-TEAM_BATTING_HR)+TEAM_BATTING_2B+1.27*TEAM_BATTING_3B+1.65*TEAM_BATTING_HR+.66*TEAM_BATTING_BB)
+
+dat_tb<-dat_tb%>%select(TARGET_WINS,TEAM_BATTING_BASES,TEAM_BATTING_H,TEAM_BATTING_2B,TEAM_BATTING_3B,TEAM_BATTING_HR)
+ggpairs(dat_tb)
+```
+
+## LM with these adjustments
+
+
+```{r}
+dat_final<-dat%>%mutate(TEAM_NET_SB=TEAM_BASERUN_SB-TEAM_BASERUN_CS)
+dat_final<-dat_final%>%mutate(TEAM_BATTING_BASES=.7*(TEAM_BATTING_H-TEAM_BATTING_2B-TEAM_BATTING_3B-TEAM_BATTING_HR)+TEAM_BATTING_2B+1.27*TEAM_BATTING_3B+1.65*TEAM_BATTING_HR+.66*TEAM_BATTING_BB)
+#dat_final<-dat_final%>%drop_na()
+lm_1<-lm(TARGET_WINS~TEAM_BATTING_BASES+TEAM_NET_SB,data=dat_final)
+summary(lm_1)
+```
+
+
