@@ -1,0 +1,4 @@
+"0","df<-profit_or_pay(TYPE='R')"
+"0","profit<-df%>%filter(PROFIT==1)%>%summarise(sum(bill))"
+"0","loss<-df%>%filter(PROFIT==0)%>%summarise(sum(bill))"
+"0","profit-loss"

@@ -1,0 +1,2 @@
+"0","df_residential<-gen_frame(gen_func = gen_data, data_metrics = dat_metrics,TYPE='R')"
+"0","ggplot(df_residential, aes(x=bill,y=late))+geom_point(color='red')+geom_point(aes(x=BILL,y=LATE), data=dat%>%filter(TYPE=='RESIDENTIAL'), color='blue')"

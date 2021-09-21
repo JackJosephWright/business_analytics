@@ -1,0 +1,5 @@
+"0","  rename(i, temp)
+"
+"2","Error in UseMethod(""rename"") : 
+  no applicable method for 'rename' applied to an object of class ""character""
+"

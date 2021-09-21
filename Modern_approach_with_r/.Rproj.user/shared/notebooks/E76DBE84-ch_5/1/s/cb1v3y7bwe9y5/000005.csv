@@ -1,0 +1,4 @@
+"0","#commercial frame with real data plotted"
+"0",""
+"0","df_commercial<-gen_frame(gen_func = gen_data, data_metrics = dat_metrics)"
+"0","ggplot(df_commercial, aes(x=bill,y=late))+geom_point(color='red')+geom_point(aes(x=BILL,y=LATE), data=dat%>%filter(TYPE=='COMMERCIAL'), color='blue')"
