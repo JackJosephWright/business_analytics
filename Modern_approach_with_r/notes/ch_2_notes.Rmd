@@ -1,0 +1,430 @@
+---
+title: "ch_2_notes"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Libraries
+
+```{r}
+library(tidyverse)
+setwd('C:/Program Files/GitHub/business_analytics/Modern_approach_with_r')
+
+dat<-read.csv('./data/production.csv', sep = "\t")
+```
+
+Look at data for production run vs production time for example
+
+```{r}
+
+ggplot(dat, aes(x=RunSize,y=RunTime))+geom_point()
+
+```
+X variable is called **explanatory variable** or **predictor variable**
+
+Y variable is called **response variable** or **dependant variable**
+
+-X is potential predictor of the Y-variable
+-Value can sometimes be chosen by the person undertaking the study
+
+simple linear regression used to model relationship between two variables, Y and X, so that given 
+a specific value for X=x we can predict the value of Y. 
+
+$$E(Y|X=x)$$
+*expected value of y given X is equal to specific value x
+
+
+regression of Y on X is linear if 
+
+$$E(Y|X=x) = \beta_0 +\beta_1x$$
+
+unknown parameters of $\beta_0$ and $\beta_1$ determine intercept and slope
+
+
+suppose Y_1 Y_2 etc are actual values (independent realizations) of the random variable Y that are observed at x_1, x_2...
+
+then
+
+$$E(Y|X=x)+e_i = \beta_0 +\beta_1x+e_i$$
+
+where $e_i$ is the random error in $Y_i$
+
+(the error between the predicted and actual value of Y at x_i)
+
+
+e_i cannot contain any  info about X or Y, because if it did, then the model would be off. it HAS to be random. 
+
+
+assume
+
+$$Var(Y|X=x)=\sigma^2$$
+
+(the variance in Y given X=x is equal to the standard deviation squared)
+
+
+## Estimating the population slope and intercept
+
+randomly selected individual from pop
+
+
+X=height
+Y=weight
+
+for straight line regression, mean weight of individuals of a given height would be a linear function of that height. 
+
+slope =$\beta_1$
+intercept = $\beta_0$
+
+UNKNOWN since these are values for the whole pop and we only have a sample
+
+we must use data to get an estimate of these. 
+
+
+done by finding equation of best fit for the data. 
+
+
+## residuals
+
+we want to minimize the difference between the actual value of y ($y_i$) and the predicted value of y($\hat{y}$)
+
+
+difference is called the **residual**
+
+$$\hat{e}=y_i-\hat{y_i}$$
+
+
+
+## Least squares line of best fit
+
+minimize the sum of the squared residuals
+
+
+## regression output from R
+```{r}
+testlm<-lm(RunTime~RunSize, data=dat)
+summary(testlm)
+```
+
+## plot with regression line
+
+```{r}
+ggplot(dat, aes(x=RunSize,y=RunTime))+geom_point()+geom_smooth(method='lm')
+
+```
+
+
+# Inferences about slope and intercept
+
+
+develop methods for finding confidence intervals an performing hypothesis tests about the slope and intercept of the regression line
+
+MAKE THE FOLLOWING ASSUMPTIONS
+
+1.
+
+Y is related to x by the simple linear regression model
+$$Y_i = \beta_0 +\beta_1x+e_i$$
+
+2.
+
+errors $e_1,e_2...$ are independent of eachother
+
+3.
+
+errors have a common variane $\sigma^2$
+
+4.
+
+errors are normally distributed with a mean of 0 and variance of $\sigma^2$
+
+
+## Inferences about the slope of the regression line
+
+recall from least squares estimate
+
+$$SXY=\sum (x_i-\bar{x})(y_i-\bar{y})$$
+
+(difference between each x and its mean value times the difference between y and its mean value (estimated value?))
+
+$$SXX = \sum(x_i-\bar{x})^2$$
+
+
+Then the slope $\beta_1$
+
+$$\beta_1 = \frac{SXY}{SXX}$$
+
+
+with some algebra we can show that
+
+$$\hat{\beta_i}=\sum c_iy_i$$ 
+where 
+$$c_i=\frac{x_i-\bar{x}}{SXX}$$
+
+
+NOTE:
+
+the VARIANCE in least squares slope estimate DECREASES as SXX INCREASES
+
+(variability in the X's increases)
+
+R provides the value of T (test statistic in t-distrubution with n-2 degrees of freedom)
+associated with $H_0$ (hypothesis test)
+
+$$H_0:\beta_1 =0$$
+$$H_A : \beta_1 \neq 0$$
+
+```{r}
+testlm<-lm(RunTime~RunSize, data=dat)
+summary(testlm)
+```
+looking at our example 
+T=6.98 
+
+and p-value = less than .001
+
+a $100(1-\alpha)\%$ confidence interval for the slope $\beta_1$ for the regression line is given by 
+
+```{r}
+confint(testlm, level=.95)
+```
+This means we are 95% confident that the slope of the regression falls within this confidence interval. so we accept the slope?
+
+
+## inferences about the intercept of the regression line
+
+
+$se(\hat{\beta_0})$ is the estimated standard error of $\hat{\beta_0}$ (least squares estimate of the intercept)
+(pg 34 in pdf)
+
+given directly by R. called *Intercept* 
+
+```{r}
+testlm<-lm(RunTime~RunSize, data=dat)
+summary(testlm)
+```
+
+
+
+so $se(\hat{\beta_1}= 8.32815)$
+
+for **testing the hypothesis** $H_0: \beta_0 = \beta^0_0$
+
+the test statistic is
+
+$$T=\frac{\hat{\beta_0}-\beta^0_0 ~ t_{n-2}}$$
+
+when H_0 is true. 
+
+
+R provides this hypothesis test  with a t-statistic and associated p-value
+
+
+check with confidence intervals
+
+```{r}
+confint(testlm, level=.95)
+```
+
+
+## Confidence Intervals for the Population Regression Line
+
+
+finding a confidence interval for the unknown population regression line at a given value of X, which is denoted by x*.
+
+
+Recall that the population regression line at $X=x^*$ is given by
+
+$$E(Y|X=x^*)=\beta_0+\beta_1x^*$$
+
+
+estimator of this unknown quantitiy is the value of the estimated regression equation at X=x^*
+
+
+
+
+
+
+## Regression Output from R
+
+nintey-five percent confidence intervals for the population regression line (i.e. the average RunTime) at runSize = 50,100,150,200,250,350
+
+
+** how to get 95% confidence intervals for the population regression line **
+
+```{r}
+new.dat<-data.frame(RunSize = seq(from=50, to=350, by=50))
+predict(testlm,newdata = new.dat, interval='confidence')
+```
+
+** how to get 95% prediction intervals for the population regression line**
+
+```{r}
+new.dat<-data.frame(RunSize = seq(from=50, to=350, by=50))
+predict(testlm,newdata = new.dat, interval='prediction')
+```
+
+
+## Difference between Confidence interval and prediction interval
+
+prediction interval:
+
+what **range** a future individual observation will fall
+
+confidence interval:
+
+likely range of values associated with the population mean (where the mean is likely to be)
+
+
+
+## Analysis of Variance
+
+if there is a linear association between Y and x if 
+
+$$Y=\beta_0 + \beta_1 x + e$$
+
+and $\beta_1 \neq 0 $. 
+
+if we know this we can use the linear formula to predict Y
+
+if we knew that $\beta_1 =0$ then we predict Y by 
+
+$$\hat{y} = \bar{y}$$
+
+(since slope is 0 all predictions of y are the mean)
+
+
+to test whether there is a linear association between Y and X we have to hypothesis test the slope ($\beta_1)
+
+*Terms*
+
+SST ==SYY (sum of squares of the Y's) (squares of y values - y mean)
+
+RSS = sum of squares of y value - y predicted
+
+
+SSreg = sum of squares explained by regression model $\sum (\hat{y_i}-\bar{y})^2$
+(y predicted - y mean)
+
+SSreg close to zero if each predicted y is close to y mean while large if it differs
+
+
+HYPOTHETICAL FOR SINGLE DATA POINT:
+
+SST          =     SSreg               +          RSS
+
+Total sample = Variability EXplained by +    Unexplained (or error)
+
+variablility      the model                   variability
+
+
+
+
+if 
+
+$Y = \beta_0 + \beta_1 x + e$ and $ \beta_1 \neq 0$
+
+then RSS should be 'small' and SSreg should be 'close' to SST. but how small is small and how close is close?
+
+
+
+**Use F statistic**
+
+
+$$F = \frac{SSreg/1}{RSS/(n-2)}$$
+
+If the errors are independent and normally distributed with mean 0 and variance sigma^2. 
+
+it can be shown that F has an F distribution with 1 and n-2 degres of freedom when H_0 is true
+
+
+**in simple linear regression 
+
+
+
+### Example dummy variable
+
+load data
+```{r}
+setwd('C:/Program Files/GitHub/business_analytics/Modern_approach_with_r/')
+dat<-read.csv('./data/changeover_times.csv', sep = '\t')
+head(dat)
+summary(dat)
+```
+
+
+
+
+developt an equation to model the relationship between Y, (chanegover time) and X, (dummy variable corresponding to "new" and test weheter the mean change-over time is reduced using the new method)
+
+
+
+Y= changeover time, X= dummy variable
+
+
+```{r}
+dat$New<-as.factor(dat$New)
+typeof(dat$Method)
+```
+
+Run regression
+```{r}
+lm1<-lm(Changeover~Method, data=dat)
+summary(lm1)
+```
+
+test whether there is significant reduction in the changeover time for the new method by testing significance of dummy variable
+
+(whether coefficient of x is zer or less than zero)
+
+$H_0: \beta_1 = 0 $ against $H_A : \beta_1 <0$
+
+use one sided "<" alternative since we are interested in whether the new method leads to a reduction in mean change over time
+
+
+$$T=\frac{ \hat{\beta_1}-0}{se(\hat{\beta_1)}}\tilde~t_{n-2}$$ when H_0 is true
+
+
+```{r}
+ggplot(dat, aes(as.factor(Method), as.numeric(Changeover)))+geom_point()+ geom_smooth(method = "lm")
+```
+```{r}
+ggplot(dat, aes(y=Changeover,x=New))+geom_boxplot()
+```
+
+
+Look  at t-value from the regression output
+
+T=-2.254
+
+look at associated p-value
+
+.026  (THIS IS THE TWO SIDED P-VALUE, SINCE WE ARE ONLY CONCERNE WITH 1 SIDE WE DIVIDE BY 2)
+
+$$p-value = P(T\neq -2.254 when.H_0.is.true)=\frac{.026}}2=.013$$
+
+
+This means there is significant evidence of a reduction in the mean change-over-time for the new method. 
+
+
+
+```{r}
+mean_1<-dat%>%filter(New==1)%>%summarise(mean=mean(Changeover))
+mean_2<-dat%>%filter(New==0)%>%summarise(mean=mean(Changeover))
+
+paste('mean NEW:', round(mean_1,2),'mean OLD:',round(mean_2,2),'DIFFERENCE :',round(mean_1-mean_2,2)
+, sep=" ")
+```
+
+Note that this is the value for Beta_1 from the regression model. 
+
+
+## 95% confidence interval for reduction in mean change-over time due to new method
+
+```{r}
+confint(lm1, level=.95)
+```
+
+Since the estimate for B_1 is inside the confidence interval we can accept

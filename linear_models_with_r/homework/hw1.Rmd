@@ -1,0 +1,78 @@
+---
+title: "Homework 1"
+output: html_notebook
+---
+
+
+```{r}
+library(tidyverse)
+inc <-read.csv("https://raw.githubusercontent.com/charleyferrari/CUNY_DATA_608/master/module1/Data/inc5000_data.csv", header= TRUE)
+```
+
+Preview of data
+
+```{r}
+summary(inc)
+```
+
+Think a bit on what these summaries mean. Use the space below to add some more relevant non-visual exploratory information you think helps you understand this data:
+
+
+Summary of Industries for Fastest Growing industries
+```{r}
+inc<-inc%>%drop_na()
+inc$Industry<-as.factor(inc$Industry)
+nlevels(inc$Industry)
+inc%>%group_by(Industry)%>%
+  summarise(count_business=length(Industry))%>%arrange(desc(count_business))
+```
+
+
+Average number of employees per business in an industry
+```{r}
+inc%>%group_by(Industry)%>%
+  summarise(avg_employee = as.integer(mean(Employees, na.rm=TRUE)))%>%arrange((desc(avg_employee)))
+```
+
+
+Total Employees per industry
+
+```{r}
+inc%>% group_by(Industry)%>%
+  summarise(total_employee = mean(Employees)*length(Industry))%>%arrange(desc(total_employee))
+
+```
+
+Revenue per employee
+
+```{r}
+rev_emp<-inc%>% group_by(Industry)%>%
+  summarise(total_employee = mean(Employees)*length(Industry), total_revenue=sum(Revenue), rev_per_emp = total_revenue/total_employee)%>%arrange(desc(rev_per_emp))
+```
+
+Looking at the head
+
+```{r}
+head(rev_emp)
+```
+
+
+I was expecting things like financial services and Insurance to be top performers in revenue per employee, but I wasn't expecting things like construction  and consumer products. I would think that employees would scale more directly with revenue here. 
+
+Computer hardware and Construction stick out to me the most. I would expect things that needed to be built to require more employees to increase revenue. 
+
+For computer hardware; since this is only looking at US businesses, maybe these are the companies that design and implement the products as opposed to actually manufacturing them, which I believe happens more overseas. 
+
+Looking at the tail
+
+```{r}
+tail(rev_emp)
+```
+
+
+This makes a little more sense. Hospitality Education and Security are services provided by an employee directly without any additional product or service sold that generates revenue on its own. 
+
+I am suprised to see engineering and Real Estate on this list, especially when construction is one of the highest revenue per employee categories. 
+
+
+

@@ -1,0 +1,444 @@
+---
+title: "MAR Ch_3"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## CH 3
+
+
+examining if model is valid
+
+
+## Valid and invalid regression models: Anscombes' four data sets
+
+point is looking just at regression output may lead to misleading conclusions about the data, and adopting the wrong model
+
+```{r}
+dat<-datasets::anscombe
+```
+
+```{r}
+lm1<-lm(y1~x1, data=dat)
+summary(lm1)
+```
+
+```{r}
+```
+
+
+```{r}
+lm2<-lm(y2~x2,data=dat)
+summary(lm2)
+```
+
+```{r}
+lm3<-lm(y3~x3,data=dat)
+summary(lm3)
+```
+
+
+```{r}
+for (i in 1:4){
+  name=paste0("p_",i)
+  #print(name)
+  x_var<-paste0('x',i)
+  y_var<-paste0('y',i)
+  print(x_)
+  plot<-ggplot(dat, aes(x=x_var,y=y_var))+geom_point()+geom_smooth(method='lm')
+  assign(name,plot)
+}
+```
+
+## Leverage Points 
+
+
+leverage points:
+
+points that excercise considerable influence on fitted model
+
+### Good vs bad leverage point (McCulloch)
+
+leverage point:
+X value distant from other x values
+
+bad:
+y- value does not follow pattern
+
+**bad leverage point is a leverage point that is also an outlier in y
+
+good:
+
+large x but NOT an outlier in y
+
+Hubers good and bad leverage
+
+```{r}
+x<-c(-4,-3,-2,-1,0,10)
+YBad<-c(2.48,.73,-.04,-1.44,-1.32,0)
+x_2<-x
+YGood<-c(2.48,.73,-.04,-1.44,-1.32,-11.4)
+df_leverage<-cbind(x=x,YBad=YBad,YGood=YGood)
+```
+
+
+```{r}
+summary(lm_bad<-lm(formula=YBad~x))
+```
+
+
+```{r}
+summary(lm_good<-lm(formula=YGood~x))
+```
+
+use `hatvalues` on your lm to get the leverage of ith value
+```{r}
+hatvalues(lm_good)
+```
+
+```{r}
+#plot leverage
+
+plot(hatvalues(lm_bad),type='h')
+```
+
+
+
+## Rule for identifying leverage points
+
+classify xi as a point of high leverage if 
+
+$$h_{ii}>2*average(h{ii})=4/n$$
+
+recall:
+
+good leverage points are points that are NOT outliers
+
+bad leverage points are points that ARE outliers
+
+
+## Strategies for dealing with 'bad' leverage points
+
+1.
+
+remove invalid data points
+
+**are these points unusual or different in some way from the rest of the data
+
+2.
+
+fit a different regression model
+
+transform independent or dependent variables etc...
+
+
+
+## note on good leverage
+
+still important to check validity of good leverage points, even though they help your model. 
+
+
+## standardized residuals
+
+
+problem of residuals having differnet variances can be overcome by standardizing each resiudal by dividing it by an estimate of its SD
+
+$$r_i=\frac{\hat{e_i}}{s\sqrt{1-h_{ii}}}$$
+
+
+s=standard deviation
+
+when high leverage points exist, it is better to look at *standardized residuals*
+```{r}
+lm_good.stdres=rstandard(lm_good)
+plot(lm_good.stdres)
+abline(0,0)
+```
+
+
+```{r}
+lm_bad.stdres=rstandard(lm_bad)
+plot(lm_bad.stdres)
+abline(0,0)
+```
+
+
+## Example: US TREASURY BOND PRICES
+
+```{r}
+dat<-read.csv('./data/bonds.txt',sep = '\t')
+```
+
+
+```{r}
+library(ggResidpanel)
+summary(lm.model<-lm(BidPrice~CouponRate, data=dat))
+confint(lm.model)
+resid_panel(lm.model, plots = 'all')
+
+```
+
+```{r}
+resid_interact(lm.model, plots='all')
+```
+
+
+The outliers are from a separate category called 'flower bonds' which have tax advantages
+
+perform analysis with only the regular bonds
+
+```{r}
+dat_2<-dat%>%slice(-c(4,13,35))
+library(ggResidpanel)
+summary(lm.model<-lm(BidPrice~CouponRate, data=dat_2))
+confint(lm.model)
+resid_panel(lm.model, plots = 'all')
+```
+
+
+note that beta_1, 4.83 was not even IN the confidence interval of the other data with the 'flower bonds'
+
+
+
+## reccomendations for handling outliers and leverage points
+
+
+-points should NOT be routinely deleted from analysis because they do not fit the model. they are warnings that the model or assumptions are wrong
+
+
+- outliers often point out important feature not before considered
+
+
+
+## assesing influence of certain cases
+
+Cooks distance gives leverage of points
+
+
+
+## Constant Variance
+
+
+crucial that errors have constant variance
+
+
+
+## Example bid for contract cleaning
+
+```{r}
+dat<-read.csv('./data/cleaning.txt',sep='\t')
+```
+
+
+develop regression equation to model relationship between number of rooms cleaned and the number of crews. 
+
+predict number of rooms that can be cleaned by 4 crews and by 16 crews
+
+```{r}
+ggplot(dat, aes(x=Crews,y=Rooms))+geom_point()+geom_smooth(method='lm')
+```
+
+first linreg
+
+```{r}
+summary(lm.model<-lm(Rooms~Crews, data=dat))
+confint(lm.model)
+```
+
+```{r}
+resid_panel(lm.model, plots='resid', type='standardized')
+```
+
+you can see that residuals increase with number of crews
+
+evidence variance of errors increases with x
+
+
+
+when assumption that the variance of errors is constant does not hold. use weighted least squares to acount for the changing variance
+
+weights=(1/variance)
+
+or try to transform data so nonconstant variance dissapears
+
+
+## Transformations
+
+- overcome problems due to nonconstant variance
+-estimate percentage effects
+-overcome problems due to nonlinearity
+
+## Using transformations to stabilize variance
+
+
+
+count data often modeled usin Poisson distribution. 
+
+
+The appropriate transformation of Y for stabilizing variance is the square root
+
+when X and Y are measured in the same units, then it is often natural to consider same transformation for both X and Y
+
+```{r}
+summary(lm.model<-lm(sqrt(Rooms)~sqrt(Crews),data = dat))
+```
+
+```{r}
+resid_panel(lm.model)
+```
+
+
+## Logarithms to Estimate Percentage Effects
+
+log is base e in this case
+
+
+slope beta_1 approximately equal ratio of the percentage changes in Y an x
+
+
+## example using logs to estimate price elasticity of a product
+
+goal: estimatee 1% increase in price on a product (price elasticity)
+
+```{r}
+dat<-read.csv('./data/confood1.txt',sep='\t')
+ggplot(dat, aes(x=Price,y=Sales))+geom_point()+geom_smooth(method='lm')
+```
+looks skewed towards zero. 
+
+large outlier apparent
+
+(straight line doesnt look right)
+
+
+from economics, common tot take log of both price and quantity
+
+```{r}
+ggplot(dat, aes(x=log(Price),y=log(Sales)))+geom_point()+geom_smooth(method='lm')
+```
+
+```{r}
+summary(lm.model<-lm(log(Sales)~log(Price),data=dat))
+```
+
+the slope beta_1 approximately equals the percentage change in quantity and price
+
+in this case:
+
+beta_1=-5.1% reduction in demand for every 1% increase
+
+said to be 'elastic' because price change will cause an even LARGER change in quantity demanded. 
+
+
+revenue= price*quantity, price has risen, but quantity has fallen more, thus revenue has fallen. 
+
+
+check residuals
+```{r}
+resid_panel(lm.model, plots='resid',type='standardized')
+```
+
+
+## Tranformations to Overcome problems due to nonlinearity
+
+-inverse response plots
+-box-cox procedure
+
+
+3 situations:
+
+a:
+
+only response variable needs to be transformed
+
+b:
+
+only predictors need to be transformed
+
+c:
+
+both need to be transformed
+
+
+### Transforming only response variable Y using inverse regression
+
+
+if transformation is function that produces Y, then take the inverse of y to produce a linear combination
+
+
+data generated with the model
+$$Y=(B+Bx+e)^3$$
+```{r}
+dat<-read.csv('./data/responsetransformation.txt',sep='\t')
+ggplot(dat, aes(x,y))+geom_point()
+```
+```{r}
+lm.model<-lm(y~x,data=dat)
+resid_panel(lm.model, plots=c('resid','ls'))
+```
+
+
+residuals not constant
+
+
+if x has an elliptically symmetric distribution, then g^-1 can be estimated from the scatter plot of Y (horizontal axis)
+
+and the fitted values (vertical axis)
+
+**inverse response plot**
+
+
+
+## Transforming only the response variable Y using Box-Cox method
+
+general method for transforming STRICTLY POSITIVE response variable Y. 
+
+finds transformation that makes the variable close to normally distributed.
+
+## Example: governments salary data
+
+max salary for 495 nonunuionized job classes in a midwestern govt in 1986.
+
+
+```{r}
+getwd()
+#setwd("C:/Program Files/GitHub/business_analytics/Modern_approach_with_r/data/salarygov.txt")
+dat<-read.table("C:/Program Files/GitHub/business_analytics/Modern_approach_with_r/data/salarygov.txt")
+
+
+```
+
+consider staright line model
+
+MaxSalary=Beta+beta_1Score+e
+
+```{r}
+lm.model<-lm(MaxSalary~Score,data=dat)
+library(ggResidpanel)
+resid_panel(lm.model)
+```
+
+```{r}
+library(car)
+
+powerTransform(cbind(dat$MaxSalary,dat$Score))
+```
+close to zero and .5 respectively
+
+in boxcox, when lambda =0, use log()
+
+so we will use log on the MaxSalary and sqrt() on Score
+
+```{r}
+summary(lm.model<-lm(log(MaxSalary)~sqrt(Score),data=dat))
+```
+
+
+
+```{r}
+resid_panel(lm.model, plots = 'all')
+```
+
