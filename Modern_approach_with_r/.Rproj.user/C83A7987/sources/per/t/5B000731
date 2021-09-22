@@ -3,7 +3,7 @@
     "path": "~/GitHub/business_analytics/Modern_approach_with_r/notes/ch_5.Rmd",
     "project_path": "notes/ch_5.Rmd",
     "type": "r_markdown",
-    "hash": "2582553822",
+    "hash": "1199925386",
     "contents": "",
     "dirty": false,
     "created": 1632244118473.0,
@@ -12,16 +12,16 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "468,29",
-        "scrollLine": "458",
-        "last_setup_crc32": "9C22193Cbb338d19"
+        "cursorPosition": "254,0",
+        "scrollLine": "251",
+        "last_setup_crc32": "C21E6A59bb338d19"
     },
     "folds": "",
-    "lastKnownWriteTime": 1632253588,
+    "lastKnownWriteTime": 1632333493,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1632253588132,
+    "last_content_update": 1632333493246,
     "read_only": false,
     "read_only_alternatives": []
 }

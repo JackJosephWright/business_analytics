@@ -1,5 +1,0 @@
-"0","  late_val<-predict(lm.split, newdata=data.frame(BILL=bill_val, TYPE=type_select),type='response')
-"
-"2","Error in data.frame(BILL = bill_val, TYPE = type_select) : 
-  object 'type_select' not found
-"

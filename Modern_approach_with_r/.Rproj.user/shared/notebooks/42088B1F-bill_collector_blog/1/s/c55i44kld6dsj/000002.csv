@@ -1,0 +1,5 @@
+"0","#profits from residential debts"
+"0",""
+"0","cost_res<-dat%>%filter(TYPE=='RESIDENTIAL' & BILL>bill_60)%>%summarize(sum(BILL))"
+"0","income_res<-dat%>%filter(TYPE=='RESIDENTIAL' & BILL<bill_60)%>%summarize(sum(BILL))"
+"0","(profit_res=income_res-cost_res)"

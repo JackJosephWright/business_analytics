@@ -321,17 +321,120 @@ summary(lm.full<-lm(LATE~BILL+TYPE, data=dat))
 summary(lm.split<-lm(LATE~BILL+TYPE+TYPE:BILL:., data=dat))
 ```
 
-so when TYPE=0 =Residential...
+
+## The equations for the linear regression
+
+so when TYPE=0 =commercial...
 
 intercept 101.7 slope =-.19
 
-and when TYPE=1= Commercial
 
-intercept=101+-99, slope = -1.9+.35
+```{r}
+library(stats)
+
+integrand_com<-function(x){-.1909*x+101.7}
+
+
+```
+
+and when TYPE=1= residential
+
+intercept=101+-99, slope = -.19+.35
+
+
+```{r}
+integrand_res=function(x){(-1.909+.35664)*x+(101-99)}
+```
+
 ```{r}
 ggplot(dat, aes(y=LATE,x=BILL, color=TYPE))+geom_point()
 ```
 
+I want to analyze mathematically the impact of the 'less than 60 days or your money back' promotion, first piecewise by type and then optimizing for both commercial and residential
+
+
+### Residential
+
+what we can tell from the residential data, is that people will wait longer to pay if the bill is higher. However from our data set, it does not look like it ever crosses 60 days. 
+
+Strategy:
+
+from our mathematical models, I want to integrate the area under the curve for bills that would be paid under our promotion as 'income' and then subtract reimbursements that the company  would have to pay as 'cost' (cost of running the promotion)
+
+
+since it looks like we don't buy debts over 311 or below 46, these will be our limits of integration
+
+so our equation will be
+
+PROFIT=income-cost
+
+First we must find the value of the BILL where LATE =60, which will be our upper limit of integration
+
+```{r}
+(bill_60<-solve(.166,58))
+
+```
+
+
+
+since we dont accept debts above this limit, there will be no cost. You could potentially tell marketing to INCREASE the days that we will give money back guarantees, or even persuade them to increase the limit on debts we will purchase. 
+
+
+## Commercial:
+
+The commercial sector is a bit more complicated, because businesses WILL wait to pay if the debt is small enough.
+
+First we must find our upper limit for integration
+
+```{r}
+(bill_60_commercial<-solve(-.19, (60-101.7)))
+```
+so income will be debts collected OVER this limit, and cost will be debts uncollected UNDER this limit
+
+```{r}
+#profit from commmercial debts
+
+cost_com<-dat%>%filter(TYPE=='COMMERCIAL' & BILL<bill_60_commercial)%>%summarize(sum(BILL))
+income_com<-dat%>%filter(TYPE=='COMMERCIAL' & BILL>bill_60_commercial)%>%summarize(sum(BILL))
+(profit_com=income_com-cost_com)
+```
+
+```{r}
+#profits from residential debts
+
+cost_res<-dat%>%filter(TYPE=='RESIDENTIAL' & BILL>bill_60)%>%summarize(sum(BILL))
+income_res<-dat%>%filter(TYPE=='RESIDENTIAL' & BILL<bill_60)%>%summarize(sum(BILL))
+(profit_res=income_res-cost_res)
+```
+
+as we can see this promo will decrease our profits to 42% of what we would have gotten without the promo in place
+
+
+```{r}
+com_profit_pre_promo<-dat%>%filter(TYPE=='COMMERCIAL' )%>%summarize(sum(BILL))
+res_profit_pre_promo<-profit_res
+profit_promo<-profit_res+profit_com
+profit_null<-com_profit_pre_promo+res_profit_pre_promo
+percentage_income<-profit_promo/profit_null
+```
+
+In order for it to make sense to run this promotion, we need to calculate the increase in business required to break even. 
+
+```{r}
+(C=profit_null*1/percentage_income)
+```
+
+This is the gross amount required to run the promotion, which is equal to 
+```{r}
+(C/profit_null)
+```
+
+a 234% increase in business. This does not account for a potential effect that our promotion does not change the way customers use our business, causing our regression equations to change. 
+
+```{r}
+#residential
+
+```
 
 
 compare the 2 models
@@ -478,7 +581,14 @@ day_optimizer<-function(d=60){
 }
 ```
 
+
+
 ```{r}
-day_optimizer()
+library(stats)
+
+integrand<-function(x){1/((x+1)*sqrt(x))}
+
+integrate(integrand, lower=0, upper=Inf)
 ```
+
 

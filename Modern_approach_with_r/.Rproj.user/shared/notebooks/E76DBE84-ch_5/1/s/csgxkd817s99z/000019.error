@@ -1,1 +1,0 @@
-{"frames":[{"func":"rename(i, temp)","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0}],"message":"Error in UseMethod(\"rename\") : \n  no applicable method for 'rename' applied to an object of class \"character\"\n"}

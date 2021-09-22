@@ -1,0 +1,5 @@
+"0","#profit from commmercial debts"
+"0",""
+"0","cost_com<-dat%>%filter(TYPE=='COMMERCIAL' & BILL<bill_60_commercial)%>%summarize(sum(BILL))"
+"0","income_com<-dat%>%filter(TYPE=='COMMERCIAL' & BILL>bill_60_commercial)%>%summarize(sum(BILL))"
+"0","(profit_com=income_com-cost_com)"

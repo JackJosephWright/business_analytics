@@ -1,0 +1,5 @@
+"0","com_profit_pre_promo<-dat%>%filter(TYPE=='COMMERCIAL' )%>%summarize(sum(BILL))"
+"0","res_profit_pre_promo<-profit_res"
+"0","profit_promo<-profit_res+profit_com"
+"0","profit_null<-com_profit_pre_promo+res_profit_pre_promo"
+"0","(percentage_income<-profit_promo/profit_null)"

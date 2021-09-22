@@ -1,0 +1,10 @@
+"0","library(GGally)"
+"2","Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+"
+"0","ggpairs(dat, mapping=(aes(color=TYPE)))"
+"2","`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+"
+"2","`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+"

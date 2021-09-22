@@ -1,5 +1,0 @@
-"0","
-gen_frame<-function(gen_func=gen_data, data_metrics=data_metrics TYPE='C',n=100){
-"
-"2","Error: unexpected symbol in ""gen_frame<-function(gen_func=gen_data, data_metrics=data_metrics TYPE""
-"
