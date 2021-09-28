@@ -1,0 +1,4 @@
+"0","library(tidyverse)"
+"0","library(here)"
+"0","file<-here('data','nyc.csv')"
+"0","dat<-read.csv(file)"
