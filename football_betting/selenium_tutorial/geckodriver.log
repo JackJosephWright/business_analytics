@@ -1215,3 +1215,13 @@ console.warn: SearchSettings: "get: No settings file exists, new profile?" (new 
 JavaScript error: resource://services-settings/Attachments.jsm, line 391: TypeError: / is not a valid URL.
 console.log: WebExtensions: reset-default-search: starting.
 console.log: WebExtensions: reset-default-search: No addons in our list are installed.
+console.error: services.settings: 
+  Message: TypeError: / is not a valid URL.
+  Stack:
+    _baseAttachmentsURL@resource://services-settings/Attachments.jsm:391:39
+downloadAsBytes@resource://services-settings/Attachments.jsm:341:39
+download@resource://services-settings/Attachments.jsm:206:38
+
+console.log: WebExtensions: reset-default-search: starting.
+console.log: WebExtensions: reset-default-search: has already ran once and saw panel, exit.
+JavaScript error: , line 0: NS_ERROR_NOT_AVAILABLE
