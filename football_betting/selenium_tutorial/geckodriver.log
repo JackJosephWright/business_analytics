@@ -1225,3 +1225,256 @@ download@resource://services-settings/Attachments.jsm:206:38
 console.log: WebExtensions: reset-default-search: starting.
 console.log: WebExtensions: reset-default-search: has already ran once and saw panel, exit.
 JavaScript error: , line 0: NS_ERROR_NOT_AVAILABLE
+1633090316076	Marionette	INFO	Stopped listening on port 62626
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+
+###!!! [Parent][MessageChannel] Error: (msgtype=0x140007,name=PBackgroundLSDatabase::Msg_RequestAllowToClose) Channel error: cannot send/recv
+
+
+###!!! [Parent][MessageChannel] Error: (msgtype=0x58000D,name=PHttpBackgroundChannel::Msg___delete__) Channel error: cannot send/recv
+
+
+###!!! [Parent][MessageChannel] Error: (msgtype=0x58000D,name=PHttpBackgroundChannel::Msg___delete__) Channel error: cannot send/recv
+
+JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_NOT_AVAILABLE: Component returned 1633090356276	Marionette	INFO	Stopped listening on port 61075
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+JavaScript error: , line 0: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileQaYOjA\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileQaYOjA\sessionCheckpoints.json)
+JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]
+WARNING: A blocker encountered an error while we were waiting.
+          Blocker:  CrashMonitor: Writing notifications to file after receiving profile-before-change
+          Phase: IOUtils: waiting for profileBeforeChange IO to complete
+          State: (none)
+WARNING: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileQaYOjA\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileQaYOjA\sessionCheckpoints.json)
+WARNING: observe@resource://gre/modules/AsyncShutdown.jsm:575:16
+
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileQaYOjA\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileQaYOjA\sessionCheckpoints.json)
+1633090384073	geckodriver	INFO	Listening on 127.0.0.1:57897
+1633090387108	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-no-remote" "-profile" "C:\\Users\\jwright\\AppData\\Local\\Temp\\rust_mozprofilebNBT0d"
+1633090387404	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\jwright\\AppData\\Local\\Temp\\rust_mozprofilebNBT0d\\search.json.mozlz4", (void 0)))
+1633090390739	Marionette	INFO	Listening on port 59781
+1633090391005	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://services-settings/Attachments.jsm, line 391: TypeError: / is not a valid URL.
+1633090732702	Marionette	WARN	TimedPromise timed out after 500 ms: stacktrace:
+TimedPromise/<@chrome://remote/content/marionette/sync.js:238:19
+TimedPromise@chrome://remote/content/marionette/sync.js:223:10
+interaction.flushEventLoop@chrome://remote/content/marionette/interaction.js:431:10
+webdriverClickElement@chrome://remote/content/marionette/interaction.js:179:31
+1633090735427	Marionette	WARN	TimedPromise timed out after 500 ms: stacktrace:
+TimedPromise/<@chrome://remote/content/marionette/sync.js:238:19
+TimedPromise@chrome://remote/content/marionette/sync.js:223:10
+interaction.flushEventLoop@chrome://remote/content/marionette/interaction.js:431:10
+webdriverClickElement@chrome://remote/content/marionette/interaction.js:179:31
+JavaScript warning: https://assets.adobedtm.com/a5ea4e8f4344/1648c62d3986/launch-53368d199d70.min.js, line 6: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://d2genwge1af44w.cloudfront.net/assets/vendor-e08a811867a89ad2488a48e246d7ae3c73ad6698.js, line 47: unreachable code after return statement
+1633090786665	Marionette	INFO	Stopped listening on port 59781
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]
+WARNING: A blocker encountered an error while we were waiting.
+          Blocker:  CrashMonitor: Writing notifications to file after receiving profile-before-change
+          Phase: IOUtils: waiting for profileBeforeChange IO to complete
+          State: (none)
+WARNING: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilebNBT0d\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilebNBT0d\sessionCheckpoints.json)
+WARNING: observe@resource://gre/modules/AsyncShutdown.jsm:575:16
+
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilebNBT0d\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilebNBT0d\sessionCheckpoints.json)
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilebNBT0d\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilebNBT0d\sessionCheckpoints.json)
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1633090813586	geckodriver	INFO	Listening on 127.0.0.1:65195
+1633090816638	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-no-remote" "-profile" "C:\\Users\\jwright\\AppData\\Local\\Temp\\rust_mozprofiletuGVXB"
+1633090816986	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\jwright\\AppData\\Local\\Temp\\rust_mozprofiletuGVXB\\search.json.mozlz4", (void 0)))
+1633090819944	Marionette	INFO	Listening on port 65203
+1633090820008	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://services-settings/Attachments.jsm, line 391: TypeError: / is not a valid URL.
+1633090858412	Marionette	INFO	Stopped listening on port 65203
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+JavaScript error: , line 0: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofiletuGVXB\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofiletuGVXB\sessionCheckpoints.json)
+JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]
+WARNING: A blocker encountered an error while we were waiting.
+          Blocker:  CrashMonitor: Writing notifications to file after receiving profile-before-change
+          Phase: IOUtils: waiting for profileBeforeChange IO to complete
+          State: (none)
+WARNING: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofiletuGVXB\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofiletuGVXB\sessionCheckpoints.json)
+WARNING: observe@resource://gre/modules/AsyncShutdown.jsm:575:16
+
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofiletuGVXB\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofiletuGVXB\sessionCheckpoints.json)
+1633090896596	geckodriver	INFO	Listening on 127.0.0.1:65378
+1633090899641	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-no-remote" "-profile" "C:\\Users\\jwright\\AppData\\Local\\Temp\\rust_mozprofileKAAyPY"
+1633090900250	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\jwright\\AppData\\Local\\Temp\\rust_mozprofileKAAyPY\\search.json.mozlz4", (void 0)))
+1633090903607	Marionette	INFO	Listening on port 65390
+1633090904033	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://services-settings/Attachments.jsm, line 391: TypeError: / is not a valid URL.
+1633090909607	Marionette	INFO	Stopped listening on port 65390
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+JavaScript error: , line 0: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileKAAyPY\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileKAAyPY\sessionCheckpoints.json)
+JavaScript error: resource://gre/modules/UrlClassifierListManager.jsm, line 691: TypeError: this.tablesData[table] is undefined
+[Parent 18732, IPC I/O Parent] WARNING: file /builds/worker/checkouts/gecko/ipc/chromium/src/base/process_util_win.cc:167
+1633090916183	geckodriver	INFO	Listening on 127.0.0.1:49209
+1633090919218	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-no-remote" "-profile" "C:\\Users\\jwright\\AppData\\Local\\Temp\\rust_mozprofileWofpO5"
+1633090919519	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\jwright\\AppData\\Local\\Temp\\rust_mozprofileWofpO5\\search.json.mozlz4", (void 0)))
+1633090922546	Marionette	INFO	Listening on port 49217
+1633090922585	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://services-settings/Attachments.jsm, line 391: TypeError: / is not a valid URL.
+1633090927087	Marionette	INFO	Stopped listening on port 49217
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+JavaScript error: https://www.googletagmanager.com/gtm.js?id=GTM-557C6Q2, line 48: NS_ERROR_NOT_INITIALIZED: 
+JavaScript error: https://www.googletagmanager.com/gtm.js?id=GTM-557C6Q2, line 48: NS_ERROR_NOT_INITIALIZED: 
+JavaScript error: , line 0: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileWofpO5\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileWofpO5\sessionCheckpoints.json)
+JavaScript error: , line 0: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileWofpO5\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileWofpO5\sessionCheckpoints.json)
+JavaScript error: resource://gre/modules/UrlClassifierListManager.jsm, line 691: TypeError: this.tablesData[table] is undefined
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1633090955165	geckodriver	INFO	Listening on 127.0.0.1:49299
+1633090958240	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-no-remote" "-profile" "C:\\Users\\jwright\\AppData\\Local\\Temp\\rust_mozprofileJhsxzs"
+1633090958606	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\jwright\\AppData\\Local\\Temp\\rust_mozprofileJhsxzs\\search.json.mozlz4", (void 0)))
+1633090961907	Marionette	INFO	Listening on port 49307
+JavaScript error: resource://services-settings/Attachments.jsm, line 391: TypeError: / is not a valid URL.
+1633090962100	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1633091145028	Marionette	INFO	Stopped listening on port 49307
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]
+JavaScript error: , line 0: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileJhsxzs\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileJhsxzs\sessionCheckpoints.json)
+l be ignored for this session
+1633091144118	Marionette	INFO	Stopped listening on port 49495
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+
+###!!! [Child][MessageChannel] Error: (msgtype=0x590008,name=PHttpChannel::Msg_DeletingChannel) Channel closing: too late to send/recv, messages will be lost
+
+JavaScript error: , line 0: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilelPWjQc\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilelPWjQc\sessionCheckpoints.json)
+JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]
+JavaScript error: , line 0: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilelPWjQc\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilelPWjQc\sessionCheckpoints.json)
+1633091159939	geckodriver	INFO	Listening on 127.0.0.1:49673
+1633091162995	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-no-remote" "-profile" "C:\\Users\\jwright\\AppData\\Local\\Temp\\rust_mozprofiley9m0QH"
+1633091163346	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\jwright\\AppData\\Local\\Temp\\rust_mozprofiley9m0QH\\search.json.mozlz4", (void 0)))
+1633091166706	Marionette	INFO	Listening on port 49681
+JavaScript error: resource://services-settings/Attachments.jsm, line 391: TypeError: / is not a valid URL.
+1633091166873	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1633091347371	Marionette	INFO	Stopped listening on port 49681
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+JavaScript error: , line 0: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofiley9m0QH\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofiley9m0QH\sessionCheckpoints.json)
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofiley9m0QH\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofiley9m0QH\sessionCheckpoints.json)
+e	INFO	Stopped listening on port 49863
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]
+JavaScript error: , line 0: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilevq7rDA\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilevq7rDA\sessionCheckpoints.json)
+WARNING: A blocker encountered an error while we were waiting.
+          Blocker:  CrashMonitor: Writing notifications to file after receiving profile-before-change
+          Phase: IOUtils: waiting for profileBeforeChange IO to complete
+          State: (none)
+WARNING: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilevq7rDA\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilevq7rDA\sessionCheckpoints.json)
+WARNING: observe@resource://gre/modules/AsyncShutdown.jsm:575:16
+
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilevq7rDA\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilevq7rDA\sessionCheckpoints.json)
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1633091348874	geckodriver	INFO	Listening on 127.0.0.1:50075
+1633091351931	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-no-remote" "-profile" "C:\\Users\\jwright\\AppData\\Local\\Temp\\rust_mozprofile8WvFRm"
+1633091352307	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\jwright\\AppData\\Local\\Temp\\rust_mozprofile8WvFRm\\search.json.mozlz4", (void 0)))
+1633091355303	Marionette	INFO	Listening on port 50083
+JavaScript error: resource://services-settings/Attachments.jsm, line 391: TypeError: / is not a valid URL.
+1633091355798	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1633091426084	Marionette	INFO	Stopped listening on port 50083
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+console.error: PushService: 
+  stateChangeProcessEnqueue: Error transitioning state
+  Message: Error: Data is not ready.
+  Stack:
+    get data@resource://gre/modules/JSONFile.jsm:186:13
+getListeners@resource://gre/modules/PushBroadcastService.jsm:66:5
+observe@resource://gre/modules/AsyncShutdown.jsm:575:16
+
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofile8WvFRm\sessionCheckpoints.json.tmp) to destination(C:\USourceActor threw an exception: [Exception... "Component returned failure code: 0x80470002 (NS_BASE_STREAM_CLOSED) [nsIInputStream.available]"  nsresult: "0x80470002 (NS_BASE_STREAM_CLOSED)"  location: "JS frame :: resource://devtools/shared/DevToolsUtils.js :: onResponse :: line 567"  data: no]
+Stack: onResponse@resource://devtools/shared/DevToolsUtils.js:567:34
+onStopRequest@resource://gre/modules/NetUtil.jsm:128:18
+Line: 567, column: 0
+console.error: ({})
+JavaScript error: resource://devtools/shared/DevToolsUtils.js, line 567: NS_BASE_STREAM_CLOSED: Component returned failure code: 0x80470002 (NS_BASE_STREAM_CLOSED) [nsIInputStream.available]
+SourceActor threw an exception: [Exception... "Component returned failure code: 0x80470002 (NS_BASE_STREAM_CLOSED) [nsIInputStream.available]"  nsresult: "0x80470002 (NS_BASE_STREAM_CLOSED)"  location: "JS frame :: resource://devtools/shared/DevToolsUtils.js :: onResponse :: line 567"  data: no]
+Stack: onResponse@resource://devtools/shared/DevToolsUtils.js:567:34
+onStopRequest@resource://gre/modules/NetUtil.jsm:128:18
+Line: 567, column: 0
+console.error: ({})
+JavaScript error: resource://devtools/shared/DevToolsUtils.js, line 567: NS_BASE_STREAM_CLOSED: Component returned failure code: 0x80470002 (NS_BASE_STREAM_CLOSED) [nsIInputStream.available]
+1633091477866	Marionette	INFO	Stopped listening on port 50272
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]
+console.error: PushService: 
+  stateChangeProcessEnqueue: Error transitioning state
+  Message: Error: Data is not ready.
+  Stack:
+    get data@resource://gre/modules/JSONFile.jsm:186:13
+getListeners@resource://gre/modules/PushBroadcastService.jsm:66:5
+observe@resource://gre/modules/AsyncShutdown.jsm:575:16
+
+WARNING: A blocker encountered an error while we were waiting.
+          Blocker:  CrashMonitor: Writing notifications to file after receiving profile-before-change
+          Phase: IOUtils: waiting for profileBeforeChange IO to complete
+          State: (none)
+WARNING: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofile9oLx0R\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofile9oLx0R\sessionCheckpoints.json)
+WARNING: observe@resource://gre/modules/AsyncShutdown.jsm:575:16
+
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: OperationError: Could not move temporary file(C:\Users\jwright\AppData\[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+1633091741672	Marionette	INFO	Stopped listening on port 50459
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+WARNING: A blocker encountered an error while we were waiting.
+          Blocker:  CrashMonitor: Writing notifications to file after receiving profile-before-change
+          Phase: IOUtils: waiting for profileBeforeChange IO to complete
+          State: (none)
+WARNING: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileCQA8IS\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileCQA8IS\sessionCheckpoints.json)
+WARNING: observe@resource://gre/modules/AsyncShutdown.jsm:575:16
+
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileCQA8IS\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileCQA8IS\sessionCheckpoints.json)
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileCQA8IS\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileCQA8IS\sessionCheckpoints.json)
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileCQA8IS\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileCQA8IS\sessionCheckpoints.json)
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileCQA8IS\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileCQA8IS\sessionCheckpoints.json)
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+ts.jsm, line 391: TypeError: / is not a valid URL.
+1633091662009	Marionette	INFO	Stopped listening on port 50607
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+JavaScript error: , line 0: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileRXTmDR\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileRXTmDR\sessionCheckpoints.json)
+WARNING: A blocker encountered an error while we were waiting.
+          Blocker:  CrashMonitor: Writing notifications to file after receiving profile-before-change
+          Phase: IOUtils: waiting for profileBeforeChange IO to complete
+          State: (none)
+WARNING: Oper1633091741186	Marionette	INFO	Stopped listening on port 50784
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+
+###!!! [Child][MessageChannel] Error: (msgtype=0x690023,name=PNecko::Msg_RemoveRequestContext) Channel closing: too late to send/recv, messages will be lost
+
+JavaScript error: , line 0: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileNs3dwA\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileNs3dwA\sessionCheckpoints.json)
+JavaScript error: , line 0: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileNs3dwA\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileNs3dwA\sessionCheckpoints.json)
+JavaScript error: , line 0: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileNs3dwA\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileNs3dwA\sessionCheckpoints.json)
+ofilenrlMT4\\search.json.mozlz4", (void 0)))
+1633091696857	Marionette	INFO	Listening on port 55909
+JavaScript error: resource://services-settings/Attachments.jsm, line 391: TypeError: / is not a valid URL.
+1633091697122	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1633091740745	Marionette	INFO	Stopped listening on port 55909
+JavaScript error: resource:///modules/Interactions.jsm, line 230: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+JavaScript error: , line 0: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilenrlMT4\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilenrlMT4\sessionCheckpoints.json)
+WARNING: A blocker encountered an error while we were waiting.
+          Blocker:  CrashMonitor: Writing notifications to file after receiving profile-before-change
+          Phase: IOUtils: waiting for profileBeforeChange IO to complete
+          State: (none)
+WARNING: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilenrlMT4\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilenrlMT4\sessionCheckpoints.json)
+WARNING: observe@resource://gre/modules/AsyncShutdown.jsm:575:16
+
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: OperationError: Could not move temporary file(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilenrlMT4\sessionCheckpoints.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofilenrlMT4\sessionCheckpoints.json)
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+nts.json.tmp) to destination(C:\Users\jwright\AppData\Local\Temp\rust_mozprofileEpIaWI\sessionCheckpoints.json)
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+

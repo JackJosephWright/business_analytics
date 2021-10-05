@@ -1,0 +1,4 @@
+"0","library(ggResidpanel)"
+"0",""
+"0","lm.model<-lm(lpsa~., data=train)"
+"0","resid_panel(lm.model,plots = 'R')"
