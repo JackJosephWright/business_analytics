@@ -1,0 +1,159 @@
+---
+title: "ch_8"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(here)
+```
+
+
+## Logistic Regression
+
+
+So far response variable is numeric and ideally follows a normal distribution
+
+
+Now we look at where response variable is based on a series of yes or no responses, such as whether a particular restaurant is reccomeneded by being included in a prestegious guide. 
+
+
+Ideally responses follow a binomial distribution in which case the appropriate model is a logeistic regression model
+
+
+## Logistic Regression based on a single predictor
+
+
+case of predicting a binomial random variable Y based on a single predictor variable x via logistic regression. 
+
+
+### Binomial distribution
+
+
+PROPERTIES:
+
+1.
+
+there are m identical trials
+
+2.
+each trial results in 2 ouctomes either success or failure
+
+3.
+$\theta$ the probability of 'success' is the same in all trials
+4.
+the trials are independent
+
+
+these trials are bernoulli trials
+
+
+Y= number of successes in m trials of a binomial process. Then Y is said to have a binomial distribution with parameters m and $\theta$
+
+$$Y=Bin(m,\theta)$$
+
+
+probability that Y takes the integer value of j (j=0,1,...m) is given by 
+
+$$P(Y=j)= (m,j)\theta^j (1-\theta)^{m-j}= \frac{m!}{j!(m-j)!} \theta^j((m-j)!(1-\theta)^{m-j}$$
+
+
+the mean and variance of Y are given by 
+
+$$E(Y)=m\theta$$
+
+$$Var(Y)=m\theta(1-\theta)$$
+
+
+
+In logistic regression setting, we wish to model $\theta$ (probability of success) and hence Y, (because Y is the number of successes in m trials)
+
+
+consider case of a single predictor variable x. 
+
+i guess you look at the number of successes at each iteration (y_i) at each (m_i)
+
+and 
+1.
+
+$y_i/m_i$ is an unbiased estimate of $\theta(x_i)$
+2.
+
+$y_i/m_i$ varies between 0 and 1
+
+
+notice that the variance of response $y_i/m_i$ depends on $\theta(x_i)$ and theta is in the equation for variance, so it is not constant.  This means least squares regression is an innapropriate technique for analyzing Binomial responses. 
+
+
+EX: Michelin and Zagat guides to NYC restaurants
+
+
+Michelin is experts doing secret reviews
+
+Zagats is mail in surveys
+
+
+
+COMPARING TWO GUIDES for 164 french restaurants included in Zagat survey is ALSO included in Michelin guide
+
+
+
+we want to model $\theta$, probability that a french restaurant from Zagats is included in Michelin based on the results of the survey
+
+
+```{r}
+file<-here('data','MichelinFood.txt')
+df<-read.table(file,header = TRUE)
+df
+```
+
+so `FOOD` is the food score, and also the x_i. So it looks like this dataframe has how many french restaurants at this food score are included. 
+
+EX: 
+```{r}
+df[6,]
+```
+
+m_i the sample, has 18 restaurants. `y_i` the number of successses, (InMichelin when already in Zagats) 
+
+
+`m_i-y_i`,  number of failures is NotInMichelin
+
+`y_i/m_i` is the proportion , successes over trials. This is the estimate of $\theta(x_i)$ or the probability of success given the predictor variable x at a given level 
+
+
+Look at theta
+
+```{r}
+ggplot(df, aes(x=Food,y=proportion))+geom_point()
+```
+
+the underlying function does not look linear, book says it looks `s` shaped...
+
+low `Food` has almost 0 probablilty of success, but high `Food` has almost 1 probability
+
+
+
+## Logistic function and odds
+
+popular choice for the S shaped function is an exponential of the linear regression. it boils down to 
+
+$$\beta_0+\beta_1 x = log(\frac{\theta(x)}{1-\theta(x)})$$
+
+
+this quantity is called a `logit`
+
+if this is a correct representation, plotting the logit vs the predictor should be a straight line
+
+```{r}
+
+df<-df%>%mutate(logit=log((proportion)/(1-proportion)))
+ggplot(df, aes(x=proportion,y=logit))+geom_point()
+```
+
+
+

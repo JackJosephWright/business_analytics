@@ -46,11 +46,11 @@ game_select = driver.find_element_by_class_name('kyber-filter-dropdown__toggle')
 
 game_select.send_keys(Keys.RETURN)
 
-game_all = driver.find_element_by_xpath('//*[text()="All"]')
+game_all = driver.find_element_by_xpath('//BUTTON[text()="All"]')
 game_all.send_keys(Keys.RETURN)
 
 
 
 
-test=get_prop_table()
+test=get_prop_table(driver)
 test.tail()

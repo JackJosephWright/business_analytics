@@ -1,8 +1,0 @@
-"0",""
-"0","file<-here('data','overdue.txt')"
-"0","dat<-read.table(file, header=TRUE)"
-"0","#create residential vs commercial factor"
-"0",""
-"0","dat_res<-dat[1:48,]%>%mutate(TYPE='RESIDENTIAL')"
-"0","dat_com<-dat[-(1:48),]%>%mutate(TYPE='COMMERCIAL')"
-"0","dat<-rbind(dat_res, dat_com)"

@@ -1,4 +1,0 @@
-"0","file<-here('data','travel.txt')"
-"0","dat<-read.table(file, sep=""\t"", header=TRUE)"
-"0",""
-"0","dat$C<-as.factor(dat$C)"

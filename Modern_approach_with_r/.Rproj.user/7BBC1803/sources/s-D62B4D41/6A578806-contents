@@ -1,0 +1,310 @@
+---
+title: "Distributions notes"
+author: "Jack Wright"
+date: "9/16/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(openintro)
+library(dplyr)
+library(tidyverse)
+```
+
+
+## Normal distribution
+
+no distribuition is exactly normal
+
+used in data exploration
+
+DEFINITION:
+
+describes a symmetric unimodal bell shaped curve
+
+adjusted w/ 
+mean() - right left shift
+sd()  - constrict or open curve
+
+(CENteR AND SPREAD)
+
+written as
+
+N(mu=mean, rho=sd())
+
+## Standardizing with Z scores
+
+Z score:
+-a standardatization technique between data 
+-how many sd() your data point is away from the mean
+
+Z=(data_point-mean)/sd()
+
+## Finding tail areas
+
+pnorm()
+-takes in z score and gives the lower tail area
+
+```{r}
+pnorm(0)
+pnorm(1)
+pnorm(1300, mean=1100, sd=200)
+```
+
+
+
+## Normal probability Examples
+
+
+SAT Normal distribution
+N(1000, 200)
+
+what is p( SAT>1190?)
+
+```{r}
+1-pnorm(1190,mean=1100,sd=200)
+1-pnorm(1190,1100,200)
+
+or get zscore first
+
+Z-(data-mean)/sd =.45
+
+1-pnorm(.45)
+
+
+
+
+```
+
+Draw a picture first then find z score to confirm area of interest
+
+FINDING AREAS TO THE RIGHT:
+1- pnorm()
+
+1-pnorm(1500,1100,200)
+
+Excersizes
+
+mike is 40th percentile height, how tall is he
+```{r}
+#percentile to z score
+
+((qnorm(.4)*3.3)+70)/12
+
+12*.763
+# height is 5'9"
+
+#adult male in 82nd %
+
+zscore<-qnorm(.82)
+h_feet<-((zscore*3.3)+70)/12
+inches<-(h_feet%%1)*12
+h_feet
+feet<-h_feet-(inches*.1)%>%round(0)
+feet<-round(feet,0)
+feet
+inches
+height<-c("feet"=feet,"inches"=inches)
+height
+
+```
+
+
+
+## 68-95-99.7 rule
+
+.68 falling between -1 and 1 sd
+.95 falling between -2 and 2 sd
+.997 falling between -3 and 3 sd
+
+Exercises
+
+```{r}
+
+#area under a curver
+less than
+z=-1.35
+pnorm(z)
+
+more than 
+z=1.48
+1-pnorm(z)
+
+between -.4 and 1.5
+zl=-.4
+zr=1.5
+pnorm(1.5)-pnorm(-.4)
+
+abs(z) greater than 2
+
+z=2
+a<-2*(1-pnorm(z))
+a
+
+
+
+```
+
+
+
+#Geometric Distribution
+
+### Bernoulli Distribution
+
+
+Bernoulli Random Variable
+
+When a trial only has the probability of success or failure 
+
+-success and failure is a thing you denote, like above .70 percent chance of happening = success
+
+or you could say above .7 = failure and .3= success
+
+phat=#of successes/ # of trials= probability of success
+
+can describe mean and sd of bernoulli random variable
+
+Bernoulli Random Variable
+DEFINITION:
+
+if X is a random variable that takes value 1 with probability of success p and 0 with probability (1-p) then X is a Bernoulli random variable with mean and sd
+
+mean=p
+sd=sqrt(p(1-p))
+
+mean and expected value both use mu. 
+THEY ARE THE SAME
+
+it takes on average 1/p trials to get a success under the geometric distribution
+EXAMPLE:
+
+```{r}
+#probability of success on one trial =p
+#high P
+p<-.8
+1/p
+
+#low p
+p<-.1
+print(1/p)
+
+
+
+#probability to find success in first 3 cases
+
+#p(n=1,2, or 3)
+#P(n=1)+p(n=2)+p(n=3)
+#(1 − p)^n−1*p
+
+a<-.3^0*.7
+b<-.3^1*.7
+c<-.3^2*.7
+a+b+c
+
+
+```
+
+
+## Binomial Distribution
+
+Binomial distribution is used to describe the number of successes in a fixed number of trials
+
+
+Describes the probability of having exactly "k" successes in "n" independent bernoulli trials with probability of a succcess "p"
+
+read: "n choose k"
+factorial()
+
+
+DEFINITION:
+Binomial Distribution
+
+
+Suppose the probability of a single trial being a success is p. Then the probability of observing
+exactly k successes in n independent trials is given by
+
+(n) = n!/(k!(n-k)!)*p^k*(1-p)^(n-k)
+(k)
+
+mean=np
+sd()=sqrt(np(1-p))
+
+IS IT BINOMIAL? FOUR CHECK CONDITIONS
+1. The trials are independent
+2. The number of trials, n, is fixed
+3. Each trial outcome can be classified as a success or failure
+4. The probability of a succcess p, is the same for each trial
+
+
+## Computing Binomial Probabilities
+
+The first step in using the binomial model is to check that the model is appropriate.  The second step is to identify "n, p and k" 
+As the last stage use software or the formulas to determine the probability, then interpret the results
+
+
+(n) =  n!/(k!(n-k)!)*p^k(1-p)^(n-k)
+(k)
+
+## Normal approximation to the binomial distribution
+
+binomial formula is bad when (n) is large
+
+use normal distribution as an easier and faster way to estimate binomial probabilities
+
+
+
+### Normal Approximation of the binomial distribution
+
+the binomial distribution with probability of success "p" is nearly normal when the sample size is sufficiently large that np and n(1-p) are both at least 10. the approximate normal distribution has parameters correspondind to the mean and sd() of the binomial distribution.
+
+mean=np 
+sd()=sqrt(np(1-p))
+
+
+we can get mu and sd() from the previous equations
+
+GET Z score x=number you are interested in
+mu and sd()
+
+Z=x-mu)/sd
+
+```{r}
+x<-42
+n<-400
+p<-.15
+mean<-n*p
+mean
+
+sd<-sqrt(n*p*(1-p))
+sd
+
+zscore<-(x-mean)/sd
+zscore
+bu<-scale(x,mean,sd) #produces z score
+bu[1] # just the z score
+
+
+#probability of observing x or fewer cases
+pnorm(bu[1])
+
+```
+
+
+## Normal approx breaks down on small intervals
+
+normal approx to the binomial distribution tends to perform poorly when estimating the probability of a small range of counts, even when the conditions are met
+
+EX:
+prob of 49 50 or 51 smokers in 400 with p=15
+
+doesnt work
+
+
+IMPROVING THE NORMAL APPRX FOR THE BINOMIAL DISTRIBUTION
+
+the normal approximation to the binomial distribution for intervals of values is usually improved if cutoff values are modified slightly.
+
+the cutoff values for the lower end of a shaded region should be REDUCED by .5 and the upper cutoff should be INCREASED by .5
+
+

@@ -1,0 +1,528 @@
+---
+title: "ch_8"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(here)
+```
+
+
+## Logistic Regression
+
+
+So far response variable is numeric and ideally follows a normal distribution
+
+
+Now we look at where response variable is based on a series of yes or no responses, such as whether a particular restaurant is reccomeneded by being included in a prestegious guide. 
+
+
+Ideally responses follow a binomial distribution in which case the appropriate model is a logeistic regression model
+
+
+## Logistic Regression based on a single predictor
+
+
+case of predicting a binomial random variable Y based on a single predictor variable x via logistic regression. 
+
+
+### Binomial distribution
+
+
+PROPERTIES:
+
+1.
+
+there are m identical trials
+
+2.
+each trial results in 2 ouctomes either success or failure
+
+3.
+$\theta$ the probability of 'success' is the same in all trials
+4.
+the trials are independent
+
+
+these trials are bernoulli trials
+
+
+Y= number of successes in m trials of a binomial process. Then Y is said to have a binomial distribution with parameters m and $\theta$
+
+$$Y=Bin(m,\theta)$$
+
+
+probability that Y takes the integer value of j (j=0,1,...m) is given by 
+
+$$P(Y=j)= (m,j)\theta^j (1-\theta)^{m-j}= \frac{m!}{j!(m-j)!} \theta^j((m-j)!(1-\theta)^{m-j}$$
+
+
+the mean and variance of Y are given by 
+
+$$E(Y)=m\theta$$
+
+$$Var(Y)=m\theta(1-\theta)$$
+
+
+
+In logistic regression setting, we wish to model $\theta$ (probability of success) and hence Y, (because Y is the number of successes in m trials)
+
+
+consider case of a single predictor variable x. 
+
+i guess you look at the number of successes at each iteration (y_i) at each (m_i)
+
+and 
+1.
+
+$y_i/m_i$ is an unbiased estimate of $\theta(x_i)$
+2.
+
+$y_i/m_i$ varies between 0 and 1
+
+
+notice that the variance of response $y_i/m_i$ depends on $\theta(x_i)$ and theta is in the equation for variance, so it is not constant.  This means least squares regression is an innapropriate technique for analyzing Binomial responses. 
+
+
+EX: Michelin and Zagat guides to NYC restaurants
+
+
+Michelin is experts doing secret reviews
+
+Zagats is mail in surveys
+
+
+
+COMPARING TWO GUIDES for 164 french restaurants included in Zagat survey is ALSO included in Michelin guide
+
+
+
+we want to model $\theta$, probability that a french restaurant from Zagats is included in Michelin based on the results of the survey
+
+
+```{r}
+file<-here('data','MichelinFood.txt')
+df<-read.table(file,header = TRUE)
+df
+```
+
+so `FOOD` is the food score, and also the x_i. So it looks like this dataframe has how many french restaurants at this food score are included. 
+
+EX: 
+```{r}
+df[6,]
+```
+
+m_i the sample, has 18 restaurants. `y_i` the number of successses, (InMichelin when already in Zagats) 
+
+
+`m_i-y_i`,  number of failures is NotInMichelin
+
+`y_i/m_i` is the proportion , successes over trials. This is the estimate of $\theta(x_i)$ or the probability of success given the predictor variable x at a given level 
+
+
+Look at theta
+
+```{r}
+ggplot(df, aes(x=Food,y=proportion))+geom_point()
+```
+
+the underlying function does not look linear, book says it looks `s` shaped...
+
+low `Food` has almost 0 probablilty of success, but high `Food` has almost 1 probability
+
+
+
+## Logistic function and odds
+
+popular choice for the S shaped function is an exponential of the linear regression. it boils down to 
+
+$$\beta_0+\beta_1 x = log(\frac{\theta(x)}{1-\theta(x)})$$
+
+
+this quantity is called a `logit`
+
+if this is a correct representation, plotting the logit vs the predictor should be a straight line
+
+```{r}
+
+df<-df%>%mutate(logit=log((proportion)/(1-proportion)))
+ggplot(df, aes(x=proportion,y=logit))+geom_point()
+```
+
+
+
+the inner portion of the logit are the odds
+
+$$\frac{\theta(x)}{1-\theta(x)}$$
+
+concept of odds has 2 forms
+
+*odds in favor* of success
+
+-ratio of the probability of success over not success
+
+*odds against* success
+-inverse of this
+
+
+bookies quote odds as odds against success. 
+
+20 to 1 or 20 failures to 1 success in 21 races
+
+
+
+BACK TO ZAGAT
+
+x is the food rating for a restaurant
+
+$\theta(x)$  is the probability of success (getting into Michelin)
+
+logistic regression model for the response, (theta(x)) based on predictor x is given by
+
+$$\theta(x)=\frac{1}{1+exp(-\{\beta_0+\beta_1 x\})}$$
+```{r}
+glm.model<-glm(formula=cbind(InMichelin,NotInMichelin)~Food,family=binomial, data=df)
+summary(glm.model)
+```
+
+Plotting glm
+
+```{r}
+library(ggResidpanel)
+
+resid_panel(glm.model,plots='all')
+
+```
+FOR PLOTTING:
+
+need range of values of `Food` to produce fitted values
+
+
+
+```{r}
+range(df$Food)
+#create sequence 
+xFood<-15:28
+
+
+```
+
+use predict() function to create model for all the values of xweight
+
+```{r}
+yFood<-predict(glm.model, list(Food=xFood), type='response')
+```
+
+now plot
+```{r}
+ggplot(df, aes(x=Food, y=proportion))+geom_point()+geom_smooth(aes(x=xFood,y=yFood))
+```
+doing some math on the logit function you get
+
+$$\frac{\hat{\theta}(x)}{1-\hat{\theta}(x)}=e^{\hat{\beta_0}+\hat{\beta_1}x}=e^{=10.842+.501x}$$
+
+so thats what the odds OF SUCCESS will be equal to 
+note that if the the food rating is increased by 
+
+-1 unit, then the odds of being included in the Michelin increase by $e^{.501}$ or 1.7
+
+-5 units, then odds of being included increase by $e^{5*5.01}$ or 12.2
+
+
+
+
+## Likelihood for logistic Regression with a Single Predictor
+
+plot of estimated probability and estimated odds from model
+
+```{r}
+x<-round(xFood,3)
+theta<-round(yFood,3)
+odds<-round(yFood/(1-yFood),3)
+
+cbind(x,theta,odds)
+```
+
+
+Since we cant use Least squares( because variance is tied to theta in logistic regression ) we multiply together all of the probabilities of success to get *Likelihoood*
+
+
+The Beta parameters can be estimated by maximizing log-likelihood. Has to be done with iteration
+
+
+Standard approach to testing:
+
+$$H_0:=\beta_1 =0$$
+
+
+is to use the *Wald test Statistic*
+
+$$Z=\frac{\hat{\beta_1}}{estimated~se(\hat{\beta_1})}$$
+
+
+where the estimated standard error is calculated based on the iteratevely reweighted least squares approximation to the maximum likelihood estimate. 
+
+
+The Wald test stat is then comared to a standard normal distribution to test for statistical significance. 
+
+
+confidence intervals for the wald statistic:
+
+$$\hat{\beta_1}\pm z_{1-\alpha/2}~estimated~se(\hat{\beta_1})$$
+
+
+
+
+
+## Explanation of Deviance
+
+
+residuals replaced by deviance in logistic regression
+
+deviance is $G^2$
+
+degrees of freedom in deviance
+
+$$df=n-(number~of~\beta 's~estimated)$$
+
+
+deviance in a logistic regression model (M) is comaring maximized log-likelihood under (M) with the maximized log likelihood under (S) (S is the saturated model that has a parameter for each observation)
+
+
+
+### Saturated model
+
+(S)
+
+estimates theta by the observed proportion of 'successes' at $x_i$ 
+-so i guess its if you made a theta for each observation explicitly?
+
+heres what they say 
+
+$$\hat{\theta_S} x(i)=y_i/m_i$$
+
+So G^2
+
+$$G^2=2[log(L_s)-log(L_M)]$$
+
+when each m_i is large enough, the deviance can be used as a goodness-of-fit test for the logistic regression model
+
+
+EX:
+
+test if Zagats model is good enough
+
+H_0: logistic regression model is appropriate
+
+H_A: logistic model is innapropriate so a saturated model is needed
+
+(kind of backwards? wierd)
+
+
+
+```{r}
+summary(glm.model)
+```
+
+looking at the residual deviance, the book says
+
+$$P(G^2>11.368)=.498$$
+```{r}
+
+```
+
+```{r}
+pchisq(11.368,df=12, lower.tail = FALSE)
+```
+so we take the G^2 and look at it on a chisquare distribution to get the p-value
+
+
+so we are unable to reject H_O.
+
+The deviance goodness-of-fit test finds that the logistic regression model is an adequate fit overall for the Michelin Data
+
+
+
+## Using Differences in Deviance Values to Compare Models
+
+
+difference in deviance can be used to compare nested models. 
+
+EX:
+
+can compare null and residual deviances to test
+
+
+differences between above example
+
+$$G^2_{H_0}-G^2_{H_A}=61.427-11.268=50.059$$
+This difference is to be compared to a $$\chi^2$$ distribution with $df_{H_O}-df_{H_A}=13-12=1$
+
+```{r}
+pchisq(50.059,df=1,lower.tail = FALSE)
+```
+OR
+
+```{r}
+anova(glm.model,update(glm.model,~1),test='Chisq')
+```
+
+
+earlier we found that the corresponding p-value based on the wall test (1.08e-8) Wald tests and tests based on the difference in deviances can result in quite different p-values
+
+
+
+### R^2 for logistic regression
+
+
+recall:
+
+
+$$R^2=1-\frac{RSS}{SST}$$
+
+
+RSS=sum of the squares of residuals of data from model
+
+SST= total sum of squares, squares of difference from mean of data and the data points (like how different from 0 slope is it)
+
+
+Since deviance in logistic regression  is a generalization of RSS 
+
+$$R^2_dev = 1-\frac{G^2_{H_A}}{G^2_{H_0}}$$
+
+
+for the single predictor Zagat model
+
+$$R^2_dev = 1-\frac{11.368}{61.427}=.815$$
+
+
+### Pearson goodness-of-fit statistic
+
+
+like the deviance residuals, cant find out how to do them
+
+
+
+## Binary Logistic Regression
+
+Special case of logistic regression
+
+-all the m =1 (only one trial for each)
+
+
+goodness of fit for X^2 and G^2 are hard to interpret
+
+
+
+
+EX:
+
+Zagat survey again
+
+
+consider each restaurant seperatly and classify each one according to wether it was included in michelin or not
+
+
+y_i= 1 restaraunt InMichelin
+
+y_i=0 restaurant not InMichelin
+
+look at predictors:
+
+-food, decor Service Price
+
+
+```{r}
+file<-here('data','MichelinNy.csv')
+df<-read.csv(file, header=TRUE)
+```
+
+$\theta(x)$ probability restaurnt with Zagat food rating x is included in the Michelin guide. 
+
+
+look at single predictor with binary response variable
+
+```{r}
+ggplot(df, aes(x=Food, y=InMichelin))+geom_jitter(height=.1,width=.1)
+```
+boxplot of food rating vs in michelin
+```{r}
+ggplot(df,aes(x=as.factor(InMichelin),y=Food))+geom_boxplot()
+```
+
+
+logistic regression
+
+```{r}
+summary(glm.model<-glm(formula=InMichelin~Food, family=binomial(),data=df))
+```
+
+```{r}
+anova(glm.model,update(glm.model,~1),test='Chisq')
+```
+
+Note that the deviance and AIC values differ between the previous model and this binary model
+
+
+## Deviance for the Case of Binary Data
+
+
+for binary data, all the m are =1 so the saturated model S estimates \theta by the observed proportion of 'successes' at x_i
+
+basically the deviance does not provide an assessment of the goodness-of-fit of the model when all m are =1
+
+ALSO:
+
+the deviance isn't a chisq distribution so that isn't useful either
+
+ALTHOUGH:
+
+the distribution of the DIFFERENCE of deviances is approximately a chisq distribution, so the Analysis of deviance table is valid
+
+
+
+##  Residuals for Binary Data
+
+
+## Transforming Predictors in Logistic Regression for Binary Data
+
+circumstances under which the logistic regression model is appropriate for binary data and when to transform
+
+
+The log odds equal to
+
+$$log(\frac{\theta(x)}{1-\theta(x)})=log(\frac{P(Y=1)}{P(Y=0)}+log(\frac{f(x|Y=1)}{f(x|Y=0)}$$
+
+where f(x|Y=j), j=0,1 is the *conditional density function* of the predictor given the value of the response
+
+i think conditional density, is just a probability density function GIVEN the condition. (so they are normal distributions sum=1?)
+
+since the first term doesn't change with X, we can ignore it
+
+Suppose cdf = normal density with mean mu and variance sigma^2
+
+MATH
+
+when predictor variable x is normally distributed with different variances depending on if Y=1 or 0
+**probably should copy latex from page 287 but im too tired**
+
+some functions for values of \beta_0 1, and 2
+
+when all of the variances between groups are the same
+
+$$log(\frac{\theta(x)}{1-\theta(x)})=\beta_0+\beta_1 x$$
+
+
+where 
+
+
+$$\beta_1=\frac{\mu_1-\mu_0}{\sigma^2}$$
+when predictor X is normally distributed with same variance for 2 values of Y, log odds are a linear function of x, with slope (beta_1)= to the difference in the mean of X across the two groups divided by common variance
+
+
