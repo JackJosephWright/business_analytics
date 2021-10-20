@@ -1,0 +1,4 @@
+"0","ggplot(mtcars,aes(x=wt,y=mpg))+geom_point()+geom_smooth(method='lm')+geom_abline(slope=0,intercept=mean(mtcars$mpg),color='red')+ggtitle('visualization of R^2 calculation')
+"
+"2","`geom_smooth()` using formula 'y ~ x'
+"

@@ -1,0 +1,68 @@
+---
+title: "ch_8_continued"
+author: "Jack Wright"
+date: "10/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(here)
+library(tidyverse)
+```
+
+$$\frac{\theta(x)}{1-\theta(x)}$$ is known as `odds`
+
+odds in favor of success
+
+EX:
+
+```{r}
+#probability of success
+p<-seq(0,1,.1)
+
+odds<-p/(1-p)
+
+dat<-data.frame(probability=p,Odds=odds)
+dat<-dat%>%mutate(successes=case_when(Odds<1 ~Odds/Odds,
+                  TRUE~Odds),
+                  failures=case_when(Odds<1~1/Odds,
+                  TRUE~Odds/Odds))
+dat
+```
+
+successes over failures is odds
+
+
+bookies quote odds as odds against 'success' 
+
+horse quoted at 20 to 1 written as 20/1
+
+Expected to lose 20 and win 1 of 21 races
+
+
+BACK TO ZAGATS
+
+let x denote zagat food rating for a given french restaurant
+
+$\theta(x)$ denote the probability that this restaurant is included in michelin guide. 
+
+
+logistic regression model for the response, $\theta(x)$ based on the predictor variable x is given by 
+
+$$\theta(x)=\frac{1}{1+exp(-\{\beta_0+\beta_1x\})}$$
+
+
+
+```{r}
+a<-seq(-5,5,.5)
+x<-seq(0,10,1)
+fun<-exp(-a*x)
+
+```
+
+

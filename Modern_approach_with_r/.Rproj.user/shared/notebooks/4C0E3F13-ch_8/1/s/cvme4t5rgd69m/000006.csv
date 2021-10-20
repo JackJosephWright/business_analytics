@@ -1,0 +1,3 @@
+"0",""
+"0","df<-df%>%mutate(logit=log((proportion)/(1-proportion)))"
+"0","ggplot(df, aes(x=proportion,y=logit))+geom_point()"

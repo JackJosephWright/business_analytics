@@ -1,0 +1,3 @@
+"0","file<-here('data','MichelinFood.txt')"
+"0","df<-read.table(file,header = TRUE)"
+"0","df"

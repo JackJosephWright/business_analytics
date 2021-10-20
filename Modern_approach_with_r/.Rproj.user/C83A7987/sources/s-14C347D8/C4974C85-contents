@@ -1,0 +1,182 @@
+---
+title: "Saturated Model"
+author: "Jack Wright"
+date: "10/20/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+```
+
+## What is a 'saturated model' in Logistic Regression?
+
+I was having some problems understanding how deviance (G^2) was calculated in logistic regression. I understood that in logistic regression, the variance was a product of the mean term $\theta(x)$ which would confound our understanding of the goodnes-of-fit metric R^2 that we use in linear regression. 
+
+In linear regression we calculate R^2 as
+
+$$R^2=\frac{RSS}{SST}$$
+
+R^2 explains how much of the **variance** is explained by our model, but in logistic regression this would be meaningless, since the variance is a product of the mean. 
+
+
+In essence, R^2 takes our model (a line with some slope) and compares it to a model with no slope, set at the median. The closer the fit of our model, the more of the variance is explained by our model. Even when we fit the best possible model, if there is still variance around that line, we know that there must be some other factor that is causing the data to vary, hence variance explained by our model.
+
+
+## No variance, now what?
+
+From a birds eye view, it seems that the problem is that in linear regression, we are comparing our effect to the null hypothesis, that there is no effect in the data. 
+
+```{r}
+mtcars<-mtcars
+
+ggplot(mtcars,aes(x=wt,y=mpg))+geom_point()+geom_smooth(method='lm')+geom_abline(slope=0,intercept=mean(mtcars$mpg),color='red')+ggtitle('visualization of R^2 calculation')
+```
+
+now looking at a logistic regression
+```{r}
+summary(glm.model<-glm(formula=am~mpg,family=binomial,data=mtcars))
+yAm<-predict(glm.model,list(mpg=mtcars$mpg),type='response')
+```
+
+```{r}
+ggplot(mtcars, aes(x=mpg,y=am))+geom_point()+geom_smooth(aes(x=mpg,y=yAm))+geom_abline(slope=0,intercept=.5,color='red')
+```
+This looks ok, at first glance. this null hypothesis (everything has a 50% chance of being 1 or 0) which kind of seems like our null hypothesis from regression (there is no effect from the model) but notice that since the distance of a data point from our null hypothesis will be the same NO MATTER what the trend in the data is. The only thing that will affect the sum of the variance, is HOW MANY 0s vs 1s there are, which has nothing to do with our model. 
+
+## How to handle this problem
+
+The idea behind deviance comes from the opposite perspective of our null hypothesis in linear regression. The idea is that we will look at the difference between our model and a MAXIMALLY explanatory model. this is called a *saturated model*. 
+
+a saturated model gives a degree of freedom, or predictor, to every single point in the data. this allows the model to fit EXACTLY to the data. 
+
+keep in mind that a degree of freedom in a function gives the function another knee to fit a curve. I like to think about the taylor series expansion in this case. you add a term and the curve can become more complex, or CLOSER to its actual form. 
+
+Maybe we should look at a saturated model to better understand it. 
+
+
+```{r}
+library(tidyverse)
+library(broom)
+master <- mtcars
+master<- master %>% rename(prec_average = mpg, binomial_c = am)
+```
+
+```{r}
+m <- glm(binomial_c ~ prec_average, family = gaussian, data = master)
+p_specprec <-  augment(m, type.predict = "response")
+
+```
+
+
+```{r}
+ggplot(p_specprec, aes(x = prec_average, y=.fitted)) + geom_point(aes(x=master$prec_average,y=master$binomial_c))+
+  geom_smooth(aes(x=p_specprec$prec_average,y=p_specprec$binomial_c),span=.1, se=FALSE)
+ 
+```
+
+This isn't EXACLY a saturated model (i think, but it is pretty close).
+
+As you can see, the the model jumps to the exact value (0 or 1) of its predictor (the parts of the line that don't quite reach 1 are because there are multiple observations at that exact mpg, and so there is a less than 100% probablity of 0 or 1)
+
+
+
+So the proposal for goodnes-of-fit for logistic regression is to compare our model, to this 100% fitted model. 
+
+
+Now lets look at these two models overlayed
+
+```{r}
+ggplot(p_specprec, aes(x = prec_average, y=.fitted)) + geom_point(aes(x=master$prec_average,y=master$binomial_c))+
+  geom_smooth(aes(x=p_specprec$prec_average,y=p_specprec$binomial_c),span=.1, se=FALSE,color='red')+geom_smooth(aes(x=mtcars$mpg,y=yAm))
+ 
+```
+
+Looking at the formula for $G^2$ or Deviance (our substitution for R^2 in logistic regression)
+
+$$G^2=2[log(L_S)-log(L_M)]$$
+where log(L) is the log-likelihood function
+
+recall that the likelihood function is the function of the unknown probability of success, and we remember that the way we CREATED the model was by estimating $\beta_0$ and $\beta_1$ by maximizing this value. 
+
+Since $Log(L_s)$ is a maximum, the Value of G will go UP, the FARTHER our model's log_likelood is from the saturated model. This is important to keep in mind as we move to interpreting this value.
+
+EX:
+
+a low G^2 means our model is pretty close to the saturated model (which is good)
+
+
+
+Now lets look back at our model. 
+
+```{r}
+summary(glm.model<-glm(formula=am~mpg,family=binomial,data=mtcars))
+```
+
+you can see that we are given our Null deviance, (the first graph above, where there is no slope) and the Residual deviance (the deviance in our model). 
+
+
+As expected the G^2 for the null deviance is higher, because the log-likelihood of success will be much lower since our logit function has no curvature. 
+
+## Determining goodness-of-fit of our model using Chi-squared test
+
+The chi squared test is a test to determine what is the probability that our fitted model is just due to chance. This means a low probability will tell us that it is very unlikely that our deviance is explained by chance
+
+the 2 inputs to the pchisq are the deviance, and the degrees of freedom (given in the output of our model)
+```{r}
+pchisq(29.675,30,lower.tail=FALSE)
+```
+
+Now the hypothesis test for a logistic regression (to me) is inverted from a hypothesis test in linear regression because we are comparing it to a potential saturated model. 
+
+H0
+ : logistic regression model is appropriate 
+ 
+ 
+HA
+ : logistic model is inappropriate so a saturated model is needed
+
+a high p-value like .482 means we cannot reject the null hypothesis, and we do not need to use the saturated model. 
+
+
+Just to check, lets look at the null deviance:
+```{r}
+pchisq(43.23,31,lower.tail=FALSE)
+```
+note that the p-value is much lower, and we might be able to reject the null hypothesis
+
+
+
+One thought experiment is that if we had a more complex model that was CLOSER to the saturated model we might expect a lower G^2 (because its log-likelihood would be closer to the maximum) and LESS degrees of freedom (because there would be more predictor variables) 
+
+Lets look at what that chisq p-value would be
+
+```{r}
+pchisq(1,10,lower.tail = FALSE)
+```
+
+such a high p-value would not-reject the null hypothesis and confirm that our model was close enough to the saturated model to not have to use it. 
+
+
+
+
+## Comparing our model (M) to the the Null hypothesis
+
+The book reccomends looking at the p-value for the DIFFERENCE between our model and the null model. 
+
+I am a bit confused about what this would tell us, here is my guess
+```{r}
+pchisq(42-29,1,lower.tail=FALSE)
+```
+the book says
+
+$$P(G^2_{H_0}-G^2_{H_A}>42-29);df=32-31=pchisq(42-29,1)=.003$$
+
+I am not quite sure what the null hypothesis and the alternate hypothesis are.
+
+

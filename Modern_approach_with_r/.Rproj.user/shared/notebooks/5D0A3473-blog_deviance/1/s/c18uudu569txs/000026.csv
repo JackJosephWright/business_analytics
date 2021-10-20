@@ -1,0 +1,36 @@
+"0","ggplot(p_specprec, aes(x = prec_average, y=.fitted)) + geom_point(aes(x=master$prec_average,y=master$binomial_c))+
+  geom_smooth(aes(x=p_specprec$prec_average,y=p_specprec$binomial_c),span=.1, se=FALSE)
+"
+"2","Warning:"
+"2"," Use of `p_specprec$prec_average` is discouraged. Use `prec_average` instead.
+"
+"2","Warning:"
+"2"," Use of `p_specprec$binomial_c` is discouraged. Use `binomial_c` instead.
+"
+"2","`geom_smooth()` using method = 'loess' and formula 'y ~ x'
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," span too small.   fewer data values than degrees of freedom.
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," pseudoinverse used at 10.283
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," neighborhood radius 3.0175
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," reciprocal condition number  0
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," There are other near singularities as well. 13.086
+"

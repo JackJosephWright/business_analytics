@@ -1,0 +1,4 @@
+"0","ggplot(mtcars, aes(x=mpg,y=am))+geom_point()+geom_smooth(aes(x=mpg,y=yAm))+geom_abline(slope=0,intercept=.5,color='red')
+"
+"2","`geom_smooth()` using method = 'loess' and formula 'y ~ x'
+"
