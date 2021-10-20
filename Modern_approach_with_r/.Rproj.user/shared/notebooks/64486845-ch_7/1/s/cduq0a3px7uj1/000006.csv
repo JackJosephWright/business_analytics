@@ -1,0 +1,5 @@
+"0","file<-here('data','prostateTest.txt')"
+"0","test<-read.table(file,header=TRUE)"
+"0","file<-here('data','prostateTraining.txt')"
+"0","train<-read.table(file,header=TRUE)"
+"0","train<-train%>%select(-original_case)"

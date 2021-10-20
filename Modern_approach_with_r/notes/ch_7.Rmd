@@ -1,0 +1,594 @@
+---
+title: "ch_7"
+author: "Jack Wright"
+date: "10/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Variable Selection
+
+
+choosing the best model
+
+
+Assume that the full model is a valid regression model
+
+
+### Variable selection
+
+choosing the best subset of the predictors
+
+
+IN GENERAL:
+
+more predictors = less bias, but higher variance
+
+Including too many predictors in a regression is called over-fitting
+
+too few is under-fitting
+
+
+
+2 aspects of variable selection:
+
+1.
+
+evaluating each potential subset of p predictor variables
+
+2.
+
+deciding on collection of potential subsets
+
+
+## Criterion 1: R^2 -adjusted
+
+R^2 = summ of squares of predicted values from mean of y / sum of squares total(just from the y mean ) = 1-sum of squares from regression line / SST (sum of quares (just from the mean))
+
+
+R^2_adj takes into account the number of predictors and downgrades for more predictors
+
+
+ususal practivce to pick the model with the highest R^2_adj.
+
+same as picking subset with LOWESt S^2 = RSS/n-p-1
+
+but picking highest R^2 adj tends to overfitting. 
+
+marginal gains in R^2 are not worth the extra predictor
+
+
+## Maximum liklihood applied to multiple linear regression
+MAXIMUM LIKLIHOOD for the betas
+
+we are trying to guess which distribution that the data belongs to
+
+so we take the likelihood of each data point being in a specific distribution 
+(or in this case, belonging to a regressioin) then sum up the LOGS of each liklihood given that distribution and see which is the most likely 
+
+we use logs because they are nicely distributed around zero. So a 90% likely to fit point will be close to 2, where as a VERY unlikely to fit point will be -2. Therefore a distribution that has a lot of high likelihoods will have a higher sum
+
+
+good way to estimate the beta 
+
+MATH
+
+maximum likelihood of the coefficients of beta are the same as minimizing the residual sum of squaress.
+
+This makes sense because the maximum likelihood for the beta of a variable will have lots of tight fitting points. the RSS is just measuring how close the fit is to the regression
+
+
+## Criterion 2L AIC Akaike's Information Criterion
+
+
+Akaike's information criterion (AIC) can be motivated in 2 ways.
+
+1.
+
+balancing goodness of fit and a penalty for model complexity. 
+
+
+**The SMALLER the AIC the better the model**
+
+-1 * likelihood associated with the fitted model. 
+
+$$AIC=2[-log(MODEL|Y)+K]$$
+
+K=p+2 (parameters +2)
+
+Think of it as a distance measure from the true data and the model of the data
+
+So to compare models, the quantity of the information lost (between the true and the model) must be estimated for each model. called *relative expected K-L information*
+
+Akaike found a relationship between K-L information and likelihood theory. 
+
+maximized log-likelihood was a biased estimate of E (information lost) with the bias approximately equal to K (parameters+2)
+
+
+calculate AIC using
+
+$$AIC=nlog(\frac{RSS}{n})+2p$$
+
+
+## Criterion 3: AIC_c , Corrected AIC
+
+USED WHEN SAMPLE SIZE IS SMALL
+
+WHEN NUMBER OF PARAMETERS ESTIMATED IS MODERATE TO LARGE FRACTION OF SAMPLE SIZE
+
+
+*USE AIC_c unless n/k >40*
+
+
+$$AIC_c=AIC+\frac{2(p+2)(p+3)}{n-p-1}$$
+
+
+
+
+## Criterion 4: BIC , Bayesian Information Criterion
+
+
+$$BIC = -2log(MODEL|Y)+klog(n)$$
+
+
+K=p+2
+
+*The smaller the BIC the better the model*
+
+
+note that penalty term 2 in AIC is replaced with log(n)
+
+when n >8, log(n)>2
+
+
+so it adds a larger penalty when model is more complex
+
+
+$$\Delta BIC_i$$ is difference between BIC for ith model and the MINIMUM BIC value
+
+
+
+## Comparison of AIC, AIC_c, and BIC
+
+
+PRO AIC:
+
+as the sample gets larger, the model selected using lowest AIC is indistinguishable from the optimal model, BIC does not have this quality
+
+
+
+PRO BIC
+
+as N-> infinity BIC is better, but on finite samples, BIC chooses models that are too simple because of complexity penalty
+
+GOAL:
+
+minimize all 3 and maximize R^2
+
+
+## Deciding on the collection of potential subsets of predictor variables
+
+
+1.
+
+all possible subsets
+
+2.
+
+stepwise methods
+
+
+## All Possible subsets
+
+based on considering all $2^m$ possible regression equations and identifying the subset of the predictors of a given size that maximize a measure of fit, or minimize an information criterion based on a monotone function of the residual sum of squares. 
+
+when we have all four criteria (R^2, AIC,AIC_n,BIC) agree that the best choice is the set of perdictors with the smallest value of RSS.
+
+SO if we set the number of predictors (like you cant have 1 predictor model then a 2 predictor model and compare this way), then all of the criterion will agree.
+
+DOESNT WORK WITH DIFFErenT SIZE MODELS
+
+EX:
+pg(234) 240
+bridge construction
+
+```{r}
+library(here)
+file<-here('data','bridge.txt')
+dat<-read.table(file,header=TRUE)
+```
+
+```{r}
+library(GGally)
+ggpairs(log(dat))
+```
+```{r}
+ggpairs(dat)
+```
+
+```{r}
+
+```
+
+```{r}
+summary(lm.model<-lm(log(Time)~log(DArea)+log(CCost)+log(Dwgs)+log(Length)+log(Spans), data = dat))
+```
+
+note only 1 estimated regression coefficient is statisstically signifigant (log(Dwgs))
+
+
+we want to choose a subset
+
+1.
+
+begin by identifying subset of predictors of a given size that MAXIMIZES R^2
+
+
+```{r}
+dat_2<-log(dat)
+library(leaps)
+models<-regsubsets(Time~., data = dat_2, nvmax=5)
+summary(models)
+```
+summary() reports the best set of variables for each model size. Starred variables are the optimal ones to include
+
+
+looking at R^2 Cp and BIC
+
+```{r}
+res.sum<-summary(models)
+data.frame(
+  Adj.R2 = which.max(res.sum$adjr2),
+  CP = which.min(res.sum$cp),
+  BIC = which.min(res.sum$bic)
+)
+```
+
+
+Cp (instead of AIC) and BIC pick 2 predictors as the best, while R^2 adj picks 3.
+
+```{r}
+library(tidyverse)
+df=data.frame(x=seq(length(res.sum$adjr2)),y=res.sum$adjr2)
+ggplot(df, aes(x=x,y=y))+geom_point()+ggtitle('adjusted r^2 by number of predictors')
+```
+```{r}
+df=data.frame(x=seq(length(res.sum$adjr2)),y=res.sum$bic)
+ggplot(df, aes(x=x,y=y))+geom_point()+ggtitle('BIC by number of predictors')
+```
+
+If you ran the 2 and 3 variable models, only 1 variabel would be significant in the 3 variable model, so we pick the 2 variable model.
+
+
+
+## Stepwise subsets
+
+examining just sequential subset of 2^m possible regression models
+
+
+**backward elimination**
+
+**forward selection**
+
+
+
+
+## Inference after Variable selection
+
+
+CAUTION:
+
+selection process changes the properties of estimators as well as stnadard inferential procedures such as test and confidence intervals. 
+
+p values found AFTER F and t statistics are smaller than their true values
+
+
+1.
+
+regardless of sample size model seleciton step has dramatic effect on sampling properties of the estimators. 
+
+2.
+
+
+## Assesing predictive ability of regression models
+
+
+split into training and test set
+
+
+EX:
+
+Prostate cancer
+
+```{r}
+file<-here('data','prostateTest.txt')
+test<-read.table(file,header=TRUE)
+file<-here('data','prostateTraining.txt')
+train<-read.table(file,header=TRUE)
+train<-train%>%select(-original_case)
+```
+
+## stage 1: model building using training dataset
+
+look at data
+```{r}
+#look at predictors
+ggpairs(train)
+```
+
+
+
+relationship between response variable (lpsa) and predictors appear linear. no evidence of nonlinearity
+
+
+look at full model
+
+```{r}
+library(ggResidpanel)
+
+lm.model<-lm(lpsa~., data=train)
+resid_panel(lm.model,plots = 'R')
+```
+
+
+Confirmed valid model
+
+```{r}
+
+summary(lm.model)
+```
+
+```{r}
+resid_xpanel(lm.model)
+```
+
+Notice F-test is highly statistically significant and 4 of the estimated regression coefficients are statistically significant
+
+
+look at variance inflation metrics (if there is colinearity it will be above 5)
+```{r}
+library(car)
+vif(lm.model)
+```
+
+None of these exceed 5, so multicoliniarity is not an issue
+
+
+Next we consider varible selection by identifying the subset of predictors of a given size that maximizes R squared
+
+```{r}
+library(leaps)
+models<-regsubsets(lpsa~., data = train, nvmax=7)
+summary(models)
+```
+
+```{r}
+res.sum<-summary(models)
+data.frame(
+  Adj.R2 = which.max(res.sum$adjr2),
+  CP = which.min(res.sum$cp),
+  BIC = which.min(res.sum$bic)
+)
+```
+
+
+```{r}
+df=data.frame(x=seq(length(res.sum$adjr2)),y=res.sum$adjr2)
+ggplot(df, aes(x=x,y=y))+geom_point()+ggtitle('adjusted r^2 by number of predictors')
+```
+
+
+AIC in book seems to track with Cp.
+
+
+next look at the 2 4 and 7 models with the important variables
+
+
+in the 4 and 7 models, not all are statistically significant, PLUS we know that these p-values are artifically lowered when calculated after the T and F tests. 
+
+So we pick the 2 variable model.
+
+
+```{r}
+summary(lm.final<-lm(lpsa~lcavol+lweight, data=train))
+```
+
+
+## Stage 2: Model comparison using the Test data set
+
+now use the test data to compare the two, four and seven variable models.
+
+```{r}
+summary(lm.test<-lm(lpsa ~lcavol+lweight,data=test))
+```
+
+Note that only 1 variable is determined to be significant
+
+1.
+
+case 45 in the training set accounts for most of the statistical significance of the predictor lweight, since that case isnt in the test set, it becomes unsignificant
+
+2.
+
+splitting the data does not always work well in small data sets.
+
+
+## Case 45 in the training set
+
+note that case 45 has a dramatic effect on the selection. case 45 should be thoroughly investigated
+
+
+
+
+
+## recent developments in variable selection -LASSO
+
+Least Absolute Shrinkage and selection operator
+
+
+LASSO estimates regression coefficients from the full model  from a constrained version of least squares:
+
+
+for some number s>0. using a Lagrange multiplier argument, it can be show that it is equivalent to minimizing the residual sum of squares plus a penalty term on absolute value of the regression coefficients
+
+LASSO performs variable selection and regression coefficient estimation simultaneously 
+
+
+Suggest using BIC to find optimal LASSO model when sparsity of the model is a primary concern.
+
+
+LASSO REGRESSION EXAMPLE:
+
+```{r}
+library(glmnet)
+#define response and predictor variables
+
+y=train$lpsa
+x=as.matrix(train%>%select(-lpsa))
+
+#perform k fold cross-validation to find optimal lambda
+cv_model<-cv.glmnet(x,y,alpha=1)
+
+#find optimal lambda that minimizes mean squared error
+(best_lambda<-cv_model$lambda.min)
+
+
+plot(cv_model)
+```
+
+
+Analyze final model
+
+```{r}
+best_model<-glmnet(x,y,alpha=1,lambda = best_lambda)
+coef(best_model)
+```
+
+
+
+## Exercises
+
+1.
+
+
+```{r}
+file<-here('data','Mantel.txt')
+df<-read.table(file,header=TRUE)
+```
+
+```{r}
+ggpairs(df)
+```
+
+
+use variable selection procedures 
+
+a. 
+
+identify optimal model or models based on R^2 AIC BIC from all possible subsets
+
+```{r}
+library(leaps)
+models<-regsubsets(Y~., data = df, nvmax=3)
+summary(models)
+
+```
+
+note for 1 X3 is best but ISNT in 2 and 3 predictors
+
+look at rsquareds
+```{r}
+res.sum<-summary(models)
+data.frame(
+  Adj.R2 = which.max(res.sum$adjr2),
+  CP = which.min(res.sum$cp),
+  BIC = which.min(res.sum$bic)
+)
+df=data.frame(x=seq(length(res.sum$adjr2)),y=res.sum$adjr2)
+ggplot(df, aes(x=x,y=y))+geom_point()+ggtitle('adjusted r^2 by number of predictors')
+```
+
+```{r}
+df=data.frame(x=seq(length(res.sum$adjr2)),y=res.sum$bic)
+ggplot(df, aes(x=x,y=y))+geom_point()+ggtitle('BIC by number of predictors')
+```
+
+clearly 2 or 3 is better because of higher r^2 and lower BIC
+
+```{r}
+df=data.frame(x=seq(length(res.sum$adjr2)),y=res.sum$cp)
+ggplot(df, aes(x=x,y=y))+geom_point()+ggtitle('Cp by number of predictors')
+```
+
+so model 2 is better 
+
+
+b.
+
+identify optimal model or models using forward selection.
+
+looking at pairs plot it seems that X3 is the most correlated
+
+```{r}
+file<-here('data','Mantel.txt')
+df<-read.table(file,header=TRUE)
+summary(lm.forward<-lm(Y~X3,data=df))
+```
+adding another
+
+
+```{r}
+
+summary(lm.forward<-lm(Y~X3+X2,data=df))
+```
+
+this would make me stick with 1. 
+
+
+
+2.
+
+use variable selection to choose a subset of the predictors to model Y
+
+```{r}
+file<-here('data','Haldcement.txt')
+dat<-read.table(file,header=TRUE)
+```
+
+
+```{r}
+ggpairs(dat)
+```
+
+all possible models approach
+
+```{r}
+models<-regsubsets(Y~., data = dat, nvmax=4)
+summary(models)
+```
+```{r}
+res.sum<-summary(models)
+data.frame(
+  Adj.R2 = which.max(res.sum$adjr2),
+  CP = which.min(res.sum$cp),
+  BIC = which.min(res.sum$bic)
+)
+```
+
+
+```{r}
+df=data.frame(x=seq(length(res.sum$adjr2)),y=res.sum$adjr2)
+ggplot(df, aes(x=x,y=y))+geom_point()+ggtitle('adjusted r^2 by number of predictors')
+```
+
+from the plots I pick 2 predictors, because thats the big jump in R^2
+
+```{r}
+#look at corrplot
+library(corrplot)
+corrplot(cor(dat),method = 'number')
+```
+

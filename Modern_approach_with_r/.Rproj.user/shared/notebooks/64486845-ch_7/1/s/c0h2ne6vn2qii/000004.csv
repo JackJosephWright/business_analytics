@@ -1,0 +1,2 @@
+"0","df=data.frame(x=seq(length(res.sum$adjr2)),y=res.sum$adjr2)"
+"0","ggplot(df, aes(x=x,y=y))+geom_point()+ggtitle('adjusted r^2 by number of predictors')"

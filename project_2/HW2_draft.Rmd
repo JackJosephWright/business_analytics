@@ -1,0 +1,379 @@
+---
+title: "HW2_Draft"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(magrittr)
+library(cvms)
+library(glue)
+library(caret)
+library(pROC)
+```
+
+### 1. Download the classification output data set.
+
+```{r}
+
+df <-read_csv("https://raw.githubusercontent.com/sconnin/621_Business_Analytics/main/HW2_GRP/classification-output-data.csv")
+
+# select columns that we will use for this project
+
+df%<>%select(class, scored.class, scored.probability)
+
+# assess dataframe dimensions, features, and dtypes
+
+str(df)
+
+```
+
+### 2. Use the table() function to get the raw confusion matrix for this scored dataset.
+
+```{r}
+
+# compile the confusion matrix in table form 
+
+cfm <- df%>%
+    select(class, scored.class)%>%
+    table()
+
+cfm
+
+# we can plot this table with the csvm package
+
+cfm<-as.data.frame(cfm) # required for csvm
+
+cfm%<>%map_df(as.numeric)%>% #creates dbl cols and adds Freq col
+    rename(n=Freq) # rename Freq to in for subsequent plot
+
+plot_confusion_matrix(cfm,
+    prediction_col = "scored.class",
+    target_col = "class",
+    counts_col = "n")
+
+```
+Results reported in the confusion matrix (CM):
+
+Note: rows represent predicted class; columns represent acutal class.
+
+-   27 true negative (14.9%)
+-   5 false positives (2.8%) - fraction of negatives that are classified as positives
+-   30 false negatives (16.6%) - fraction of positives that are classified as negatives
+-   119 true positives (65.7%)
+
+Reading the CM plot:
+
+-   Middle of each tile includes normalized count (overall percentage) and, beneath it, count.
+
+-   Bottom of each tile includes the column percentage.
+
+-   Right side of tile includes the row percentage
+
+-   The color intensity is based on counts (n)
+
+see: <https://bit.ly/3zNXHoH>
+
+\#\#\#3. Write a function that takes the data set as a dataframe, with actual and predicted classifications identified, and returns the accuracy of these predictions.
+
+$Accuracy = \frac{TP + TN}{TP + FP +TN +FN}$
+
+Accuracy is a measure (percentage) of correct predictions
+
+
+```{r}
+    
+    TP <- sum(df$class == 1 & df$scored.class == 1)
+    TN <- sum(df$class == 0 & df$scored.class == 0)
+    FP <- sum(df$class == 0 & df$scored.class == 1)
+    FN <- sum(df$class == 1 & df$scored.class ==  0)
+
+acc<-function(a, b, c, d){
+    
+    a<-round((TP + TN)/(TP + FP +TN +FN), 2)
+    
+    return(a)
+}
+
+
+accuracy<-acc(TP, TN, FP, FN) 
+accuracy
+```
+
+
+
+
+###4. Write a function that takes the data set as a dataframe, with actual and predicted classifications identified, and returns the classification error rate of the predictions.
+
+$ClassificationErrorRate = \frac{FP + FN}{TP + FP +TN +FN}$
+
+The error rate is measure (percentage) of incorrect predictions
+
+```{r}
+
+error<-function(a, b, c, d){
+
+    error_rate = round((FP + FN)/(TP + FP +TN +FN), 2)
+    
+    return(error_rate)
+}
+
+error_rate<- error(FP, FN, TP, TN)
+
+error_rate
+
+```
+
+\#\#\#5. Write a function that takes the data set as a dataframe, with actual and predicted classifications identified, and returns the precision of the predictions.
+
+$Precision = \frac{TP}{TP + FP}$
+
+```{r}
+
+prec<-function(a,b){
+
+    precision = round(TP/(TP + FP), 2)
+    return(precision)
+}
+
+precision<-prec(TP, FP)
+precision
+
+```
+
+### verify that our accuracy and error rate sum to 1.
+
+```{r}
+total <- function(x, y){
+    s = x+y
+    return(s)
+}
+total(accuracy, error_rate)
+```
+
+\#\#\#6. Write a function that takes the data set as a dataframe, with actual and predicted classifications identified, and returns the sensitivity of the predictions. Sensitivity is also known as recall.
+
+$Sensitivity = \frac{TP}{TP + FN}$
+
+Sensitivity: The probability that the model predicts a positive outcome for an observation when indeed the outcome is positive
+
+```{r}
+
+sens<-function(a,b){
+
+    sensitivity = round((TP)/(TP + FN),2)
+    
+    return(sensitivity)
+}
+
+sensitivity<-sens(TP, FN)
+sensitivity
+```
+
+###7. Write a function that takes the data set as a dataframe, with actual and predicted classifications identified, and returns the specificity of the predictions.
+
+$Specificity = \frac{TN}{TN + FP}$
+
+Specificity:The probability that the model predicts a negative outcome for an observation when indeed the outcome is negative.
+
+```{r}
+
+spec<-function(a,b){
+
+    specificity = round((TN)/(TN + FP), 2)
+
+    return(specificity)
+}
+
+specificity<-spec(TN, FP)
+
+```
+
+###8. Write a function that takes the data set as a dataframe, with actual and predicted classifications identified, and returns the F1 score of the predictions.
+
+eqn 1. $F1 = \frac{TP}{TP+\frac{1}{2}(FP+FN)}$
+
+Another way to write this is:
+
+eqn 2. $F1 = 2*\frac{precision*recall}{precision+recall}$
+
+Or
+
+eqn 3. $F1 = 2*\frac{precision*sensitivity}{precision+sensitivity}$
+
+```{r}
+
+f1 <- function(a, b){
+    f = round(2*((a*b)/(a+b)), 2)
+    return(f)
+}
+
+F1<-f1(precision, sensitivity)
+
+    
+```
+
+###9. What are the bounds on the F1 score?
+
+Show that the F1 score will always be between 0 and 1. (Hint: If 0 \< 𝑎 \< 1 and 0 \< 𝑏 \< 1 then 𝑎𝑏 \< 𝑎.)
+
+Recall that:
+
+-   precision can range from 0 to 1
+
+-   sensitivity can range from 0 to 1
+
+```{r}
+
+# F1 will be 0 if either precision and/or sensitivity are at their minimum = 0 
+
+F_1 <- function(a, b){
+    a_f = round(2*((0*b)/(0+b)), 2)
+    b_f = round(2*((a*0)/(a+0)), 2)
+    
+    return(c(a_f, b_f))
+}
+
+F_1(precision, sensitivity)
+
+# F1 will be 1 if either precision and sensitivity are at their maximum = 1 
+
+print(round(2*((1*1)/(1+1)), 2)) # from eqn 1. 
+
+```
+
+###10. Write a function that generates an ROC curve from a data set with a true classification column (class in our example) and a probability column (scored.probability in our example)
+
+Your function should return a list that includes the plot of the ROC curve and a vector that contains the calculated area under the curve (AUC). Note that I recommend using a sequence of thresholds ranging from 0 to 1 at 0.01 intervals.
+
+The ROC curve plots values of the FP rate (FPR) against the TP rate (TPR) for a selected
+cutoff value.
+
+The FPR can be calculated as follows:
+
+$FPR = \frac{cumulativesum(FP)}{colsum(FP)}$
+
+The TPR can be calculated similarly:
+
+$TPR = \frac{cumulativesum(TP)}{colsum(TP)}$
+
+Every point on the ROC curve represents a chosen cut-off.To make an ROC 
+curve rank all the values (scored.probability) and link each value to the
+assessment (class). Keep in mind that the TPR is equivalent to model 
+sensitivity while FPR is equivalent to 1-(model specificity).
+
+The AUC (area under the ROC curve) provides a measure of the model's ability to correctly discriminate (separate) between model categories.In other words the \
+proportion of TP vs. the proportion of FP.
+
+Our AUC calculation (included below) is drawn from AUC - calculation based on https://bit.ly/3m7zW6k.
+
+$AUC =\sum  \left ( TPR*FPR_{diff} \right )+\frac{TPR_{diff}*FPR}{2}$
+
+Where:
+* TPR = true positive rate
+* FPR = false positive rate
+* $TPR_{diff}$ = the difference between consecutive TPR observations
+* $FPR_{diff}$ = the difference between consecutive FPR observations
+
+In this context, our area estimate is an approximation similar to a Riemann sum 
+in integral calculus. 
+
+The first entry in the equation is equivalent to a Riemann rectangle. The second 
+entry extends this geometry with a triangle "cap" to compensate for curvature 
+in the AUC function. Together they form a trapezoid. The area of each
+trapeziod included under the curve is then summed to produce a AUC estimate. 
+
+
+
+```{r}
+
+fxn_roc <- function(a, b){
+    
+    # TP and FP for ROC curve -  181 rows
+    
+    a <- a[order(b, decreasing=TRUE)] #order returns indices in a sorted order 
+    TPR = cumsum(a)/sum(a) # sensitivity
+    FPR = cumsum(!a)/sum(!a) #(1-specificity)
+    data <- data.frame(TPR, FPR)
+    
+    #note its still unclear why we order by index of the probability col. 
+    
+    FPRdiff <- c(diff(FPR),0) #lag diff in false pos, pad end with 0 due to lag
+    TPRdiff <- c(diff(TPR),0) #lag diff in true pos
+
+    auc <- sum(TPR * FPRdiff) + sum(TPRdiff * FPRdiff)/2 
+    
+    return(c(data, auc))
+}
+
+out_roc <- fxn_roc(df$class, df$scored.probability)
+
+
+# Plot ROC curve and add AUC estimate
+
+plot(out_roc[[2]],out_roc[[1]],
+     "p",
+     pch= 20,
+     col="blue",
+     lty = 3,
+     main = "ROC Curve",
+     xlab="False Positive Rate (1-Specificity)", 
+     ylab="True Positive Rate (Sensitivity)")
+     text(x=.95,y=.8, "AUC = 0.85") 
+     abline(0,1)
+
+```
+
+###11. Use your created R functions and the provided classification output data set to produce all of the classification metrics discussed above.
+
+```{r}
+
+cl <- function(a, b, c, d, e, f){
+    print(glue('Our classification accuracy = {accuracy}.'))
+    print(glue('Our classification error rate = {error_rate}.'))
+    print(glue('Our classification precision = {precision}.'))
+    print(glue('Our classification sensitivity = {sensitivity}.'))
+    print(glue('Our classification specificity = {specificity}.'))
+    print(glue('Our classification F1 = {F1}.'))
+}
+
+cl(accuracy, error_rate, precision, sensitivity, specificity, F1)
+
+```
+
+### 12. Investigate the caret package.
+
+Investigate the Caret package. In particular, consider the functions confusionMatrix, sensitivity, and specificity. Apply the functions to the data set. How do the results compare with your own functions?
+
+```{r}
+
+cfm_caret <- df
+
+cfm_caret$class<-as.factor(cfm_caret$class)
+cfm_caret$scored.class<-as.factor(cfm_caret$scored.class)
+
+conf<-confusionMatrix(cfm_caret$scored.class, cfm_caret$class, positive="1", mode = "everything") #note x, y order matters here
+
+#build comparison table
+
+
+Calculated<-c(accuracy, sensitivity, specificity, precision, F1)
+Caret<-c(conf[[3]]['Accuracy'], conf[[4]]['Sensitivity'], conf[[4]]['Specificity'], conf[[4]]['Precision'], conf[[4]]['F1'])
+
+cbind(Caret, Calculated)
+
+```
+
+###13. Investigate the pROC package.
+
+Use it to generate an ROC curve for the data set. How do the results compare with your own functions?
+
+```{r}
+
+
+
+```

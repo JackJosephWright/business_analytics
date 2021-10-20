@@ -7,55 +7,77 @@ import time
 from selenium.webdriver.support.ui import Select
 import numpy as np
 import pandas as pd
+from selenium.webdriver.support.ui import WebDriverWait
 driver = webdriver.Firefox()
+import time
+from selenium.webdriver.support import expected_conditions as EC
+from bs4 import BeautifulSoup
 
 #navigate to page
-
+driver.set_window_size(1200,1200)
 driver.get('https://sportsbook.fanduel.com/navigation/nfl')
 
-
-#this tag is for the teams ONLY
-element = driver.find_elements_by_class_name('ii')
-for i in range(len(element)):
-    print(element[i].text)
-
-#opening the arrow tabs on the game page
-element = driver.find_elements_by_class_name('ku')
-len(element)
-
-for i in range(len(element)):
-    element[i].click()
-
-#opening sub dropdowns in tabs
-
-element = driver.find_elements_by_xpath("//span[text()='Show more']")
-for i in range(len(element)):
-    element[i].click()
-
-#get titles of props
-
-element = driver.find_elements_by_class_name('kr')
-len(element)
-prop_list=[]
-for i in range(len(element)):
-    prop_list.append(element[i].text)
-prop_list
-
-#get names of players in props
-
-element = driver.find_element_by_class_name('aj')
-print(element.text)
-
-all_char = list(element.text.split("\n"))
-print(all_char)
+###NEED TO ITERATE THROUGH EACH GAME#
 
 
-## split this list by the elements in 'prop_list' so we can then turn those lists into dataframes
+
+#open all tabs on page
+def scrape_game(link):
+    #open new driver
+    driver = webdriver.Firefox()
+    #navigate to game page
+    driver.set_window_size(1200,1200)
+    driver.get(link)
+    #open arrow tabs
+    element = driver.find_elements_by_xpath("//*[@width = '9']")
+    clicks = len(element)
+    print('number of clicks to do {}'.format(clicks))
+    print('clicking arrows')
+    for i in range(clicks):
+        print('clicking arrow_{}'.format(i))
+        time.sleep(1)
+        element = driver.find_elements_by_xpath("//*[@width = '9']")
+        try:
+            element[i].click()
+        except IndexError:
+            print('reached end of list')
+            
+
+        time.sleep(1)
 
 
-for i in prop_list:
-    print(i)
-    j="NULL"
-    temp_list=[i]
-    while i !=j:
+    #click show more on every tab
+    element = driver.find_elements_by_xpath("//span[text()='Show more']")
+    clicks = len(element)
+    print('number of clicks to do {}'.format(clicks))
+    print('clicking show more tabs')
+    for i in range(clicks):
+        print('show more_{}'.format(i))
+        time.sleep(1)
+        element = driver.find_elements_by_xpath("//span[text()='Show more']")
+        try:
+            element[i].click()
+        except IndexError:
+            print('reached end of list')
+            
+        time.sleep(1)
+        
 
+        
+    content = driver.page_source
+
+    soup = BeautifulSoup(content)
+
+    i = soup.find_all('span')
+    output=[]
+    for p in i:
+        output.append(p.text)
+
+
+    textfile = open("game_name_1.txt", "w")
+    for element in output:
+        textfile.write(element + "\n")
+    textfile.close()
+    #driver.close()
+link=link
+scrape_game(link)

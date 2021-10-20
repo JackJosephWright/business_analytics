@@ -1,0 +1,6 @@
+"0","res.sum<-summary(models)"
+"0","data.frame("
+"0","  Adj.R2 = which.max(res.sum$adjr2),"
+"0","  CP = which.min(res.sum$cp),"
+"0","  BIC = which.min(res.sum$bic)"
+"0",")"
