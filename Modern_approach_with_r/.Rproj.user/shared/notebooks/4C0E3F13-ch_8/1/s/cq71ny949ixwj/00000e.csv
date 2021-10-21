@@ -1,0 +1,4 @@
+"0","ggplot(df,aes(x=Food,y=ypredict))+geom_point()+geom_smooth(method='loess')+geom_function(fun=f,color='red')
+"
+"2","`geom_smooth()` using formula 'y ~ x'
+"

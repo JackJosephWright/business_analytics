@@ -1,0 +1,9 @@
+"0","file<-here('data','MichelinFood.txt')"
+"0","df<-read.table(file,header = TRUE)"
+"2","Warning in file(file, ""rt"") :"
+"2","
+ "
+"2"," cannot open file 'C:/Users/jwright/Documents/GitHub/business_analytics/assignment_3/data/MichelinFood.txt': No such file or directory
+"
+"2","Error in file(file, ""rt"") : cannot open the connection
+"
