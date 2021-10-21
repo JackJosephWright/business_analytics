@@ -1,0 +1,56 @@
+---
+title: "hw_3"
+author: "Jack Wright"
+date: "10/21/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(car)
+library(GGally)
+library(here)
+```
+
+load data
+
+```{r}
+file<-here('crime-training-data_modified.csv')
+df_raw<-read.csv(file)
+```
+
+data exploration
+
+```{r}
+ggpairs(df_raw, mapping=aes(color=factor(target)))
+```
+
+check boxplots for skewness
+
+```{r}
+df_box<-df_raw%>%pivot_longer(!target,names_to='variable',values_to='val')
+```
+
+```{r}
+df_box%>%filter(variable!='tax')
+ggplot(df_box%>%filter(variable!='tax'), aes(x=variable,y=val,color=as.factor(target)))+geom_boxplot()
+```
+
+zn looks highly skewed, fix first with a log transform
+
+```{r}
+df<-df_raw%>%mutate(log(zn))
+ggplot(df,aes(y=log(zn),x=as.factor(target),color=target))+geom_boxplot()
+```
+
+look at tax on its own
+
+```{r}
+
+```
+
