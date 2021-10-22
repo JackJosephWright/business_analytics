@@ -1,0 +1,10 @@
+"0",""
+"0","#Match literal backslash ""\"""
+"0",""
+"0","#need to write ""\\\\"""
+"0",""
+"0","x<-""a\""\'\\b"""
+"0","writeLines(x)"
+"1","a""'\b
+"
+"0","str_view(x,""\""\'\\\\"")"

@@ -1,0 +1,7 @@
+"0",""
+"0","x <- c(""apple"", ""banana"", ""pear"")"
+"0","str_view(x, ""an"")"
+"2","Registered S3 method overwritten by 'htmlwidgets':
+  method           from         
+  print.htmlwidget tools:rstudio
+"

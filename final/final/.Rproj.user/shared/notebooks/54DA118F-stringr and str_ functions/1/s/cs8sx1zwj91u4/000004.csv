@@ -1,0 +1,2 @@
+"0","#Matches any character EXCEPT a newline"
+"0","str_view(x,"".a."")"
