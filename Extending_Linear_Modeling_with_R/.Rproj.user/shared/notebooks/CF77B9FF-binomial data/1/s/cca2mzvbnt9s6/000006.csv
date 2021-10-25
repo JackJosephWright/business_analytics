@@ -1,0 +1,4 @@
+"0","ggplot(orings, aes(x=temp,y=damage/6))+geom_point()+geom_smooth(method='lm', se=FALSE)
+"
+"2","`geom_smooth()` using formula 'y ~ x'
+"

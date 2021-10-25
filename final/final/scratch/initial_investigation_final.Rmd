@@ -55,6 +55,9 @@ levels(as.factor(df_raw$channelGrouping))
 ```{r}
 #function for turning python dictionary to a R dataframe
 
+dict_df <-function(d){
+  
+}
 
 dict_to_df = function(dict) {
   
@@ -138,6 +141,45 @@ df<-cbind(df_raw%>%select(-totals),df_total)
 turn device column into dataframe
 
 ```{r}
-dict_to_df(df$device[2])
+df_raw$device[10]
+```
+
+```{r}
+d<-"{\"browser\": \"Firefox\", \"browserVersion\": \"not available in demo dataset\", \"browserSize\": \"not available in demo dataset\", \"operatingSystem\": \"Windows\", \"operatingSystemVersion\": \"not available in demo dataset\", \"isMobile\": false, \"mobileDeviceBranding\": \"not available in demo dataset\", \"mobileDeviceModel\": \"not available in demo dataset\", \"mobileInputSelector\": \"not available in demo dataset\", \"mobileDeviceInfo\": \"not available in demo dataset\", \"mobileDeviceMarketingName\": \"not available in demo dataset\", \"flashVersion\": \"not available in demo dataset\", \"language\": \"not available in demo dataset\", \"screenColors\": \"not available in demo dataset\", \"screenResolution\": \"not available in demo dataset\", \"deviceCategory\": \"desktop\"}"
+
+
+get_dict_items<-function(d){
+ #gets dictionary items from a single cell
+  #remove extraneous characters
+  dict<-str_remove_all(d,'[\\"\\{\\}]')
+  #split dict into list items
+  d_list<-unlist(str_split(dict,","))
+  #make column header list
+  headers=str_extract(d_list,'(.+)(?=:)')
+  #make value list
+  values<-str_extract(d_list,'(?<=:)(.+)')
+  
+  output=rbind(values)
+  colnames(output)<-headers
+  
+  return(output)
+}
+
+dict_to_df<-function(d){
+  for (i in 1:length(d)){
+  output=new_row
+  new_row<-get_dict_items(d[i])
+  test<-(output,new_row)
+  }
+  return(output)
+}
+
+```
+
+```{r}
+df_test<-sample_n(df_raw,10)
+df_list<-as.list(df_test$totals)
+
+dict_to_df(df_list)
 ```
 

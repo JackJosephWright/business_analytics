@@ -1,0 +1,440 @@
+---
+title: "Binomial_Data"
+author: "Jack Wright"
+date: "10/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Challenger Disaster Example
+
+
+
+Rubber O-ring example
+
+```{r}
+library(faraway)
+data(orings)
+plot (damage/6 ~ temp, orings, xlim=c(25,85), ylim =
+c(0,1),
+ xlab="Temperature", ylab="Prob of damage")
+```
+```{r}
+library(tidyverse)
+ggplot(orings, aes(y=damage/6,x=temp))+geom_point()+xlab('Temperature')+ylab('Prob of Damage')
+```
+
+interested in how the probability of failure in a given O-ring is related to the launch temp and predicting the probability when the temp is 31F.
+
+
+NAIVE APPROACH
+```{r}
+lmod<-lm(damage/6~temp, orings)
+library(ggResidpanel)
+ggplot(orings, aes(x=temp,y=damage/6))+geom_point()+geom_smooth(method='lm', se=FALSE)
+```
+
+```{r}
+summary(lmod)
+```
+FOR LINEAR MODEL:
+
+-require errors to be appro normal (theyre not)
+
+NOTE:
+
+variance of a binomial variable is not constant( recall variance is based on the mean and is meaningless)
+
+
+NO LINEAR MODEL
+
+
+## Binomial Regression Model
+
+suppose response variable (Y_i) for i =1 ...n_i is binomially distributed
+
+(probabilities of k successes on n trials , looks normal around mean? )
+
+
+assume each trial is INDEPENDENT and subject to the same predictors.
+
+The group of trials is called a *covariate class*
+
+need a model that describes relationship of predictors(x_1..x_i) to p
+
+
+we can express the effect of the predictors on the response solely through the *linear predictor* (the model) allows us to extend to models for other types of response and is part of the class *generalized linear models* or GLMs. 
+
+
+we use a link function to get the probability
+
+
+Three common choices:
+(where p = probability of success)
+1.
+
+Logit:
+
+$$\eta=log(p/(-1p)$$
+
+
+
+2.
+
+Probit
+
+$$\eta=\Phi^{-1}(p)$$
+
+where phi^-1 is the inverse normal cumulative distribution function
+
+(think of a cumulative plot of a normal distribution)
+
+3.
+
+Complimentary log-log:
+
+$$\eta=log(-log(1-p))$$
+
+
+IDEA OF LINK FUNCTION:
+
+central idea of generalized linear models
+
+
+links the linear predictor to the mean of the response in the wider class of models
+
+
+CHOOSE THE LINK FUNCTION LATER:
+
+
+FIRST CALCULATE LOG LIKELIHOOD:
+
+```{r}
+logitmod<-glm(cbind(damage,6-damage)~temp, family=binomial(), data=orings)
+summary(logitmod)
+```
+*for me checking the pchsiq
+```{r}
+pchisq(16.912, 21, lower=FALSE)
+```
+
+*i think, becuase the alpha is high, we reject the need for the saturated model*
+
+```{r}
+library(car)
+mmps(logitmod)
+```
+
+*marginal model plots do not look good. 
+
+**BACK TO BOOK**
+
+for binomial response we need 2 sets of info about the response
+
+y:
+ successes
+n:
+  number of trials
+  
+OR
+n-y:
+  number of failures
+  
+
+```{r}
+plot (damage/6 ~ temp, orings, xlim=c(25,85),
+ylim=c(0,1),
+ xlab="Temperature", ylab="Prob of damage")
+x <- seq(25,85,1)
+lines(x,ilogit(11.6630−0.2162*x))
+
+```
+
+Notice how the log fit tends towards zero, starts out at 1. 
+
+
+*compare with probit fit*
+
+```{r}
+probitmod<-glm(cbind(damage,6-damage)~temp, family=binomial(link=probit),orings)
+summary(probitmod)
+```
+
+```{r}
+plot (damage/6 ~ temp, orings, xlim=c(25,85),
+ylim=c(0,1),
+ xlab="Temperature", ylab="Prob of damage")
+x <- seq(25,85,1)
+lines(x,ilogit(11.6630−0.2162*x))
+lines(x, pnorm(5.5915-0.1058*x), lty=2) 
+
+```
+
+dotted line is probit, solid is logit
+
+```{r}
+l<-ilogit (11.6630-0.2162*31)
+p<-pnorm(5.5915-0.1058*31) 
+
+cat('logit estimation at 31F:',l,'\nProbit estimation at 31F:',p)
+```
+both have a very high probability of damage 
+
+
+
+## Inference
+
+
+consider 2 models
+
+larger model with l params and L_l likelihood
+
+smaller model with s paramaters and L_s likelihoood
+  linear subspace(linear restriction on params of       larger model)
+  
+suggests likelihood ratio statistic
+
+$$2log\frac{L_L}{L_S}$$
+
+good for comparing models
+
+
+now choose saturated larger model (SATURATED MODEL)
+
+
+since the saturated model has perfect fit, the deviance D (or G^2) measures how close the smaller model comes to perfection.
+
+
+*Deviance is a measure of goodness of fit*
+
+
+residual deviance:
+
+deviance for current model
+
+null deviance:
+
+deviance for model with no preditors, just an intercept term
+
+If the model is sufficiently large, the deviance is a chisq distribution with n-l (the df for the two models) degrees of freedom IF THE MODEL IS CORRECT
+
+USE DEVIANCE to test if the model is an adequate fit. 
+
+
+FOR LOGIT OF CHALLENGER EXAMPLE:
+
+```{r}
+pchisq(deviance(logitmod), df.residual(logitmod),lower=FALSE)
+```
+recall:
+
+H_0: our model (less complex)
+
+H_A: saturated model (more complex)
+
+since the P-value is HIGH, we say that it fits the data well
+
+*THIS DOES NOT MEAN THAT YOU CANT FIND A BETTER MODEL*
+
+check the null model to see the p-value
+
+```{r}
+pchisq(38.9,22,lower=FALSE)
+
+```
+
+we see the fit is inadequate, the saturated is perferred over the null model
+
+
+HELPFUL TIP:
+
+if the deviance is much bigger than the DF, could reject the null hypotheesis without calculating p
+
+
+when n is low (or m from other book)(number of samples per x) then the chisq doesnt approximate.
+
+
+USE Hosmer-Lemeshow
+
+*Rule of thumb, dont use this method for n<5
+
+
+when n is too low use difference in deviance between the two models
+
+BACK TO EXAMPLE:
+
+since difference between df between the null model and the temp model is only 1, do this
+
+```{r}
+dev_dif<-(38.9-16.9)
+pchisq(dev_dif,1,lower=FALSE)
+```
+since p is so small, we can conclude launch temp is statistically significant
+
+IN THIS CASE:
+
+H_0: null
+
+H_A: our model
+
+
+FINDING THE CONFIDENCE INTERVAL
+
+```{r}
+library(MASS)
+confint(logitmod)
+```
+
+
+## Tolerance Distribution
+
+
+student answers questions on a test and student has aptitude T. 
+
+question might have difficulty d_i
+
+only get answer correct if T>d_i
+
+if d_i is fixed and $T\sim(\mu,\sigma2)$
+
+
+
+
+## Interpreting Odds
+
+odds are sometimes better scale than probability to represent chance.
+
+arose as a way to express payoff for bets
+
+
+Mathematical advantage of odds is that they are UNBOUNDED
+
+
+odds form basis for subjective asssessment of probability
+
+
+sometimes probabilities are determined from considerations of symmetry or long-term frequencies. (this might be unavailable)
+
+
+example:
+
+covariates x_1, x_2
+
+logistic regression model
+
+$$log(odds)=log(\frac{p}{1-p})=\beta_0+\beta_1x_1+\beta_2x_2$$
+
+
+INTERPRETATION:
+
+$\beta_1$:
+
+unit increase in x_1 with x_2 held fixed, increases the log-odds of succes by \beta_1. OR 
+
+increases odds of success by a factor of $e^{\beta_1}$
+
+ALT IDEA for odds-ratio:
+
+relative risk. 
+
+p-succcess in some condition is p1 and in its absence p2.
+
+RELATIVE RISK is $P_1/P_2$
+
+
+for rare outcomes relative risk and odds ratio are similiar, but for larger probabilities there are differences. 
+
+
+
+consider data from a study on infant respiratory disease.
+
+```{r}
+library(kableExtra)
+data("babyfood")
+xtabs(disease/(disease+nondisease)~sex+food, babyfood)%>%kbl()%>%kable_classic()
+```
+
+fit and examine the model
+```{r}
+mdl<-glm(cbind(disease,nondisease)~sex+food, family = binomial(), babyfood)
+summary(mdl)
+```
+
+
+chisq can be expected to be accurate here due to large covariate class sizes (all greated than 5)
+
+
+Is there a sex-by-food interaction? 
+
+
+WHAT DOES THIS MEAN:
+
+*notice that a model with the interation effect would be saturated with deviance and degrees of freedom zero, so we can look at the residual deviance of this model to test for the interaction effect*
+
+
+.7 deviance is not large for 2 df, so we can conclude that there is no evidence of an interaction effect. 
+
+MEANS we can interpret the main effects separately.
+
+
+TEST SIGNIFICANCE OF MAIN EFFECTS:
+```{r}
+drop1(mdl,test="Chi")
+```
+
+`drop1` tests each predictor relative to the full model.
+
+both predictors are significant. 
+
+
+Consider interpretation of coefficients starting with breast feeding (from full model)
+
+```{r}
+exp(mdl$coefficients[3])
+```
+
+INTERPRETATION:
+
+breast feeding reduces the odds of respiratory disease to 51% of that for BOTTLE FEEDING
+
+
+GET CONFIDENCE INTERVAL:
+
+(this is log scale)
+```{r}
+confint(mdl)
+```
+
+(take out of log scale)
+```{r}
+exp(confint(mdl))%>%kbl%>%kable_classic()
+```
+
+
+
+NOTE:
+
+for small values on the log scale, they are about approximate to their actual probabilities
+
+EX from model log-odds for suppliment
+
+```{r}
+#log odds for SUPPLIMENT to have  lower disease than bottle feeding
+log_odds<-(-.173)
+ 1-exp(-0.17)
+```
+see that the real odds are about 16 and the log odds are about 17.
+
+we see here that breast-fed and to a lesser extent suppliment-fed babies are less vulnerable to respiratory disease. 
+
+ALSO see that boys are more vulnerable than girls
+
+
+## Prospective and Retrospective Sampling
+
+
+

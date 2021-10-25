@@ -1,0 +1,25 @@
+"0","library(car)
+"
+"2","Loading required package: carData
+"
+"2","
+Attaching package: ‘car’
+
+"
+"2","The following object is masked from ‘package:dplyr’:
+
+    recode
+
+"
+"2","The following object is masked from ‘package:purrr’:
+
+    some
+
+"
+"2","The following objects are masked from ‘package:faraway’:
+
+    logit, vif
+
+"
+"0","library(car)"
+"0","mmps(logitmod)"
