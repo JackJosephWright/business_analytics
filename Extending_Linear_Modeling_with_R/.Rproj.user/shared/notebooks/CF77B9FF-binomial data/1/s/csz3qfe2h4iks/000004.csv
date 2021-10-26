@@ -1,3 +1,2 @@
-"0","plot (damage/6 ~ temp, orings, xlim=c(25,85),"
-"0","ylim=c(0,1),"
-"0"," xlab=""Temperature"", ylab=""Prob of damage"")"
+"0","x <- seq(25,85,1)"
+"0","lines(x,ilogit(11.6630−0.2162*x))"

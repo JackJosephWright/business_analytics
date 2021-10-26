@@ -1,5 +1,5 @@
-"0","summary(probitmod)
-"
+"0","probitmod<-glm(cbind(damage,6-damage)~temp, family=binomial(link=probit),orings)"
+"0","summary(probitmod)"
 "1","
 Call:
 "

@@ -1,0 +1,5 @@
+"0","modp<--glm(cbind(dead,alive)~conc,family=binomial(link=probit),data=bliss)
+"
+"2","Error in -glm(cbind(dead, alive) ~ conc, family = binomial(link = probit),  : 
+  invalid argument to unary operator
+"

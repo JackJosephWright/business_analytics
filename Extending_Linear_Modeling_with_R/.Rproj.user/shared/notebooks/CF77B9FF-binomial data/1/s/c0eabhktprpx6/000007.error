@@ -1,0 +1,1 @@
+{"frames":[],"message":"Error in -glm(cbind(dead, alive) ~ conc, family = binomial(link = probit),  : \n  invalid argument to unary operator\n"}

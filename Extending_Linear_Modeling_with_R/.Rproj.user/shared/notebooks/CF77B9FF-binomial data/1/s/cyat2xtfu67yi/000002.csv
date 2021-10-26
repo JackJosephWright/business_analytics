@@ -1,5 +1,14 @@
-"0","confint(logitmod)
+"0","library(MASS)"
+"2","
+Attaching package: ‘MASS’
+
 "
+"2","The following object is masked from ‘package:dplyr’:
+
+    select
+
+"
+"0","confint(logitmod)"
 "2","Waiting for profiling to be done...
 "
 "1","           "
