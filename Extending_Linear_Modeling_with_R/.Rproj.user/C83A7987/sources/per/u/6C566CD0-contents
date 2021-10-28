@@ -1,0 +1,82 @@
+---
+title: "doctor visits"
+author: "Jack Wright"
+date: "10/28/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE,warning=FALSE}
+library(tidyverse)
+library(MASS)
+library(ggResidpanel)
+library(GGally)
+library(faraway)
+```
+
+The dvisits data comes from the Australian Health Survey of 1977–78 and consist of
+5190 single adults where young and old have been oversampled.
+
+(a) Build a Poisson regression model with doctorco as the response and sex, age,
+agesq, income, levyplus, freepoor, freerepa, illness, actdays, hscore, chcond1 and
+Count regression chcond2 as possible predictor variables. Considering the deviance of this model,
+does this model fit the data?
+
+```{r}
+data("dvisits")
+mod1<-glm(data=dvisits, doctorco~sex+ age+
+agesq+ income+ levyplus+ freepoor+ freerepa+ illness+ actdays+ hscore+ chcond1+chcond2, family=poisson)
+summary(mod1)
+```
+
+
+```{r}
+pchisq(5634.8-4379.5,5189-5177,lower.tail = FALSE)
+```
+
+according to the deviance test it does describe the data (p should be low because our prior is the null model)
+
+(b) Plot the residuals and the fitted values—why are there lines of observations on the
+plot?
+
+```{r}
+resid_panel(mod1)
+```
+
+The stripes are because the dependent variable is discrete. They are curved because the x axis is shown on a log scale. 
+
+(c) Use backward elimination with a critical p-value of 5% to reduce the model as
+much as possible. Report your model.
+
+```{r}
+mod_back<-glm(data=dvisits, doctorco~  illness+ actdays, family=poisson)
+summary(mod_back)
+
+```
+
+
+(d) What sort of person would be predicted to visit the doctor the most under your
+selected model?
+
+someone with high illness and actdays
+
+trying again with drop1
+
+```{r}
+drop1(mod1,test='F')
+```
+```{r}
+step(mod1,direction = 'backward')
+```
+
+
+(e) For the last person in the dataset, compute the predicted probability distribution for
+their visits to the doctor, i.e., give the probability they visit 0,1,2, etc. times.
+
+
+
+(f) Fit a comparable (Gaussian) linear model and graphically compare the fits.
+Describe how they differ. 

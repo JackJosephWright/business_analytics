@@ -1,0 +1,129 @@
+---
+title: "Africa count data"
+author: "Jack Wright"
+date: "10/28/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r echo=FALSE, message=FALSE,warning=FALSE}
+library(tidyverse)
+library(MASS)
+library(ggResidpanel)
+library(GGally)
+library(faraway)
+```
+
+
+
+*The dataset africa gives information about the number of military coups in subSaharan Africa and various political and geographical information. Develop a simple but wellfitting model for the number of coups. Give an interpretation of the effect of the
+variables you include in your model on the response.*
+
+
+
+## Data Exploration
+
+Lets take a first look at the data
+
+```{r}
+data(africa)
+summary(africa)
+```
+
+6/47 datapoints with NA is fairly high, so lets see where they lie in the data
+```{r}
+
+af_na<-africa%>%mutate(
+  has_na = case_when(is.na(pollib)|is.na(pctvote)~TRUE,
+                     TRUE~FALSE
+                     
+    
+  )
+)
+
+ggpairs(af_na,aes(colour = has_na, alpha = 0.4))
+```
+
+
+It is not clear that there is any trend in the NA's so for the time being lets exclude them.
+
+```{r}
+africa<-na.omit(africa)
+```
+
+
+our predictor `miltcoup` is count data, so we should be focusing on poisson regression. Since the counts of coups are so low, we should also use a negative binomial and a quasipoisson, which model low counts of data better.
+
+
+```{r}
+glm_list=list()
+glm_list[['All']]<-glm(data=africa,miltcoup~.,family=poisson())
+glm_list[['Quasi']]<-glm(data=africa,miltcoup~.,family=quasipoisson())
+glm_list[['nb']]<-glm.nb(data=africa,miltcoup~.)
+```
+
+Examining the models
+
+```{r}
+lapply(glm_list,
+       FUN=summary
+)
+```
+
+all three models suggest that we should focus on `oligarchy` `pollib` and `parties`
+
+```{r}
+glm_list=list()
+glm_list[['All']]<-glm(data=africa,miltcoup~.,family=poisson())
+glm_list[['Quasi']]<-glm(data=africa,miltcoup~.,family=quasipoisson())
+glm_list[['nb']]<-glm.nb(data=africa,miltcoup~.)
+glm_list[['Selected']]<-glm(data=africa,miltcoup~oligarchy+pollib+parties,family=poisson())
+glm_list[['Quasi_selected']]<-glm(data=africa,miltcoup~oligarchy+pollib+parties,family=quasipoisson())
+glm_list[['nb_selected']]<-glm.nb(data=africa,miltcoup~oligarchy+pollib+parties)
+```
+Comparing the AIC for all models
+```{r}
+lapply(
+  X=glm_list,
+  FUN = AIC
+)
+```
+
+since the dispersion for the quasipoisson models are nearly one, there is no need to include them . The clear choice is down to the `ALL` and `Selected` models when inspecting the AIC
+
+
+Checking the `All` model with single term deletion confirms that the `Selected` model is the right choice
+```{r}
+drop1(glm_list[['All']],test='F')
+```
+
+
+```{r}
+resid_panel(glm_list[['Selected']],plots='all')
+```
+There are some clear exponential trends in the residuals of the data. lets look again at the pairs 
+
+```{r}
+
+ggpairs(africa%>%dplyr::select(c(miltcoup,oligarchy,pollib,parties)))
+```
+
+
+Let us try some polynomial predictors 
+
+```{r}
+glm_final<-glm(data=africa,miltcoup~poly(oligarchy,3),family=poisson)
+summary(glm_final)
+```
+
+```{r}
+ggplot(africa,aes(x=glm_final$fitted.values,y=glm_final$residuals))+geom_point()+geom_abline(slope=0,intercept = 0)
+
+```
+
+
+
