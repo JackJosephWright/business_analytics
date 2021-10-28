@@ -1,0 +1,2 @@
+"0","library(latex2exp)"
+"0","ggplot(gala, aes(x=log(fitted(modp)),y=log((Species-fitted(modp))^2)))+geom_point()+xlab('$\\hat{\\mu}$')+geom_abline(intercept = 0,slope = 1)"

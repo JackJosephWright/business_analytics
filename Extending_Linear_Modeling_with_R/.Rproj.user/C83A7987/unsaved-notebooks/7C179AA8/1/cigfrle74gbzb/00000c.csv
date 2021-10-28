@@ -1,0 +1,1 @@
+"0","ggplot(africa,aes(x=miltcoup,y=glm_final$fitted.values))+geom_point()+geom_abline(slope=1,intercept = 0)"

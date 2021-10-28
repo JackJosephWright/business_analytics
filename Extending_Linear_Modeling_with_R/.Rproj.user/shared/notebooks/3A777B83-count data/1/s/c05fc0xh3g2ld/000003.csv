@@ -1,0 +1,3 @@
+"0","library(ggResidpanel)"
+"0","modl<-lm(Species~.,gala)"
+"0","resid_panel(modl,plots = 'all')"

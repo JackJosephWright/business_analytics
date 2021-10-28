@@ -1,0 +1,6 @@
+"0"," (dp <-"
+"0","sum(residuals(modp,type=""pearson"")^2)/modp$df.res)"
+"1","[1]"
+"1"," 1.557758"
+"1","
+"

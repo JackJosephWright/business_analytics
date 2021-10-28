@@ -1,0 +1,14 @@
+"0","glm_list=list()"
+"0","glm_list[['All']]<-glm(data=africa,miltcoup~.,family=poisson())"
+"0","glm_list[['Quasi']]<-glm(data=africa,miltcoup~.,family=quasipoisson())"
+"0","glm_list[['nb']]<-glm.nb(data=africa,miltcoup~.)"
+"2","Warning in theta.ml(Y, mu, sum(w), w, limit = control$maxit, trace = control$trace >  :"
+"2","
+ "
+"2"," iteration limit reached
+"
+"2","Warning in theta.ml(Y, mu, sum(w), w, limit = control$maxit, trace = control$trace >  :"
+"2","
+ "
+"2"," iteration limit reached
+"

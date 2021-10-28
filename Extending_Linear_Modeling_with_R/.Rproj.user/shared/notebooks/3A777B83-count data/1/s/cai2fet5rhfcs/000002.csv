@@ -1,0 +1,6 @@
+"0","(dp <-"
+"0","sum(residuals(disc_p,type=""pearson"")^2)/disc_p$df.res)"
+"1","[1]"
+"1"," 1.541413"
+"1","
+"

@@ -1,0 +1,5 @@
+"0","ggplot(df,aes(x=years,y=disc))+geom_smooth()"
+"2","Don't know how to automatically pick scale for object of type ts. Defaulting to continuous.
+"
+"2","`geom_smooth()` using method = 'loess' and formula 'y ~ x'
+"

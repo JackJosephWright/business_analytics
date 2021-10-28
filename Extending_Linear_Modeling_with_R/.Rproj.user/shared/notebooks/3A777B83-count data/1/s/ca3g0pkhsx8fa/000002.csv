@@ -1,0 +1,2 @@
+"0","years<-seq(1860,1959,1)"
+"0","df<-data.frame(years=years, disc=discoveries)"

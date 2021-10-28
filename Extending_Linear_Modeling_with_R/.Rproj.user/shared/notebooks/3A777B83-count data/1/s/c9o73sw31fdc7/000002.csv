@@ -1,0 +1,4 @@
+"0","ggplot(df,aes(x=mean,y=variance))+geom_smooth()
+"
+"2","`geom_smooth()` using method = 'loess' and formula 'y ~ x'
+"

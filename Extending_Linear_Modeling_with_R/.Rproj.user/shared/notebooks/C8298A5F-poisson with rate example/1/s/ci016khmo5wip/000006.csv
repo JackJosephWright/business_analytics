@@ -1,0 +1,87 @@
+"0","ggplot(danishlc,aes(x=Age,y=Rate, group=City,color=City))+geom_smooth()"
+"2","`geom_smooth()` using method = 'loess' and formula 'y ~ x'
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," Chernobyl! trL>n 6
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," Chernobyl! trL>n 6
+"
+"2","Warning in sqrt(sum.squares/one.delta) :"
+"2"," NaNs produced
+"
+"2","Warning in stats::qt(level/2 + 0.5, pred$df) :"
+"2"," NaNs produced
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," Chernobyl! trL>n 6
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," Chernobyl! trL>n 6
+"
+"2","Warning in sqrt(sum.squares/one.delta) :"
+"2"," NaNs produced
+"
+"2","Warning in stats::qt(level/2 + 0.5, pred$df) :"
+"2"," NaNs produced
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," Chernobyl! trL>n 6
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," Chernobyl! trL>n 6
+"
+"2","Warning in sqrt(sum.squares/one.delta) :"
+"2"," NaNs produced
+"
+"2","Warning in stats::qt(level/2 + 0.5, pred$df) :"
+"2"," NaNs produced
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," Chernobyl! trL>n 6
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," Chernobyl! trL>n 6
+"
+"2","Warning in sqrt(sum.squares/one.delta) :"
+"2"," NaNs produced
+"
+"2","Warning in stats::qt(level/2 + 0.5, pred$df) :"
+"2"," NaNs produced
+"
+"2","Warning in max(ids, na.rm = TRUE) :"
+"2","
+ "
+"2"," no non-missing arguments to max; returning -Inf
+"
+"2","Warning in max(ids, na.rm = TRUE) :"
+"2","
+ "
+"2"," no non-missing arguments to max; returning -Inf
+"
+"2","Warning in max(ids, na.rm = TRUE) :"
+"2","
+ "
+"2"," no non-missing arguments to max; returning -Inf
+"
+"2","Warning in max(ids, na.rm = TRUE) :"
+"2","
+ "
+"2"," no non-missing arguments to max; returning -Inf
+"

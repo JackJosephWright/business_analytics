@@ -1,0 +1,49 @@
+---
+title: "Final Proposal"
+author: "Kenan Sooklall, Jack Wright, Rachel Greenlee, Sean Connin, Daniel Moscoe, Stefano Biguzzi, Mustafa Telab"
+date: "10/22/2021"
+output:
+  tufte::tufte_handout: default
+  tufte::tufte_html: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#!# I like the Tufte layout. #!#
+
+## GStore, Revenue per Customer Prediction
+
+For our final project, we will be looking at the kaggle #!# Kaggle #!# competition `Google Analytics Customer Review Prediction` where we will *predict revenue per customer* for the Google store#!#,#!# GStore.
+
+In this competition, you’re #!#we're#!# challenged to analyze the Google Merchandise Store #!# delete this (also known as GStore, where Google swag is sold)#!# customer dataset to predict revenue per customer. #!#Delete this Hopefully, the outcome will be more actionable operational changes and a better use of marketing budgets for those companies who choose to use data analysis on top of their data.#!#  #!#Understanding patterns in customer revenue can help guide marketing strategy, as well as lend insight into how customer behavior changes over time.#!#
+
+## Why is this important?
+
+It is a widely held belief that 80% of a business' revenue comes from 20% of their customers, also known as the *80/20 rule*. If we are able to predict revenue per customer, then we should be able to identify this most important 20% of a stores customers.  We selected a kaggle #!#Kaggle#!# competition because of the hold out test set which will allow us to gauge our model accuracy. #!#But we could do this with most any dataset. How about, "We selected a Kaggle competition so that, in addition to the feedback gathered from our model's performance on a holdout set, we will also be able to learn from how other teams approached this problem. Seeing others' work after we complete ours will let us know which of our methods were most successful, and what strategies we might consider in future work.#!#
+
+
+## Background
+
+Papers on predicting revenue per customer, or *customer lifetime value*#!#,#!# prescribe a lot of the same techniques that we have become accustomed to.#!#: tidying, exploration#!#, model building and analysis. But there are a few features unique to predicting future spending that we may choose to look at.
+
+**activity analysis**: #!#**Activity Analysis**#!#
+
+As highlighted in the paper [Predictive Modeling Using Transactional Data](https://www.capgemini.com/wp-content/uploads/2017/07/Predictive_Modeling_Using_Transactional_Data.pdf), activity analysis sets a time frame for which a customer can be defined as inactive and can be used to model attrition of a business. Maybe we can leverage this into a dummy variable to predict future spending. 
+
+**Cohort and Trend Analysis**:
+
+There seems to be some trend in future revenue prediction between *attriters* and *high transactors*. This makes intuitive sense that people who have spent more, will spend more in the future. #!#So the trend is an inverse trend? Attriters are people who stop spending.#!# It might be interesting to give this a time dimension as well as just a scalar quality. 
+
+**Predictions on groups with varying amounts of data**:
+
+In the paper [Predictive Profiles for Transaction Data using Finite Mixture
+Models](http://www.datalab.uci.edu/papers/profiles.pdf), The authors bring up the problem of making predictions on transactors with low amounts of data (say one purchase only). They recommend using *Bayesian estimation for learning predictive profiles*. In essence, we can create different predictive profiles, or models, depending on how much data we have about the transactor. For example, a transactor with a low amount of information (one purchase) would have a more general model to the data applied, while as a frequent transactor could have a much more data driven model. 
+
+This technique is generally used in machine learning, but I don't see why we couldn't apply it to logistic regression. #!#It doesn't seem like this project is a logistic regression project, though. Customer revenue or customer lifetime value is a continuous variable. Or do we want to bucket the response variable? If so, let's say that. But then we're doing multinomial logistic regression...#!#
+
+## Methodology:
+
+We will begin is #!#with#!# feature engineering with some of the approaches mentioned above.
+We will start with both linear regression models and Random Forest decision trees to model the data. Based on our out come #!#outcome#!# from those models we can #!#extend our analysis to#!# different models or fine-tune those models. The final model will be submitted to kaggle #!#Kaggle#!# to see how it stacks up against the community.
