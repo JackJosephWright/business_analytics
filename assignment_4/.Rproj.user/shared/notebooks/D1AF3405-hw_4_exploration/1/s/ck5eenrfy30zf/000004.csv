@@ -1,0 +1,5 @@
+"0","df_crash<-mutate(YOJ_ZERO=case_when(YOJ>0~FALSE,
+                                    TRUE~TRUE))
+"
+"2","Error in eval_tidy(pair$lhs, env = default_env) : object 'YOJ' not found
+"
