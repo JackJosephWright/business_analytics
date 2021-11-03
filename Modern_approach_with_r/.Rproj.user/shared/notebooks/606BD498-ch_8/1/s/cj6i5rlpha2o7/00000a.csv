@@ -1,0 +1,4 @@
+"0","ggplot(df%>%group_by(InMichelin),aes(x=Decor,y=Service,color=factor(InMichelin) ))+geom_point()+geom_smooth(method='lm', se=TRUE)
+"
+"2","`geom_smooth()` using formula 'y ~ x'
+"

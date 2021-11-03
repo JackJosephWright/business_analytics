@@ -1,0 +1,26 @@
+"0","library(MASS)"
+"2","
+Attaching package: ‘MASS’
+
+"
+"2","The following object is masked from ‘package:dplyr’:
+
+    select
+
+"
+"0","confint(logitmod)"
+"2","Waiting for profiling to be done...
+"
+"1","           "
+"1","     2.5 %"
+"1","    97.5 %"
+"1","
+(Intercept)"
+"1","  5.575195"
+"1"," 18.737598"
+"1","
+temp       "
+"1"," -0.332657"
+"1"," -0.120179"
+"1","
+"

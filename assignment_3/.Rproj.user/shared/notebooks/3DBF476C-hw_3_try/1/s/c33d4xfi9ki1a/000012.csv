@@ -1,0 +1,7 @@
+"0","df_raw<-read.csv(here('crime-training-data_modified.csv'))"
+"0","#train data"
+"0","library(rsample)"
+"0","set.seed(123)"
+"0","data_split<-initial_split(df_raw,prop=.70)"
+"0","df<-training(data_split)"
+"0","df_test<-testing(data_split)"

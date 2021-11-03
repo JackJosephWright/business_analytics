@@ -1,3 +1,0 @@
-"0","m <- glm(prec_average ~ binomial_c, family = gaussian, data = master)"
-"0","p_specprec <-  augment(m, type.predict = ""response"")"
-"0",""

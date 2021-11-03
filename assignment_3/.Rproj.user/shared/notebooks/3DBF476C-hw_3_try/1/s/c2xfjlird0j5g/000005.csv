@@ -1,0 +1,8 @@
+"0","mmps(glm_list[['transform_log']])"
+"0",""
+"2","Error in smooth.construct.tp.smooth.spec(object, dk$data, dk$knots) : 
+  A term has fewer unique covariate combinations than specified maximum degrees of freedom
+"
+"2","Error in smooth.construct.tp.smooth.spec(object, dk$data, dk$knots) : 
+  A term has fewer unique covariate combinations than specified maximum degrees of freedom
+"

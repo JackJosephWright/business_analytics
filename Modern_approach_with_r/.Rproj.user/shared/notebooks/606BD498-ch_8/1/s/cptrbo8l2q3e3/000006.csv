@@ -1,0 +1,10 @@
+"0","m <- update(bigmodel, ~. - Age:Start - Number:Start -"
+"0","              "
+"0","glm.full<-update(glm.full,~.+log(Price))"
+"0","#rerun marginal models"
+"0",""
+"0","mmps(glm.full_2)"
+"2","Error: unexpected symbol in:
+""
+mmps""
+"

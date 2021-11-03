@@ -1,0 +1,7 @@
+"0","res_df<-res_df%>%mutate(p=as.factor(case_when(prediction>.5 ~1, TRUE~0)))%>%dplyr::select(-prediction)
+"
+"2","Error: Problem with `mutate()` column `p`.
+[34mi[39m `p = as.factor(case_when(prediction > 0.5 ~ 1, TRUE ~ 0))`.
+[31mx[39m object 'prediction' not found
+[90mRun `rlang::last_error()` to see where the error occurred.[39m
+"

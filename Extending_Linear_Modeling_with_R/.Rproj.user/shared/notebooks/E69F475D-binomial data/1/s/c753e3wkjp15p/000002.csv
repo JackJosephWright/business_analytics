@@ -1,0 +1,3 @@
+"0",""
+"0","d<-data.frame('logit'=fitted(mod1),'probit'=fitted(modp),'loglog'=fitted(modc))"
+"0","d%>%kbl%>%kable_classic_2()"

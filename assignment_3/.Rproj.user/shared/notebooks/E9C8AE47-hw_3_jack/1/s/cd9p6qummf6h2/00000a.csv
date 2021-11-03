@@ -1,6 +1,0 @@
-"0","df_box<-df%>%pivot_longer(!target,names_to='variable',values_to='val')
-"
-"2","Error: Can't subset columns that don't exist.
-[31mx[39m Column `target` doesn't exist.
-[90mRun `rlang::last_error()` to see where the error occurred.[39m
-"

@@ -1,0 +1,2 @@
+"0","df_crash<-df_crash%>%mutate(YOJ_ZERO=case_when(YOJ>0~FALSE,"
+"0","                                    TRUE~TRUE))"

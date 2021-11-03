@@ -1,0 +1,5 @@
+"0","df_1<-na.omit(df)"
+"0","df_crash<-df_1%>%select(-c(INDEX,TARGET_AMT))"
+"0",""
+"0","df_crash_base<-df_crash"
+"0",""

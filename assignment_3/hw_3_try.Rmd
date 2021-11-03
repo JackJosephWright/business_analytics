@@ -1,0 +1,192 @@
+---
+title: "HW_3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(GGally)
+library(MASS)
+library(car)
+library(here)
+```
+
+
+
+##Data exploration
+
+
+```{r}
+df_raw<-read.csv(here('crime-training-data_modified.csv'))
+#train data
+library(rsample)
+set.seed(123)
+data_split<-initial_split(df_raw,prop=.70)
+df<-training(data_split)
+df_test<-testing(data_split)
+```
+
+
+Each row is an observation, so this is a `binary logistic regression`
+
+## variance e across Y=0, Y=1 for each predictor
+
+```{r}
+#grab a column of the df
+variance_df<-df%>%
+  group_by(target)%>%
+  summarise(across(zn:medv,list(v=var)))
+zero=unname(unlist(variance_df[1,])[-1])
+one=unname(unlist(variance_df[2,])[-1])
+variables=colnames(variance_df)[-1]
+var_df<-data.frame(v=variables,zero=zero,one=one)
+
+var_df<-var_df%>%mutate(abs_dif=abs(zero-one)/mean(zero))
+
+
+```
+
+
+
+make a general model
+
+```{r}
+glm.general<-glm(target~.,family=binomial(),data=df)
+summary(glm.general)
+```
+
+
+```{r}
+#model building
+
+glm_list<-list()
+
+glm_list[['general']]<-glm(
+  target~.,
+  family=binomial(),
+  data=df
+)
+#backward selection
+glm_list[['back']]<-step(glm_list[['general']])
+
+```
+
+```{r}
+summary(glm_list[['back']])
+```
+
+```{r}
+mmps(glm_list[['back']])
+```
+
+## Transformations
+
+If there is a difference between the variance of variable $x_i$ across the values of the response variable, it is reccomended to include a log term of that variable
+
+lets look at the variances between Y=0 and Y=1
+
+```{r}
+#grab a column of the df
+variance_df<-df%>%
+  group_by(target)%>%
+  summarise(across(zn:medv,list(v=var)))
+zero=round(unname(unlist(variance_df[1,])[-1]),2)
+one=round(unname(unlist(variance_df[2,])[-1]),2)
+variables=colnames(variance_df)[-1]
+var_df<-data.frame(v=variables,zero=zero,one=one)
+
+library(kableExtra)
+var_list<-c('zn','nox','age','dis','rad','tax','ptratio','medv')
+
+var_df%>%kbl()%>%kable_classic_2()
+
+```
+we can see that zn nox tax age and medv all have very differnet varainces across the two values of Y. It is reccomended to include a log() term in the regression to counteract this
+
+
+```{r}
+glm_list[['transform_log']]<-glm(target~zn+indus+chas+nox+rm+age+dis+rad+tax+ptratio+lstat+medv+log(zn+.1)+log(nox+.1)+log(tax+.1)+log(age+.1)+log(medv+.1),family=binomial(),data=df)
+summary(glm_list[['transform_log']])
+```
+```{r}
+mmps(glm_list[['transform_log']])
+```
+
+
+```{r}
+ggplot(df%>%group_by(factor(target)),aes(x=ptratio,y=rm,color=factor(target)))+geom_point()+geom_smooth(method='lm',se=FALSE)
+```
+ 
+ since the regressions are the basically the same across the two groups, we do not need to add an interaction term
+
+
+
+create a backwards selected transformed glm
+```{r}
+glm_list[['trans_select']]<-step(glm_list[['transform_log']])
+```
+
+```{r}
+halfnorm(residuals(glm_list[['trans_select']]))
+```
+```{r}
+summary(glm_list[['trans_select']])
+```
+
+
+evaluate AIC
+```{r}
+
+lapply(
+  X=glm_list,
+  FUN = AIC
+)
+```
+```{r}
+pchisq(193-145,1,lower.tail=FALSE)
+```
+
+```{r}
+a<-lapply(glm_list, function(x){
+  dev<-summary(x)$deviance
+  df_res<-summary(x)$df.residual
+  ls<-list(deviance=dev,degrees_freedom=df_res)
+  return(ls)
+  })
+```
+
+
+
+## Predicting
+
+```{r}
+df_predict<-df_test%>%dplyr::select(-target)
+predictions<-predict(glm_list[['trans_select']],newdata=df, type='response')
+
+res_df<-data.frame(t=df$target,prediction=predictions)
+res_df<-res_df%>%mutate(p=as.factor(case_when(prediction>.5 ~1, TRUE~0)))%>%dplyr::select(-prediction)
+```
+
+```{r}
+library(caret)
+confusionMatrix(as.factor(res_df$p),as.factor(res_df$t))
+```
+
+
+```{r}
+predictions<-predict(glm_list[['trans_select']],newdata=df_predict, type='response')
+p=as.factor(case_when(predictions>.5 ~1, TRUE~0))
+confusionMatrix(as.factor(p),as.factor(df_test$target))
+
+```
+
+
+```{r}
+predictions<-predict(glm_list[['trans_select']],newdata=df_predict, type='response')
+```
+

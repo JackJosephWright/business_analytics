@@ -1,0 +1,5 @@
+"0","x<-seq(-2,8,0.2)"
+"0","p1<-ilogit(mod1$coefficients[1]+mod1$coefficients[2]*x)"
+"0","pp<-pnorm(modp$coefficients[1]+modp$coefficients[2]*x)"
+"0","pc<-1-exp(-exp((modc$coefficients[1]+modc$coefficients[2]*x)))"
+"0","plot(x,p1,type='l', ylab = ""Probability"",xlab='Dose')"

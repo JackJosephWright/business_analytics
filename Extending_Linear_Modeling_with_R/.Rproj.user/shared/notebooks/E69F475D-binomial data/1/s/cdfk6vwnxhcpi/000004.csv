@@ -1,0 +1,12 @@
+"0","library(kableExtra)"
+"2","
+Attaching package: ‘kableExtra’
+
+"
+"2","The following object is masked from ‘package:dplyr’:
+
+    group_rows
+
+"
+"0","data(""babyfood"")"
+"0","xtabs(disease/(disease+nondisease)~sex+food, babyfood)%>%kbl()%>%kable_classic()"

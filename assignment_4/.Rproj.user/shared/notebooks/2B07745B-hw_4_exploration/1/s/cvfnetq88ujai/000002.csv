@@ -1,0 +1,1 @@
+"0","df_crash$EDUCATION<-as.factor(as.numeric(factor(df_crash$EDUCATION, levels=c('<High School','z_High School','Bachelors','Masters','PhD'),ordered=TRUE)))"

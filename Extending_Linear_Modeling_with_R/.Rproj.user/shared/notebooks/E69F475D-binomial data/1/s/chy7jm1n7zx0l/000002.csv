@@ -1,0 +1,3 @@
+"0","data(bliss)"
+"0","modl<-glm(cbind(dead,alive)~conc, family=binomial(), data=bliss)"
+"0","lmodsum<-summary(modl)"

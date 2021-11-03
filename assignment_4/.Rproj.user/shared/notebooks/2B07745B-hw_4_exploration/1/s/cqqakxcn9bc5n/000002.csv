@@ -1,0 +1,2 @@
+"0","df_crash<-df_crash%>%mutate(OLDCLAIM_ZERO=case_when(OLDCLAIM==0~TRUE,"
+"0","                                  TRUE~FALSE))"

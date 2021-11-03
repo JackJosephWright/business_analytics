@@ -1,0 +1,140 @@
+---
+title: "rate modeling Poisson Example"
+author: "Jack Wright"
+date: "10/27/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+data(danishlc, package='GLMsData')
+
+#make a rate column
+
+danishlc$Rate<-danishlc$Cases/danishlc$Pop*1000
+#make ages factors
+#have to manually change the order
+danishlc$Age<-ordered(danishlc$Age, levels=c("40-54", "55-59", "60-64", "65-69", "70-74",">74"))
+
+#abbreviate the city names
+
+danishlc$City<-abbreviate(
+  names.arg=danishlc$City,
+  minlength = 1
+)
+
+xtabs(
+    formula=Rate~Age+City, data=danishlc
+  )
+```
+
+
+```{r}
+ggplot(danishlc,aes(x=Age,y=Rate, group=City,color=City))+geom_smooth()
+```
+looks like city factor might be multiplicative
+
+```{r}
+options(
+  contrasts = c('contr.treatment','contr.treatment')
+)
+
+list_glm<-list()
+
+list_glm[['City_Age']]<-glm(
+  formula=Cases~offset(log(Pop))+City*Age,
+  family = poisson,
+  data=danishlc
+)
+list_glm[['Age']]<-glm(
+  formula = Cases~offset(log(Pop))+Age,
+  family = poisson,
+  data=danishlc
+)
+#instead of making a new vector for every level of age, just make a vector with each age value
+danishlc$Age_Numeric<-rep(
+  x=c(40,55,60,65,70,75),
+  times=4
+)
+list_glm[['Age_Numeric']]<-glm(
+  formula=Cases~offset(log(Pop))+Age_Numeric,
+  family=poisson,
+  data=danishlc
+)
+
+#if you look at the downward movement on interaction graph, it could be a quadratic interaction, which is why we use a degree 2 polynomial on age
+#poly(Age_Numeric,2) is the same as age+age^2 (a quadratic) except they are orthogonal
+list_glm[["Age_Numeric_2"]]<-glm(
+  formula=Cases~offset(log(Pop))+poly(Age_Numeric,2),
+  family=poisson,
+  data=danishlc
+)
+```
+
+```{r}
+lapply(
+  X=list_glm,
+  #anova with test=Chisq will analyze deviance instead of sum of squares
+  FUN = function(x) anova(
+    object =x,
+    test='Chisq'
+  )
+)
+```
+
+I want to be able to look at all 4 models to compare
+
+
+USE AIC
+
+how much info is lost from data, low is good
+
+```{r}
+lapply(
+  X=list_glm,
+  FUN = AIC
+)
+```
+
+
+
+Goodness-of-fit tests
+
+null hypothesis :have a good model
+
+H_A: do not have a good model
+
+```{r}
+lapply(
+  X=list_glm,
+  FUN = function(x){
+    deviance_x<-deviance(
+      object = x
+    )
+    df.residual_x<-df.residual(
+      object = x
+    )
+    p.value = pchisq(
+      q=deviance_x,
+      df = df.residual_x,
+      lower.tail = FALSE
+    )
+    v<-c(
+      deviance = deviance_x,
+      df = df.residual_x,
+      p.value = p.value
+    )
+    return(v)
+  }
+)
+```
+diagnostic plots
+
+```{r}
+resid_panel(list_glm[['Age']],plots='all')
+```
+

@@ -1,0 +1,2 @@
+"0","data(""hormone"")"
+"0","plot(estrogen~androgen, data=hormone, pch=as.character(orientation))"

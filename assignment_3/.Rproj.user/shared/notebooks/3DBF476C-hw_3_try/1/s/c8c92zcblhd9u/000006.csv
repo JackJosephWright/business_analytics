@@ -1,0 +1,6 @@
+"0","a<-lapply(glm_list, function(x){"
+"0","  dev<-summary(x)$deviance"
+"0","  df_res<-summary(x)$df.residual"
+"0","  ls<-list(deviance=dev,degrees_freedom=df_res)"
+"0","  return(ls)"
+"0","  })"

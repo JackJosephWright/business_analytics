@@ -1,0 +1,129 @@
+"0","df<-data.frame(elogits=elogits,period=troutegg$period,location=troutegg$location)"
+"0","ggplot(df,aes(x=period,y=elogits,group=location,color=location))+geom_point()+geom_smooth(se=FALSE, method=""loess"", span=0.5)+ggtitle('interaction plot')"
+"2","`geom_smooth()` using formula 'y ~ x'
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," span too small.   fewer data values than degrees of freedom.
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," pseudoinverse used at 0.985
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," neighborhood radius 1.015
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," reciprocal condition number  0
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," There are other near singularities as well. 1.0302
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," span too small.   fewer data values than degrees of freedom.
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," pseudoinverse used at 0.985
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," neighborhood radius 1.015
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," reciprocal condition number  0
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," There are other near singularities as well. 1.0302
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," span too small.   fewer data values than degrees of freedom.
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," pseudoinverse used at 0.985
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," neighborhood radius 1.015
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," reciprocal condition number  0
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," There are other near singularities as well. 1.0302
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," span too small.   fewer data values than degrees of freedom.
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," pseudoinverse used at 0.985
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," neighborhood radius 1.015
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," reciprocal condition number  0
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," There are other near singularities as well. 1.0302
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," span too small.   fewer data values than degrees of freedom.
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," pseudoinverse used at 0.985
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," neighborhood radius 1.015
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," reciprocal condition number  0
+"
+"2","Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,  :"
+"2","
+ "
+"2"," There are other near singularities as well. 1.0302
+"

@@ -1,0 +1,10 @@
+"0","library(ggResidpanel)"
+"0","resid_interact(bmod, plots='all')"
+"2","Warning in geom2trace.default(dots[[1L]][[1L]], dots[[2L]][[1L]], dots[[3L]][[1L]]) :"
+"2","
+ "
+"2"," geom_GeomFunction() has yet to be implemented in plotly.
+  If you'd like to see this geom implemented,
+  Please open an issue with your example code at
+  https://github.com/ropensci/plotly/issues
+"
