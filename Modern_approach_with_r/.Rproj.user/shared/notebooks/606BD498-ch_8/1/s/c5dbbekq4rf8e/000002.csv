@@ -1,1 +1,0 @@
-"0","yFood<-predict(glm.model, list(Food=xFood), type='response')"

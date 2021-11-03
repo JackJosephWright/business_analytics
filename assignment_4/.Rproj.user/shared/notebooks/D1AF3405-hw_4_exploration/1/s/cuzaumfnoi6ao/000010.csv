@@ -1,4 +1,0 @@
-"0","ggplot(df_crash,aes(x=as.numeric(EDUCATION),group=TARGET_FLAG,color=TARGET_FLAG))+geom_histogram(position='dodge')
-"
-"2","`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-"

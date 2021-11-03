@@ -1,5 +1,0 @@
-"0","library(kableExtra)"
-"0","p<-seq(0,1,.1)"
-"0","alpha<-(1-p)/p"
-"0","df<-data.frame(probability=p,alpha=alpha)"
-"0","df%>%kbl()%>%kable_classic_2()"

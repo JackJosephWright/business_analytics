@@ -1,4 +1,0 @@
-"0","P_Y_1=mean(df$InMichelin==1)"
-"0","P_Y_0=1-P_Y_1"
-"0","df_y_1<-df%>%filter(InMichelin==1)"
-"0","ggplot(df, aes(x=Food, y=InMichelin))+geom_jitter(height=.1,width=.1)+geom_density(aes(x=Food,y=..density..,color=as.factor(InMichelin),fill=as.factor(InMichelin),alpha=.5))"

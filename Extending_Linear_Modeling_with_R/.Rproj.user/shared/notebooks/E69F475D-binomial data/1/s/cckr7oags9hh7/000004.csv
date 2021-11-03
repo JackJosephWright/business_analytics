@@ -1,8 +1,0 @@
-"0",""
-"0","mod1<-glm(cbind(dead,alive)~conc,family=binomial(),data=bliss)"
-"0","modp <- glm(cbind(dead, alive) ~ conc,"
-"0","family=binomial(link=probit),"
-"0"," data=bliss) "
-"0","modc<-glm(cbind(dead, alive) ~ conc,"
-"0","family=binomial(link=cloglog),"
-"0"," data=bliss) "

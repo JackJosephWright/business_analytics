@@ -1,5 +1,0 @@
-"0","elogits <-"
-"0","log((troutegg$survive+0.5)/(troutegg$total-"
-"0"," troutegg$survive+0.5))"
-"0","with(troutegg,interaction.plot(period,location,elogits)"
-"0",") "

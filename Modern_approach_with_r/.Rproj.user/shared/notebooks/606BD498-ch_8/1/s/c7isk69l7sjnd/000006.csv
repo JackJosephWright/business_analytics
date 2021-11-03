@@ -1,6 +1,0 @@
-"0","library(ggpubr)"
-"0","res_p<-residuals(glm.model,'pearson')"
-"0","res<-residuals(glm.model)"
-"0","a<-ggplot(df,aes(x=Food,y=res_p))+geom_point()+ggtitle('Pearson Residuals')"
-"0","b<-ggplot(df,aes(x=Food,y=res))+geom_point()+ggtitle('standardized Residuals')"
-"0","ggarrange(b,a)"

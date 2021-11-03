@@ -1,1 +1,0 @@
-"0","ggplot(df,aes(x=as.factor(InMichelin),y=Food))+geom_boxplot()"

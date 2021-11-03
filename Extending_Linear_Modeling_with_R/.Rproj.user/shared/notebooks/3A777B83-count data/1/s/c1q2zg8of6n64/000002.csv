@@ -1,7 +1,0 @@
-"0","(dp <-
-sum(residuals(sal.fit2,type=""pearson"")^2)/sal.fit1$df.res)
-"
-"1","[1]"
-"1"," 2.206561"
-"1","
-"

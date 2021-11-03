@@ -1,4 +1,0 @@
-"0","beta_0<-as.numeric(glm.M_1$coefficients[1])"
-"0","beta_1<-as.numeric(glm.M_1$coefficients[2])"
-"0","x_1<-df$Food"
-"0","plot(1/exp(-(beta_0+beta_1*x)))"

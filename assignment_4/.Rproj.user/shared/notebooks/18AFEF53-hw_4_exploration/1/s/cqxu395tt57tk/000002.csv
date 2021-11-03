@@ -1,0 +1,20 @@
+"0","library(car)"
+"2","Loading required package: carData
+"
+"2","
+Attaching package: ‘car’
+
+"
+"2","The following object is masked from ‘package:dplyr’:
+
+    recode
+
+"
+"2","The following object is masked from ‘package:purrr’:
+
+    some
+
+"
+"0","mmps(glm_list[['back']])"
+"0",""
+"0",""

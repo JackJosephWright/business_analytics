@@ -1,2 +1,0 @@
-"0","library(tidyverse)"
-"0","ggplot(orings, aes(y=damage/6,x=temp))+geom_point()+xlab('Temperature')+ylab('Prob of Damage')"

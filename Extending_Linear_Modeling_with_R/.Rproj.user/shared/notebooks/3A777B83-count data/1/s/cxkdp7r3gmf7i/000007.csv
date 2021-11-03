@@ -1,1 +1,0 @@
-"0","lines(x = salmonella$dose, y= predict.glm(sal.fit1, type = ""response"") )"

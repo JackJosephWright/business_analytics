@@ -1,0 +1,151 @@
+---
+title: "ch_4 weighted least squares"
+author: "Jack Wright"
+date: "11/3/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(here)
+```
+
+
+coping with nonconstant error variance *weighted least squares* (WLS)
+
+
+## straight line regression based on weighted least squares
+
+
+consider standard regression model
+
+y=beta+beta*x+e
+
+e have mean 0 but variance $\sigma^2/w_i$ when w_i is very large than the variance of e is close to zero. In this situation the estimates of regression parameters should be such that the fitted line at x_i should be very close to y_i (close to the data. 
+
+i think this means that the specific variance at e_i is a product of the variance of the system divided by its weight.
+
+when w_i is very small, then the variance of e_i is very large. 
+
+We need to take into account the weights $w_i$ when estimateing the regression parameters 
+$\beta_0~and~\beta_1$
+
+
+achieved by considering the following weighted version of the residual sum of squares
+
+$$WRSS=\sum w_i(y_i-\hat{y_{wi}})^2=\sum w_i(y_i-b_o-b_1x_1)^2$$
+
+
+WRSS, the larger the value of w_i the more the ith case is taken into account. 
+
+to get the weighted least squares estimates, we seek the values of b_0 and b_1 to minimize WRSS.
+
+MATH
+
+*weighted least squares estimate*
+
+$$\hat{\beta_{0W}}=\frac{\sum w_iy_i}{\sum w_i}-\hat{\beta_{1W}}\frac{\sum w_ix_i}{\sum w_i}=\bar{y_w}-\hat{\beta_{1w}}\bar{x_w}$$
+
+
+EX:
+
+developing bid on contract cleaning
+
+develop a regression to model the relationship between number of rooms cleaned (Y) and number of crews(X) and predict the number of rooms that can be cleaned by 4 and 16 crews. 
+
+
+x-var: number of crews is discrete. 
+
+y-var: multiple measurements of the Y-variable at each value of x. 
+
+in this case it is possible to directly calculate the standard deviation of Y at each value of x. 
+
+
+so
+
+$$Y_i=\beta_0+\beta_1 x_1+e_i$$
+
+
+where e_i have mean - but variance $sigma^2/w_i$
+
+in this case we take
+
+$$w_i=\frac{1}{Standard~Deviation(Y_i)^2}$$
+(are we forcing the total variance to be 1? and calucluating what weights are needed to make this happen?)
+```{r}
+file<-here('data','cleaningwtd.txt')
+df<-read.table(file,header=TRUE)
+
+summary(lm(formula=Rooms~Crews,weights=1/StdDev^2,data=df))
+```
+
+
+I think we are forcing the variance to be 1... I keep putting in different varainces and the residual standard error is about the square of it. 
+
+
+
+
+## Prediction intervals for weighted least squares
+
+
+theres a function in R for predicting a weight, i guess it just uses the variance of the model. 
+
+
+## leverage for weighted least squares
+
+
+ith fitted or predicted value from weighted least squares 
+(just uses the predicted betas based on the weights?)
+
+reality check: if all weights are equal then WLS=LS
+
+
+
+## using least squares to calculate weighted least squares
+
+
+if you multiply through $\sqrt(w_i)$ the weights will cancel out in the variance of the error, leaving you with just the regular unweighted variance. 
+
+
+So we can calculate the weighted least squares fit of the model (this is a multiple linear regression, hence 2 x's)
+
+$$Y_{newi}=\sqrt(w_i)Y_i$$
+$$x_{1NEWi}=\sqrt{w_i}$$
+
+$$x_{2NEWi}=\sqrt{w_i}$$
+
+$$e_{NEWi}=\sqrt{w_i}e_i$$
+
+so basically you can account for the weights by baking them into a new model, modifying them by that squared weight
+
+EX:
+
+contract cleaning bid
+
+
+recall
+
+
+$$w_i=\frac{1}{Standard~Deviation(Y_i)^2}$$
+
+use the estimated or sample standard deviations from the data to produce weights 
+
+
+
+the results are the same if you calculate new values including the weights
+
+
+## Defining residuals for weighted least squares
+
+
+## use of weighted least squares
+
+Used in an important special case when Y_i is the average or the median of n observatiions
+
+$$Var(Y_i)\approx\frac{1}{n_i}$$
+
+in this case we take the weight i to be n_i (number of observations at that level?)

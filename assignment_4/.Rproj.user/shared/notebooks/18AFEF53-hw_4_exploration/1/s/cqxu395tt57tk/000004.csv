@@ -1,0 +1,17 @@
+"2","Error in names(dat) <- object$term : 
+  'names' attribute [1] must be the same length as the vector [0]
+"
+"2","Error in names(dat) <- object$term : 
+  'names' attribute [1] must be the same length as the vector [0]
+"
+"2","Error in names(dat) <- object$term : 
+  'names' attribute [1] must be the same length as the vector [0]
+"
+"2","Error in names(dat) <- object$term : 
+  'names' attribute [1] must be the same length as the vector [0]
+"
+"2","Warning in mmps(glm_list[[""back""]]) :"
+"2","
+ "
+"2"," Interactions and/or factors skipped
+"

@@ -1,3 +1,0 @@
-"0","ggplot(df, aes(x=Food, y=proportion))+geom_point()+geom_smooth(aes(x=xFood,y=yFood))"
-"2","`geom_smooth()` using method = 'loess' and formula 'y ~ x'
-"

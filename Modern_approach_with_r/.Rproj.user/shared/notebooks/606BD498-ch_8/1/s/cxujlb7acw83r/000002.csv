@@ -1,3 +1,0 @@
-"0","library(here)"
-"0","file<-here('data','MichelinNy.csv')"
-"0","df<-read.csv(file, header=TRUE)"

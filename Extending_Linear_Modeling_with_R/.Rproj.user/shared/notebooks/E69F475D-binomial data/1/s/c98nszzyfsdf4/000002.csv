@@ -1,2 +1,0 @@
-"0","matplot(x,cbind(pc/pl,(1-pc)/(1-"
-"0","pl)),type=""l"",xlab=""Dose"",ylab=""Ratio"")"

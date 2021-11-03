@@ -1,3 +1,0 @@
-"0","library(kableExtra)"
-"0","data(""babyfood"")"
-"0","xtabs(disease/(disease+nondisease)~sex+food, babyfood)%>%kbl()%>%kable_classic()"

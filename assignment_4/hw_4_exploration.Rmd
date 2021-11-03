@@ -566,9 +566,23 @@ lapply(
 diagnostic plots
 
 
+```{r}
+library(car)
+mmps(glm_list[['back']])
+```
 
 
-lots of improvement possible here.
+```{r}
+summary(glm_list[['back']])
+
+```
+
+
+
+```{r}
+df_select<-df_crash%>%select(c(KIDSDRIV,YOJ,PARENT1,HOME_VAL,MSTATUS,EDUCATION,JOB,TRAVTIME,CAR_TYPE,OLDCLAIM,REVOKED,YOJ_ZERO,OLDCLAIM_ZERO))
+```
+
 
 
 

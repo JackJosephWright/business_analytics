@@ -1,0 +1,595 @@
+---
+title: "assignment 4 car insurance"
+author: "Jack Wright"
+date: "11/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+library(tidyverse)
+library(GGally)
+library(here)
+
+```
+
+## Load Data
+
+```{r}
+file<-here('data','insurance_training_data.csv')
+df_raw<-read_csv(file)
+```
+
+
+## Data Exploration
+
+```{r}
+summary(df_raw)
+```
+
+### Fixing columns with dollar values to numeric
+
+```{r}
+#get rid of all dollar signs and commas in the prices
+
+df<-mutate_if(as_tibble(df_raw),
+          is.character,
+          str_replace_all, pattern='\\$|,',replacement='')
+
+
+#convertito numeric if the column seems numeric
+is_all_numeric <- function(x) {
+  !any(is.na(suppressWarnings(as.numeric(na.omit(x))))) & is.character(x)
+}
+df<-df %>% 
+  mutate_if(is_all_numeric,as.numeric) 
+```
+
+### converting factor columns
+```{r}
+#converting to factor
+
+factor_list<-list('TARGET_FLAG',"MSTATUS",'SEX','EDUCATION','JOB','CAR_USE','URBANICITY','CAR_TYPE','PARENT1','RED_CAR','REVOKED')
+df<-df %>%
+       mutate_each_(funs(factor(.)),factor_list)
+str(df)
+```
+
+
+
+```{r}
+df_1<-na.omit(df)
+df_crash<-df_1%>%select(-c(INDEX,TARGET_AMT))
+
+df_crash_base<-df_crash
+
+```
+
+
+## Logistic regression for if a person will crash their car
+
+
+EXPLORE DATA
+
+## Exploration with no NA's for the moment
+
+*KIDSDRIV*
+
+```{r}
+#function to make a hist vs target flag
+make_box <- function(data=df_crash, var = "AGE", xvar = "TARGET_FLAG") {
+    p <- ggplot(data,
+                aes_string(y = var,color=xvar)) +
+             geom_boxplot()+ggtitle(paste(var,'by crash condition'))
+}
+make_hist <- function(data=df_crash, var = "AGE", yvar = "TARGET_FLAG") {
+    p <- ggplot(data,
+                aes_string(x=var,color=yvar, alpha=.5,fill=yvar)) +
+             geom_histogram()+ggtitle(paste(var,'by crash condition'))
+}
+make_i<-function(data=df_crash,xvar='KIDSDRIV',yvar='HOMEKIDS',cond='TARGET_FLAG'){
+  p<-ggplot(data,
+            aes_string(x=xvar,y=yvar,color=cond))+
+    geom_point()+geom_smooth(method='lm', se=FALSE)
+}
+make_bar<-function(data=df_crash,var='MSTATUS',yvar='HOMEKIDS',cond='TARGET_FLAG'){
+  p<-ggplot(data,
+            aes_string(x=var,color=cond,fill=cond))+geom_bar(position='dodge')+ggtitle(paste(var,'by crash condition'))
+}
+
+
+```
+
+*KIDSDRIV*
+
+```{r}
+(x<-make_hist(var="KIDSDRIV"))
+#(y<-make_box(var='KIDSDRIV'))
+```
+
+
+The number of kid drivers dont seem to affect the probability of crashing the car.
+
+lets run a fisher exact test to determine if the distributions are different. 
+
+```{r}
+t<-table(df_crash$TARGET_FLAG,df_crash$KIDSDRIV)
+fisher.test(table(df_crash$TARGET_FLAG,df_crash$KIDSDRIV))
+prop.table(t)
+
+```
+
+
+
+
+This means that there is a difference between kids driving and the amount a car is crashed, so we wont immediatley exclude it.
+
+
+*AGE*
+
+```{r}
+(x<-make_box(var='AGE'))
+```
+
+The standard deviations look approximately equal, so we wont make any changes or exclude *AGE* at the moment
+
+
+*HOMEKIDS*
+
+```{r}
+(make_hist(var='HOMEKIDS'))
+```
+
+As for *KIDSDRIV* there seems to be a larger probability of not crashing if you have zero kids. Lets look at an interaction plot between the two variables
+
+```{r}
+(make_i())
+```
+
+Im not sure if we are allowed to do this with integer data, but it does look like there is a correlation, and since the regressions intersect it might make sense to add an interaction term in our regression
+
+
+*YOJ*
+
+This is *years on job*, the intuition is that the longer people stay on the job are less likely to crash. 
+
+
+
+```{r}
+(make_box(var='YOJ'))
+```
+
+
+This interaction doesnt seem to be born out by the boxplots, maybe looking at a histogram would help.
+
+```{r}
+(make_hist(var='YOJ'))
+```
+
+
+use a KS test to see if the data comes from the same distribution
+
+```{r}
+YOJ_crash<-df_crash%>%dplyr::filter(TARGET_FLAG==1)%>%pull(YOJ)
+YOJ_no<-df_crash%>%dplyr::filter(TARGET_FLAG==0)%>%pull(YOJ)
+ks.test(as.vector(YOJ_crash),as.vector(YOJ_no))
+```
+
+it does not, so it cannot be discounted. Now lets looks at the data OUTSIDE of zero years. Maybe that comes from the same distribution
+
+```{r}
+YOJ_crash<-df_crash%>%dplyr::filter(TARGET_FLAG==1 & YOJ>0)%>%pull(YOJ)
+YOJ_no<-df_crash%>%dplyr::filter(TARGET_FLAG==0 & YOJ>0)%>%pull(YOJ)
+ks.test(as.vector(YOJ_crash),as.vector(YOJ_no))
+```
+
+Interestingly, the data OUTSIDE of the zero values DO come from the same distribution. We will add a YOJ_ZERO factor for our analysis. 
+
+```{r}
+df_crash<-df_crash%>%mutate(YOJ_ZERO=case_when(YOJ>0~FALSE,
+                                    TRUE~TRUE))
+```
+
+
+*INCOME*
+
+```{r}
+(make_box(var='INCOME'))
+```
+
+Again, there seems to be a slight difference between the means and standard deviations, but lets check if this is just a function of more zeros being added.
+
+
+```{r}
+(make_hist(var='INCOME'))
+```
+
+It does look like there are slightly more zero income proportionally for car crashers. Lets exclude them and run a KS test again
+
+```{r}
+INCOME_crash<-df_crash%>%dplyr::filter(TARGET_FLAG==1 & INCOME>0)%>%pull(INCOME)
+INCOME_no<-df_crash%>%dplyr::filter(TARGET_FLAG==0 & INCOME>0)%>%pull(INCOME)
+ks.test(as.vector(INCOME_crash),as.vector(INCOME_no))
+
+```
+
+
+*PARENT1*
+
+```{r}
+ggplot(df_crash,aes(x=PARENT1,color=TARGET_FLAG,fill=TARGET_FLAG))+geom_bar(position='dodge')
+```
+
+
+1 parent households seem MUCH more likely to have a crash. The correlation seems strong enough visually, that futher testing wont be needed
+
+*HOME_VAL*
+
+```{r}
+(make_box(var='HOME_VAL'))
+```
+
+
+this might be better observed as a histogram
+
+```{r}
+(make_hist(var='HOME_VAL'))
+```
+
+Lets look at whether these are from the same distribution
+
+```{r}
+HOME_VAL_crash<-df_crash%>%dplyr::filter(TARGET_FLAG==1 & HOME_VAL>100)%>%pull(HOME_VAL)
+HOME_VAL_no<-df_crash%>%dplyr::filter(TARGET_FLAG==0 & HOME_VAL>100)%>%pull(HOME_VAL)
+ks.test(as.vector(HOME_VAL_crash),as.vector(HOME_VAL_no))
+
+```
+
+Even when controlling for zeros, it looks like there is a meaningful difference between these two distributions. No changes are advised at the moment. 
+
+
+*MSTATUS*
+
+```{r}
+(make_bar())
+```
+
+There seems to be a significant difference in MSTATUS and probability of crashing. No further investigation is needed at the moment, and no transformations are reccomended
+
+
+
+*SEX*
+
+```{r}
+(make_bar(var='SEX'))
+```
+
+
+Interesting that there seem to be a lot more male drivers, but the distributions look fairly similar, lets perform a chisq to determine if they are different distributions
+
+```{r}
+t<-table(df_crash$TARGET_FLAG,df_crash$SEX)
+chisq.test(t)
+```
+
+The null hypothesis cannot be rejected, so we will reccomend to DROP the sex variable. 
+
+
+*Education*
+
+```{r}
+levels(df_crash$EDUCATION)
+```
+
+Education levels are ordinal, so we should order them and convert to numeric levels for simplicity
+
+```{r}
+df_crash$EDUCATION<-as.factor(as.numeric(factor(df_crash$EDUCATION, levels=c('<High School','z_High School','Bachelors','Masters','PhD'),ordered=TRUE)))
+```
+
+
+```{r}
+(make_bar(var='EDUCATION'))
+```
+
+```{r}
+ggplot(df_crash,aes(y=(as.numeric(EDUCATION)^2),group=TARGET_FLAG,color=TARGET_FLAG))+geom_boxplot()
+
+ggplot(df_crash,aes(x=as.numeric(EDUCATION),group=TARGET_FLAG,color=TARGET_FLAG))+geom_histogram(position='dodge')
+```
+
+When treating the education levels as a numeric value, it is interesting that the median value is high school for crashers, and bachelors for non-crashers. The data isn't bimodal enough to justify using a HIGH_SCHOOL factor, but we might want to keep it as a numeric instead of a ordinal categorical. 
+
+
+
+
+```{r}
+chisq.test(table(df_crash$TARGET_FLAG,df_crash$EDUCATION))
+```
+
+*JOB*
+
+```{r}
+(make_bar(var='JOB'))
+```
+```{r}
+(t<-table(df_crash$TARGET_FLAG,df_crash$JOB))
+
+chisq.test(t)
+```
+
+
+There is a possibility that this vector could be ordinal if you could rank the profession by income? maybe we should check for colinearity with income when it comes up. 
+
+
+*TRAVTIME*
+
+```{r}
+a<-(make_box(var='TRAVTIME'))
+b<-(make_hist(var='TRAVTIME'))
+library(ggpubr)
+ggarrange(a,b)
+```
+These distributions look very similar, and the means and standard deviations look similar as well
+
+```{r}
+TRAVTIME_crash<-df_crash%>%dplyr::filter(TARGET_FLAG==1 )%>%pull(TRAVTIME)
+TRAVTIME_no<-df_crash%>%dplyr::filter(TARGET_FLAG==0 )%>%pull(TRAVTIME)
+ks.test(as.vector(TRAVTIME_crash),as.vector(TRAVTIME_no))
+
+```
+
+The metrics for this variable look good and no changes are reccommended
+
+
+*CAR_USE*
+```{r}
+(make_bar(var='CAR_USE'))
+```
+
+CAR_USE seems to be important just by visual inspection, no futher analysis at this time
+
+
+*BLUEBOOK*
+
+```{r}
+(make_box(var="BLUEBOOK"))
+```
+
+Looks ok by visual inspection, no futher analysis at this time
+
+
+*TIF*
+
+```{r}
+a<-(make_box(var="TIF"))
+b<-(make_hist(var="TIF"))
+ggarrange(a,b)
+```
+lets check if the distributions are different omitting the zero level (no result.)
+
+
+
+
+Look at the density function. 
+
+
+```{r}
+ggplot(df_crash,aes(x=TIF,color=TARGET_FLAG))+geom_density()
+```
+
+Both categories of this variable are clearly products of the same function, just with different amplitudes. Maybe if you could Identify the wave function for each, you could take a data point and determine the probability that it belonged to one function or the other.... Interesting exercise, but I'm not sure how useful it would be. Consider omitting this. 
+
+
+
+
+
+*CAR_TYPE*
+
+```{r}
+(make_bar(var='CAR_TYPE'))
+```
+
+
+
+```{r}
+(t<-table(df_crash$TARGET_FLAG,df_crash$CAR_TYPE))
+
+chisq.test(t)
+```
+
+Looks ok, no transformations reccomended. 
+
+```{r}
+(make_bar(var='RED_CAR'))
+```
+```{r}
+t<-table(df_crash$TARGET_FLAG,df_crash$RED_CAR)
+chisq.test(t)
+```
+
+These variables are independent, reccomend not including. 
+
+*OLDCLAIM*
+
+```{r}
+(make_hist(var='OLDCLAIM'))
+```
+
+looks like another distribution loaded up with zeros, lets check if they are differnt if we deselect them . 
+
+
+```{r}
+OLDCLAIM_crash<-df_crash%>%dplyr::filter(TARGET_FLAG==1 & OLDCLAIM>0)%>%pull(OLDCLAIM)
+OLDCLAIM_no<-df_crash%>%dplyr::filter(TARGET_FLAG==0 & OLDCLAIM>0 )%>%pull(OLDCLAIM)
+ks.test(as.vector(OLDCLAIM_crash),as.vector(OLDCLAIM_no))
+```
+
+This is the case, all of the difference is loaded in the zeros, lets make a factor variable
+
+```{r}
+df_crash<-df_crash%>%mutate(OLDCLAIM_ZERO=case_when(OLDCLAIM==0~TRUE,
+                                  TRUE~FALSE))
+```
+
+
+*CLM_FREQ*
+
+```{r}
+a<-(make_box(var='CLM_FREQ'))
+b<-(make_hist(var='CLM_FREQ'))
+ggarrange(a,b)
+```
+
+check if this is overloaded with zeros. 
+
+```{r}
+CLM_FREQ_crash<-df_crash%>%dplyr::filter(TARGET_FLAG==1 & CLM_FREQ>0)%>%pull(CLM_FREQ)
+CLM_FREQ_no<-df_crash%>%dplyr::filter(TARGET_FLAG==0 & CLM_FREQ>0 )%>%pull(CLM_FREQ)
+ks.test(as.vector(CLM_FREQ_crash),as.vector(CLM_FREQ_no))
+```
+
+It is indeed, lets make a factor
+
+```{r}
+df_crash<-df_crash%>%mutate(CLM_FREQ_ZERO=case_when(CLM_FREQ==0~TRUE,
+                                  TRUE~FALSE))
+```
+
+
+
+```{r}
+table(df_crash$OLDCLAIM_ZERO,df_crash$CLM_FREQ_ZERO)
+```
+
+drop one of these. 
+
+*REVOKED*
+
+```{r}
+(make_bar(var="REVOKED"))
+```
+
+looks good by inspection, no changes suggested.
+
+*MVR_PTS*
+
+```{r}
+a<-(make_box(var="MVR_PTS"))
+b<-(make_hist(var='MVR_PTS'))
+ggarrange(a,b)
+```
+
+
+These look like different distributions, might want to interact them because their standard deviations look so different. 
+
+*CAR_AGE*
+
+```{r}
+a<-make_box(var="CAR_AGE")
+b<-make_hist(var='CAR_AGE')
+ggarrange(a,b)
+```
+
+
+```{r}
+CAR_AGE_crash<-df_crash%>%dplyr::filter(TARGET_FLAG==1 & CAR_AGE>3 )%>%pull(CAR_AGE)
+CAR_AGE_no<-df_crash%>%dplyr::filter(TARGET_FLAG==0 & CAR_AGE>3)%>%pull(CAR_AGE)
+ks.test(as.vector(CAR_AGE_crash),as.vector(CAR_AGE_no))
+```
+
+These are different distributions, even accounting vor the low value difference. no transformations reccomended
+
+*URBANICITY*
+
+
+```{r}
+(make_bar(var='URBANICITY'))
+```
+
+These look different by inspection, no transformations reccomended. 
+
+
+## Some Models
+```{r message=FALSE}
+glm_list<-list()
+glm_list[['base']]<-glm(
+  TARGET_FLAG~., 
+  family=binomial(),
+  data=df_crash_base
+)
+glm_list[['full']]<-glm(
+  TARGET_FLAG~.,
+  family=binomial(),
+  data=df_crash
+)
+glm_list[['back']]<-step(glm_list[['full']])
+```
+
+```{r}
+lapply(
+  X=glm_list,
+  FUN = AIC
+)
+```
+```{r}
+lapply(
+  X=glm_list,
+  FUN = function(x){
+    deviance_x<-deviance(
+      object = x
+    )
+    df.residual_x<-df.residual(
+      object = x
+    )
+    p.value = pchisq(
+      q=deviance_x,
+      df = df.residual_x,
+      lower.tail = FALSE
+    )
+    v<-c(
+      deviance = deviance_x,
+      df = df.residual_x,
+      p.value = p.value
+    )
+    return(v)
+  }
+)
+```
+
+
+diagnostic plots
+
+
+```{r}
+library(car)
+mmps(glm_list[['back']])
+```
+
+
+```{r}
+summary(glm_list[['back']])
+
+```
+
+
+
+```{r}
+df_select<-df_crash%>%select(c(TARGET_FLAG,KIDSDRIV,YOJ,PARENT1,HOME_VAL,MSTATUS,EDUCATION,JOB,TRAVTIME,CAR_TYPE,OLDCLAIM,REVOKED,YOJ_ZERO,OLDCLAIM_ZERO))
+```
+
+```{r}
+rf<-randomForest(TARGET_FLAG~.,data=df_crash)
+rf
+```
+
+```{r}
+multinom
+```
+
+
