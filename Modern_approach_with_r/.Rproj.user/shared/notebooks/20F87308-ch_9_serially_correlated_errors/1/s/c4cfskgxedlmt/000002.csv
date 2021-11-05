@@ -1,0 +1,17 @@
+"0","summary(m1)
+"
+"1","Generalized least squares fit by "
+"1","maximum likelihood
+"
+"1","  Model:"
+"1"," "
+"1","log(Sales) ~ log(Price) + Promotion + Week"
+"1"," "
+"1","
+"
+"1","  Data:"
+"1"," "
+"1","confood2"
+"1"," "
+"1","
+"

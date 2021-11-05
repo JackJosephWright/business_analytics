@@ -1,0 +1,11 @@
+"0","lm.model<-lm(Price~.,data=dat%>%select(-c(Restaurant,Case)))"
+"0","library(ggResidpanel)"
+"2","Registered S3 method overwritten by 'data.table':
+  method           from
+  print.data.table     
+"
+"2","Registered S3 method overwritten by 'htmlwidgets':
+  method           from         
+  print.htmlwidget tools:rstudio
+"
+"0","resid_panel(lm.model, plots = 'all')"

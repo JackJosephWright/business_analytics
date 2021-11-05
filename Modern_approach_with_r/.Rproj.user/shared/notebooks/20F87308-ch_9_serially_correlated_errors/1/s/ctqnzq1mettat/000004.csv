@@ -1,4 +1,4 @@
-"0","Y_star<-log(df$Sales)-rho*lag(df$log(Sales),1)
+"0","ystar <- smi %*% log(confood$Sales)
 "
-"2","Error in lag(df$log(Sales), 1) : attempt to apply non-function
+"2","Error: object 'confood' not found
 "

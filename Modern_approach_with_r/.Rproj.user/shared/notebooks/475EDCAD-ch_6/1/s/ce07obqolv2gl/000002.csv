@@ -1,0 +1,3 @@
+"0","lm.model<-lm(y~.,data=dat)"
+"0","library(ggResidpanel)"
+"0","resid_panel(lm.model, plots = 'all')"

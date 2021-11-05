@@ -1,0 +1,2 @@
+"0","model<-lm(Price~., data=dat%>%select(-c(Restaurant,Case)))"
+"0","avPlots(model)"

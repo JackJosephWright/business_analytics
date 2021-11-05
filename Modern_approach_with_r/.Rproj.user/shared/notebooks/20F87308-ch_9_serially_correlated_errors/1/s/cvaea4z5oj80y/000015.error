@@ -1,1 +1,0 @@
-{"frames":[{"func":"chol(V)","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0},{"func":"chol.default(V)","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0}],"message":"Error in chol.default(V) : \n  the leading minor of order 3 is not positive definite\n"}
