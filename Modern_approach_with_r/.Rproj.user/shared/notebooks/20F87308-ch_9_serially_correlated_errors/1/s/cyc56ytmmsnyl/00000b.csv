@@ -1,0 +1,6 @@
+"0","file<-here('data','confood2.txt')"
+"0","df<-read.table(file, header=TRUE)"
+"0",""
+"0","lm.mod<-lm(log(Sales)~log(Price), data=df)"
+"0","           "
+"0","resid_panel(lm.mod, plots='ls')"

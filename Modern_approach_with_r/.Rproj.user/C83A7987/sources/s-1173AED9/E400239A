@@ -1,0 +1,28 @@
+{
+    "id": "E400239A",
+    "path": null,
+    "project_path": null,
+    "type": "object_explorer",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1636036260959.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "id": "799eac25a15244feae624218759a4874",
+        "name": "lm.ignore",
+        "title": "lm.ignore",
+        "language": "R",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 2314885530450145568,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1636036260959,
+    "read_only": false,
+    "read_only_alternatives": []
+}

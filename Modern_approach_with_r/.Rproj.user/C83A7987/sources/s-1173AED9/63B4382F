@@ -1,0 +1,28 @@
+{
+    "id": "63B4382F",
+    "path": null,
+    "project_path": null,
+    "type": "object_explorer",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1636033296956.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "id": "0bcda7513eca4b52a106447124b8c321",
+        "name": "lm.mod",
+        "title": "lm.mod",
+        "language": "R",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 7308886380617757541,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1636033296956,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -1,0 +1,3 @@
+"0","Y_star<-bay_area$InterestRate-rho*lag(bay_area$InterestRate,1)"
+"0","xstarLoansClosed<-bay_area$LoansClosed-lag(rho*bay_area$LoansClosed,1)"
+"0","xstarVacancyIndex<-bay_area$VacancyIndex-lag(rho*bay_area$VacancyIndex,1)"

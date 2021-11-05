@@ -1,0 +1,1 @@
+"0","stats::acf(log(df$Sales),lag.max=17,plot=TRUE)"

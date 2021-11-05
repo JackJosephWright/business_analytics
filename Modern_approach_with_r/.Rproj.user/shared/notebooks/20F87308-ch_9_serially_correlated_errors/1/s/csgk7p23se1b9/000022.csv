@@ -1,0 +1,7 @@
+"0","library(ggpubr)"
+"0","Sales_t_1<-head(as.vector(df$Sales),-1)"
+"0","Sales<-df$Sales[2:length(as.vector(df$Sales))]"
+"0","df.sales<-data.frame(t_1=Sales_t_1,t=Sales)"
+"0","a<-ggplot(df, aes(x=Week,y=log(Sales)))+geom_point(aes(shape=Promotion, color=Promotion))+geom_line()"
+"0","b<-ggplot(df.sales, aes(x=log(t_1),y=log(t)))+geom_point()"
+"0",""

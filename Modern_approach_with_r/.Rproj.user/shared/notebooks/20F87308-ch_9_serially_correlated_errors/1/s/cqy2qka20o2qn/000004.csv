@@ -1,0 +1,2 @@
+"0","lm.ignore<-lm(log(Sales)~log(Price)+Promotion, data=df)"
+"0","resid_panel(lm.ignore,plots='all')"

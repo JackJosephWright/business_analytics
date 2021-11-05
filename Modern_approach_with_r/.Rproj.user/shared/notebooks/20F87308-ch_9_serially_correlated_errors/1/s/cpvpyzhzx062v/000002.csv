@@ -1,0 +1,5 @@
+"0","rho<-lm.resi$coefficients$lagRESI
+"
+"2","Error in lm.resi$coefficients$lagRESI : 
+  $ operator is invalid for atomic vectors
+"

@@ -1,0 +1,6 @@
+"0","#get cholesky decomposition
+S<-chol(V)
+"
+"2","Error in chol.default(V) : 
+  the leading minor of order 3 is not positive definite
+"

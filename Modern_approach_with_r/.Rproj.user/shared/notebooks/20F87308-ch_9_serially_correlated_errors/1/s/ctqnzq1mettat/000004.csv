@@ -1,0 +1,4 @@
+"0","Y_star<-log(df$Sales)-rho*lag(df$log(Sales),1)
+"
+"2","Error in lag(df$log(Sales), 1) : attempt to apply non-function
+"

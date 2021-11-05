@@ -1,0 +1,1 @@
+"0","b<-acf(lm.ignore$residuals,lag.max=17, plot=TRUE)"

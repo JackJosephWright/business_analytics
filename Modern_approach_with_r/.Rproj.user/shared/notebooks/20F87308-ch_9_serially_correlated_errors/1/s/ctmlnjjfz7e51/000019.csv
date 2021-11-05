@@ -1,0 +1,1 @@
+"0","a<-acf(rstandard(lm.ignore),lag.max=17, plot=TRUE)"
