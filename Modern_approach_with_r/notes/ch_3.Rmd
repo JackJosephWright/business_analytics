@@ -47,7 +47,7 @@ for (i in 1:4){
   #print(name)
   x_var<-paste0('x',i)
   y_var<-paste0('y',i)
-  print(x_)
+  print(x_var)
   plot<-ggplot(dat, aes(x=x_var,y=y_var))+geom_point()+geom_smooth(method='lm')
   assign(name,plot)
 }
@@ -169,7 +169,7 @@ abline(0,0)
 ## Example: US TREASURY BOND PRICES
 
 ```{r}
-dat<-read.csv('./data/bonds.txt',sep = '\t')
+dat<-read.csv(here('data','bonds.txt'),sep = '\t')
 ```
 
 
@@ -229,7 +229,7 @@ crucial that errors have constant variance
 ## Example bid for contract cleaning
 
 ```{r}
-dat<-read.csv('./data/cleaning.txt',sep='\t')
+dat<-read.csv(here('data','cleaning.txt'),sep='\t')
 ```
 
 
@@ -290,6 +290,18 @@ summary(lm.model<-lm(sqrt(Rooms)~sqrt(Crews),data = dat))
 resid_panel(lm.model)
 ```
 
+```{r}
+summary(lm.model2<-lm(Rooms~Crews,data = dat))
+```
+
+```{r}
+resid_panel(lm.model2)
+```
+```{r}
+library(car)
+car::powerTransform(dat)
+```
+
 
 ## Logarithms to Estimate Percentage Effects
 
@@ -304,7 +316,7 @@ slope beta_1 approximately equal ratio of the percentage changes in Y an x
 goal: estimatee 1% increase in price on a product (price elasticity)
 
 ```{r}
-dat<-read.csv('./data/confood1.txt',sep='\t')
+dat<-read.csv(here('data','confood1.txt'),sep='\t')
 ggplot(dat, aes(x=Price,y=Sales))+geom_point()+geom_smooth(method='lm')
 ```
 looks skewed towards zero. 
@@ -372,9 +384,11 @@ if transformation is function that produces Y, then take the inverse of y to pro
 data generated with the model
 $$Y=(B+Bx+e)^3$$
 ```{r}
-dat<-read.csv('./data/responsetransformation.txt',sep='\t')
+dat<-read.csv(here('data','responsetransformation.txt'),sep='\t')
 ggplot(dat, aes(x,y))+geom_point()
 ```
+
+
 ```{r}
 lm.model<-lm(y~x,data=dat)
 resid_panel(lm.model, plots=c('resid','ls'))
@@ -404,11 +418,7 @@ max salary for 495 nonunuionized job classes in a midwestern govt in 1986.
 
 
 ```{r}
-getwd()
-#setwd("C:/Program Files/GitHub/business_analytics/Modern_approach_with_r/data/salarygov.txt")
-dat<-read.table("C:/Program Files/GitHub/business_analytics/Modern_approach_with_r/data/salarygov.txt")
-
-
+dat<-read.table(here('data',"salarygov.txt"),header=TRUE)
 ```
 
 consider staright line model

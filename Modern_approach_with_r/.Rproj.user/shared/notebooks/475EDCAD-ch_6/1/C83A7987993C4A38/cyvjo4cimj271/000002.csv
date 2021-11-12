@@ -1,3 +1,0 @@
-"0","df<-dat%>%select(-Newspaper)"
-"0","df<-df%>%mutate_at(c(""Sunday"",""Weekday""),log)"
-"0","ggpairs(df)"

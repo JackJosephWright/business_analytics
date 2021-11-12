@@ -1,1 +1,0 @@
-"0","ggplot(df_crash,aes(y=(as.numeric(EDUCATION)^2),group=TARGET_FLAG,color=TARGET_FLAG))+geom_boxplot()"

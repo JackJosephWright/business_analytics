@@ -2,7 +2,7 @@
 "0","df_raw<-read_csv(file)"
 "1","[1m[1mRows: [1m[22m[34m[34m8161[34m[39m [1m[1mColumns: [1m[22m[34m[34m26[34m[39m
 "
-"1","[36m--[39m [1m[1mColumn specification[1m[22m [36m-------------------------------------------------------------------------------------------------------------------------------------------------------------[39m
+"1","[36m--[39m [1m[1mColumn specification[1m[22m [36m---------------------------------------------------------------------------------------------------------------------------[39m
 [1mDelimiter:[22m "",""
 [31mchr[39m (14): INCOME, PARENT1, HOME_VAL, MSTATUS, SEX, EDUCATION, JOB, CAR_USE, BLUEBOOK, CAR_TYPE, RED_CAR, OLDCLAIM, REVOKED, URBANICITY
 [32mdbl[39m (12): INDEX, TARGET_FLAG, TARGET_AMT, KIDSDRIV, AGE, HOMEKIDS, YOJ, TRAVTIME, TIF, CLM_FREQ, MVR_PTS, CAR_AGE

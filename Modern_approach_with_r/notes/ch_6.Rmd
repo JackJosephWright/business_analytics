@@ -392,7 +392,7 @@ $\hat{y}=y^{\lambda},for y=0,.44,1$
 ```{r}
 df=data.frame(y_hat=model$fitted.values,Defective=dat$Defective)
 
-ggplot(df, aes(x=Defective, y=y_hat))+geom_point()+geom
+ggplot(df, aes(x=Defective, y=y_hat))+geom_point()
 
 
 ```

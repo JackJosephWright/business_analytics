@@ -8,7 +8,8 @@ df <- separate(data = dat, col = 'col_1', into = c('paper', 'sunday','weekday','
 df$weekday<-as.numeric(df$weekday)
 df$sunday<-as.numeric(df$sunday)
 df$competitor<-as.numeric(df$competitor)
-
+library(GGally)
+ggpairs(df%>%select(-paper))
 
 #log plot of sunday vs weekday with log transform
 temp<-ggplot(df, aes(x = log(weekday), y=log(sunday), color=competitor))+
@@ -49,7 +50,7 @@ summary(model)
 library(caret)
 library(Boruta)
 
-boruta_output<-Boruta(Price ~.,data=na.omit(df),doTrace=0)
+boruta_output<-Boruta(Price ~.,data=na.omit(df),doTrace=2)
 names(boruta_output)        
 
 boruta_signif<- getSelectedAttributes(boruta_output,withTentative = TRUE)

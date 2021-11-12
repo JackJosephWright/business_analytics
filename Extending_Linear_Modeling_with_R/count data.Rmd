@@ -159,7 +159,8 @@ we see non constant variance in residuals vs fitted
 check the box cox method
 
 ```{r}
-boxcox(modl)
+library(car)
+boxCox(modl)
 ```
 
 ```{r}
@@ -176,12 +177,12 @@ take the square root of the predictor
 
 
 ```{r}
-gala<-gala%>%mutate(Species=sqrt(Species))
-ggpairs(gala)
+gala2<-gala2%>%mutate(Species=sqrt(Species))
+ggpairs(gala2)
 ```
 
 ```{r}
-modt<-lm(Species~.,gala)
+modt<-lm(Species~.,gala2)
 ```
 
 
@@ -238,10 +239,10 @@ There is no explicit formula for beta in the Poisson (or binomial) regression so
 
 
 ```{r}
-gala<-gala
-gala<-gala[,-2]
+gala_glm<-gala
+#gala<-gala[,-2]
 
-modp<-glm(Species~.,family=poisson,gala)
+modp<-glm(Species~.,family=poisson,gala_glm)
 summary(modp)
 ```
 
@@ -258,7 +259,7 @@ use the same goodness-of-fit metrics for Poisson
 pchisq(716.85,24,lower.tail = FALSE)
 ```
 
-This says model is not a good fit
+This says model is not a good fit, because we are comparing the model to the saturated model, p-value should be high.
 
 check the residuals with half norm to see if a large deviance can be explained by an outlier
 
@@ -377,6 +378,30 @@ sum(residuals(modp,type="pearson")^2)/modp$df.res)
 ```
 (i guess n-p=1? not sure why)
 
+
+## AER package dispersion_test
+
+```{r}
+library(AER)
+AER::dispersiontest(modp)
+```
+
+*ANOTHER OPTION FOR DISPERSION TEST*
+
+library(DHARMa)
+sim_fmp <- simulateResiduals(fmp, refit=T)
+
+```{r}
+library(DHARMa)
+sim_modp<-DHARMa::simulateResiduals(modp,refit=T)
+DHARMa::testOverdispersion(sim_modp)
+```
+
+
+```{r}
+DHARMa::plotSimulatedResiduals(sim_modp)
+
+```
 
 adjust the standard errors for the model
 
@@ -562,7 +587,7 @@ we are modeling the rate of chromosomal abnormalities while still maintaining th
 *the reason why the response variable isnt logged is because of the LINK FUNCTION which in Poisson is already a log, so if you logged it, it would be double logged.
 
 
-use offsec(log(cells)) which i guess will just nudge our model over to that slope. 
+use offset(log(cells)) which i guess will just nudge our model over to that slope. 
 ```{r}
 rmod <- glm(ca ~ offset
 (log(cells))+log(doserate)*dosef,
@@ -620,8 +645,8 @@ URN SCHEME:
 i guess the urn problem where you pull green and red marbles?
 
 
-if we let Y=Z-k (number of trials before kth succes-kth success?)
-and p =(1+alpha)^-1
+if we let $Y=Z-k$ (number of trials before kth succes-kth success?)
+and $p =(1+\alpha)^{-1}$
 
 relationship between p and alpha
 
@@ -693,6 +718,9 @@ pchisq(1069,790,lower.tail = FALSE)
 ```
 
 better, but not good enough to say the model fits
+```{r}
+halfnorm(residuals(modp2))
+```
 
 
 says there are no major outliers
@@ -708,7 +736,7 @@ we use k=1 to demonstrate, but there is no reason to
 ```{r}
 library(MASS)
 modn<-glm(skips~.,negative.binomial(1),solder)
-modn
+summary(modn)
 ```
 
 we could experiment with different values of k, but the more direct way is allowing k to vary and be estimated

@@ -11,9 +11,10 @@ Libraries
 
 ```{r}
 library(tidyverse)
-setwd('C:/Program Files/GitHub/business_analytics/Modern_approach_with_r')
+library(here)
+#setwd('C:/Program Files/GitHub/business_analytics/Modern_approach_with_r')
 
-dat<-read.csv('./data/production.csv', sep = "\t")
+dat<-read.csv(here('data','production.csv'), sep = "\t")
 ```
 
 Look at data for production run vs production time for example
@@ -348,8 +349,8 @@ it can be shown that F has an F distribution with 1 and n-2 degres of freedom wh
 
 load data
 ```{r}
-setwd('C:/Program Files/GitHub/business_analytics/Modern_approach_with_r/')
-dat<-read.csv('./data/changeover_times.csv', sep = '\t')
+#setwd('C:/Program Files/GitHub/business_analytics/Modern_approach_with_r/')
+dat<-read.csv(here('data','changeover_times.csv'), sep = '\t')
 head(dat)
 summary(dat)
 ```
@@ -366,12 +367,12 @@ Y= changeover time, X= dummy variable
 
 ```{r}
 dat$New<-as.factor(dat$New)
-typeof(dat$Method)
+typeof(dat$New)
 ```
 
 Run regression
 ```{r}
-lm1<-lm(Changeover~Method, data=dat)
+lm1<-lm(Changeover~New, data=dat)
 summary(lm1)
 ```
 

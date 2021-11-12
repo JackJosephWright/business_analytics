@@ -724,12 +724,12 @@ red line is model, blue line is loess super fit line
 price looks skewed, remember from previous section that when skew, add a log version 
 
 ```{r}
-m <- update(bigmodel, ~. - Age:Start - Number:Start -
+#m <- update(bigmodel, ~. - Age:Start - Number:Start -
               
 glm.full<-update(glm.full,~.+log(Price))
 #rerun marginal models
 
-mmps(glm.full_2)
+mmps(glm.full)
 ```
 
 
@@ -791,18 +791,11 @@ IF THE TWO LINES ARE SIMILAR THE MODEL IS REPRODUCINT THE DATA IN THAT DIRECTIOn
 if they are different SOMETHING IS WRONG
 
 ```{r}
-mmps(m,span=3/4, layout = c(2,2))
+mmps(glm.full_2,span=3/4, layout = c(2,2))
 ```
 
 
-```{r}
-Anova(m1 <- update(m, ~. + I(Age^2)))
-```
 
-```{r}
-mmps(m1, span = 3/4)
-
-```
 
 
 comparing the models

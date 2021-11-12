@@ -53,7 +53,7 @@ acf(m1$residuals,main="Series GLS Residuals")
 g <- lm(log(Sales)~log(Price)+Promotion+Week,data=confood2)
 rho <- 0.5504
 x <- model.matrix(g)
-Sigma <- diag(length(Week))
+Sigma <- diag(length(confood2$Week))
 Sigma <- rho^abs(row(Sigma)-col(Sigma))
 sm <- chol(Sigma)
 smi <- solve(t(sm))

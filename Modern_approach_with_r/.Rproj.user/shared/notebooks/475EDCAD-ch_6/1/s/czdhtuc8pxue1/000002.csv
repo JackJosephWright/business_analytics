@@ -1,5 +1,0 @@
-"0","df=data.frame(y_hat=model$fitted.values,Defective=dat$Defective)"
-"0",""
-"0","ggplot(df, aes(x=Defective, y=y_hat))+geom_point()+geom"
-"2","Error: object 'geom' not found
-"

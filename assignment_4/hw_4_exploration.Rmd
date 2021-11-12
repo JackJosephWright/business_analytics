@@ -571,18 +571,69 @@ library(car)
 mmps(glm_list[['back']])
 ```
 
+maybe try a poly_age?
 
 ```{r}
-summary(glm_list[['back']])
+glm_list[['mmps_transform']]<-update(glm_list[['back']],.~.+poly(AGE,3)+poly(TRAVTIME,2)+log(MVR_PTS+.1)+poly(BLUEBOOK,2))
+mmps(glm_list[["mmps_transform"]])
+```
+
+
+```{r}
+summary(glm_list[['mmps_transform']])
+
+##mmps_transform_backward selection
+
+glm_list[["tb"]]<-step(glm_list[['mmps_transform']])
+```
+
+```{r}
+summary(glm_list[["tb"]])
+```
+Dropping predictors that backwards seletion didnt remove, but dont look good
+```{r}
+glm_list[["tb_manual"]]<-update(glm_list[["tb"]],~.-YOJ-INCOME-MSTATUS-OLDCLAIM)
+summary(glm_list[['tb_manual']])
+```
+
+```{r}
+mmps(glm_list[['tb_manual']])
+```
+
+
+```{r}
+library(faraway)
+halfnorm(residuals(glm_list[["tb"]]))
 
 ```
 
 
-
 ```{r}
-df_select<-df_crash%>%select(c(KIDSDRIV,YOJ,PARENT1,HOME_VAL,MSTATUS,EDUCATION,JOB,TRAVTIME,CAR_TYPE,OLDCLAIM,REVOKED,YOJ_ZERO,OLDCLAIM_ZERO))
+resid_interact(glm_list[["tb"]], plots='lev')
 ```
 
 
+```{r}
+df_select<-df_crash%>%select(c(TARGET_FLAG,KIDSDRIV,YOJ,PARENT1,HOME_VAL,MSTATUS,EDUCATION,JOB,TRAVTIME,CAR_TYPE,OLDCLAIM,REVOKED,YOJ_ZERO,OLDCLAIM_ZERO))
+```
+
+```{r}
+library(randomForest)
+rf<-randomForest(TARGET_FLAG~.,data=df_crash)
+rf
+```
+
+```{r}
+library(caret)
+library(e1071)
+df_predict<-df_crash%>%select(-TARGET_FLAG)
+prediction<-predict(glm_list[['tb']],newdata = df_predict,type='response')
+
+res_df<-data.frame(t=df_crash$TARGET_FLAG,prediction=prediction)
+res_df<-res_df%>%mutate(p=as.factor(case_when(prediction>.5 ~1, TRUE~0)))%>%dplyr::select(-prediction)
+
+confusionMatrix(as.factor(res_df$p),as.factor(res_df$t))
+
+```
 
 
