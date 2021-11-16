@@ -522,7 +522,7 @@ anova(glm.model,update(glm.model,~1),test='Chisq')
 Note that the deviance and AIC values differ between the previous model and this binary model
 
 
-## Deviance for the Case of Binary Data
+## Deviance for the Case of Binary Data==
 
 
 for binary data, all the m are =1 so the saturated model S estimates \theta by the observed proportion of 'successes' at x_i

@@ -1,0 +1,64 @@
+---
+title: "data_looking"
+author: "Jack Wright"
+date: "11/16/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+## Exploratory data analysis
+
+```{r}
+library(tidyverse)
+library(here)
+```
+
+
+
+```{r}
+#load csv
+df<-read.csv(here('kaggle_files','train_clean_jack.csv'), header=TRUE)
+```
+
+```{r}
+library(car)
+
+car::powerTransform(df$transactionRevenue)
+```
+
+
+```{r}
+library(naniar)
+df1 <- df %>%
+  mutate(transactionRevenue=replace_na(transactionRevenue,0))
+#switch response to log
+
+df1<-df1%>%mutate(transactionRevenue=log(transactionRevenue+1))
+#gg_miss_var(df %>% filter(transactionRevenue > 0), show_pct = TRUE)
+library(lubridate)
+df1 <- df1 %>% mutate(date=ymd(date))
+```
+
+## Checking for serially correlated errors
+
+```{r}
+library(timetk)
+
+ts.revenue<-df1%>%
+  timetk::summarise_by_time(
+    .date_var = date,
+    .by='day',
+    value=mean(transactionRevenue)
+    )
+
+```
+
+
+
+`
+

@@ -1,0 +1,107 @@
+---
+title: "copy of gstore project"
+author: "Jack Wright"
+date: "11/16/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(here)
+library(tidyverse)
+```
+
+##LOAD DATA
+
+```{r}
+
+train<-read.csv(here('kaggle_files','train_clean_jack.csv'))
+
+target<-train%>%group_by(fullVisitorId)%>%summarize(total_revenue=sum(transactionRevenue))
+```
+
+
+```{r}
+target$index<-as.numeric(row.names(target))
+ggplot(target, aes(x=index,y=log(total_revenue)))+geom_point()
+```
+
+
+## visualization for users generating revenue (target=1)
+
+```{r}
+ggplot(target%>%mutate(rev_flag=case_when(total_revenue>0~TRUE,TRUE~FALSE)), aes(rev_flag))+geom_bar()
+```
+
+This shows that a very small percent of users generate the revenue
+
+```{r}
+temp_rev<-target%>%filter(total_revenue>0)
+
+temp_rev%>%arrange(desc(total_revenue))%>%head()
+```
+
+
+## insights
+
+-users generating rev use mac more than others
+-channel groupiing is referral rather than organic
+-use chrome
+-visit more than once
+-network domain is not unknown.known
+-higher time on site
+-total hits higher
+-use desktop more
+-mostly from US 
+-usually connecting from CALI and NYC
+-usually connect directly, less through google
+
+
+## look at NaN values
+```{r}
+library(naniar)
+gg_miss_var(train %>% filter(transactionRevenue > 0), show_pct = TRUE)
+```
+
+NOTE:
+
+columns with more than 50% missing values. later remove them in data cleaning
+
+it says newVisits only having nan and 1 as values is uninformative
+
+
+## Constant columns
+
+```{r}
+uniq_counts<-train%>%
+  select_if(negate(is.numeric))%>%
+  apply(2,function(x) length(unique(x)))
+
+names(uniq_counts[uniq_counts==1])
+```
+```{r}
+unique(train$bounces)
+```
+
+
+## Defining the target
+
+```{r}
+y_train<-replace_na(train$transactionRevenue,0)
+```
+
+
+## Remove columms with missing values over a percentage
+
+```{r}
+train_select<-train%>%select_if(~mean(is.na(.))>.5)
+```
+
+```{r}
+round(colMeans(is.na(train)),1)
+
+```
+

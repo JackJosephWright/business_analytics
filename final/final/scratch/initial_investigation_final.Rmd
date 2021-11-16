@@ -25,7 +25,7 @@ df_raw<-read.csv(file)
 ## Columns overview
 
 ```{r}
-colnames(df)
+colnames(df_raw)
 ```
 
 ### ChannelGrouping
@@ -70,8 +70,8 @@ dict_to_df = function(dict) {
 
     # Split up the dictionary entry
     split = unlist(strsplit(dict[i], '\",'))
-    split = gsub('\\{', '', split)
-    split = gsub('\\}', '', split)
+    split = gsub('\\{|\\}', '', split)
+    #split = gsub('\\}', '', split)
     values = unlist(strsplit(split, ':'))
 
     # Parse out what will be the df headers
@@ -90,7 +90,7 @@ dict_to_df = function(dict) {
 
     store[i] = list(out)
 
-    if (i %% 1000 == 0) { print(round(i / length(dict), 2)) }
+    #if (i %% 1000 == 0) { print(round(i / length(dict), 2)) }
 
   }
 
@@ -129,57 +129,44 @@ make dataframe for `totals` column
 df_total<-dict_to_df(df_raw$totals)
 ```
 
-
-
-bind to raw data
-```{r}
-df<-cbind(df_raw%>%select(-totals),df_total)
-```
-
-## device
-
-turn device column into dataframe
+make dataframe for other columns
 
 ```{r}
-df_raw$device[10]
+library(jsonlite)
+df_device <- paste("[", paste(df_raw$device, collapse = ","), "]") %>% fromJSON(flatten = T)
+
+df_geoNetwork <- paste("[", paste(df_raw$geoNetwork, collapse = ","), "]") %>% fromJSON(flatten = T)
+df_totals <- paste("[", paste(df_raw$totals, collapse = ","), "]") %>% fromJSON(flatten = T)
+df_trafficSource <- paste("[", paste(df_raw$trafficSource, collapse = ","), "]") %>% fromJSON(flatten = T)
 ```
+
+
 
 ```{r}
-d<-"{\"browser\": \"Firefox\", \"browserVersion\": \"not available in demo dataset\", \"browserSize\": \"not available in demo dataset\", \"operatingSystem\": \"Windows\", \"operatingSystemVersion\": \"not available in demo dataset\", \"isMobile\": false, \"mobileDeviceBranding\": \"not available in demo dataset\", \"mobileDeviceModel\": \"not available in demo dataset\", \"mobileInputSelector\": \"not available in demo dataset\", \"mobileDeviceInfo\": \"not available in demo dataset\", \"mobileDeviceMarketingName\": \"not available in demo dataset\", \"flashVersion\": \"not available in demo dataset\", \"language\": \"not available in demo dataset\", \"screenColors\": \"not available in demo dataset\", \"screenResolution\": \"not available in demo dataset\", \"deviceCategory\": \"desktop\"}"
+df <- df_raw %>%
+    cbind(df_device, df_geoNetwork, df_totals, df_trafficSource) %>%
+    select(-device, -geoNetwork, -totals, -trafficSource)
 
+factorVars <- c("channelGrouping", "browser", "operatingSystem", "deviceCategory", "country")
+df[, factorVars] <- lapply(df[, factorVars], as.factor)
+df$transactionRevenue <- as.numeric(df$transactionRevenue)
 
-get_dict_items<-function(d){
- #gets dictionary items from a single cell
-  #remove extraneous characters
-  dict<-str_remove_all(d,'[\\"\\{\\}]')
-  #split dict into list items
-  d_list<-unlist(str_split(dict,","))
-  #make column header list
-  headers=str_extract(d_list,'(.+)(?=:)')
-  #make value list
-  values<-str_extract(d_list,'(?<=:)(.+)')
-  
-  output=rbind(values)
-  colnames(output)<-headers
-  
-  return(output)
-}
+numVars <- c("visits", "hits", "bounces", "pageviews", "newVisits")
+df[, numVars] <- lapply(df[, numVars], as.integer)
 
-dict_to_df<-function(d){
-  for (i in 1:length(d)){
-  output=new_row
-  new_row<-get_dict_items(d[i])
-  test<-(output,new_row)
-  }
-  return(output)
-}
-
+df$visitStartTime <- as.POSIXct(df$visitStartTime, tz="UTC", origin='1970-01-01')
+library(readr)
+write_csv(df, file='train_clean_jack.csv')
 ```
+
 
 ```{r}
-df_test<-sample_n(df_raw,10)
-df_list<-as.list(df_test$totals)
-
-dict_to_df(df_list)
+library(lubridate)
+df <- df %>% mutate(date=ymd(date))
+nan_count <- sum(!is.na(df$transactionRevenue))
+nan_pct <- nan_count / nrow(df) * 100
+total_rev <- sum(df$transactionRevenue, na.rm=T)
 ```
+
+
 

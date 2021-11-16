@@ -7,48 +7,37 @@ output:
   tufte::tufte_html: default
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+
+```{r}
+library(here)
+library(tidyverse)
+df_raw <- read.csv(here('kaggle_files',"test.csv"), header = T, stringsAsFactors = F, colClasses = c(fullVisitorId = "character"))
+df_small=head(df_raw)
 ```
 
-## GStore, Revenue per Customer Prediction
 
-For our final project, we will be looking at a kaggle competition `Google Analytics Customer Review Prediction` where we will *predict revenue per customer* for a Google store based upon a dataset provided from the online outlet. 
-
-In this competition, you’re challenged to analyze a Google Merchandise Store (also known as GStore, where Google swag is sold) customer dataset to predict revenue per customer. Hopefully, the outcome will be more actionable operational changes and a better use of marketing budgets for those companies who choose to use data analysis on top of their data.
-
-## Why is this important?
-
-It is a widely held belief that 80% of a business' revenue comes from 20% of their customers, also known as the *80/20 rule*. If we are able to predict revenue per customer, then we should be able to identify this most important 20% of a stores customers.  We selected a kaggle competition because of the benchmarks set that will allow us to gauge our progress as analysts.  
-
-## Background
+```{r}
+df_device <- paste("[", paste(df_small$device, collapse = ","), "]") %>% fromJSON(flatten = T)
+df_geoNetwork <- paste("[", paste(df$geoNetwork, collapse = ","), "]") %>% fromJSON(flatten = T)
+df_totals <- paste("[", paste(df_small$totals, collapse = ","), "]") %>% fromJSON(flatten = T)
+df_trafficSource <- paste("[", paste(df$trafficSource, collapse = ","), "]") %>% fromJSON(flatten = T)
 
 
-Papers on predicting revenue per customer, or *customer lifetime value* prescribe a lot of the same techniques that we have become accustomed to. Tidying, Exploration, model building and analysis. But there are a few features unique to predicting future spending that we may choose to look at.
+df <- df %>%
+    cbind(df_device, df_geoNetwork, df_totals, df_trafficSource) %>%
+    select(-device, -geoNetwork, -totals, -trafficSource)
 
-**activity analysis**:
+factorVars <- c("channelGrouping", "browser", "operatingSystem", "deviceCategory", "country")
+df[, factorVars] <- lapply(df[, factorVars], as.factor)
+df$transactionRevenue <- as.numeric(df$transactionRevenue)
 
-As highlighted in the paper [Predictive Modeling Using Transactional Data](https://www.capgemini.com/wp-content/uploads/2017/07/Predictive_Modeling_Using_Transactional_Data.pdf), activity analysis sets a time frame for which a customer can be defined as inactive and can be used to model attrition of a business. Maybe we can leverage this into a dummy variable to predict future spending. 
+numVars <- c("visits", "hits", "bounces", "pageviews", "newVisits")
+df[, numVars] <- lapply(df[, numVars], as.integer)
 
-**Cohort and Trend Analysis**:
+df$visitStartTime <- as.POSIXct(df$visitStartTime, tz="UTC", origin='1970-01-01')
+write.csv(df, here('kaggle_files','test_clean.csv'), row.names = FALSE)
 
-There seems to be some trend in future revenue prediction between *attriters* and *high transactors*. This makes intuitive sense that people who have spent more, will spend more in the future. It might be interesting to give this a time dimension as well as just a scalar quality. 
-
-**Predictions on groups with varying amounts of data**:
-
-In the paper [Predictive Profiles for Transaction Data using Finite Mixture
-Models](http://www.datalab.uci.edu/papers/profiles.pdf), The authors bring up the problem of making predictions on transactors with low amounts of data (say one purchase only). They recommend using *Bayesian estimation for learning predictive profiles*. In essence, we can create different predictive profiles, or models, depending on how much data we have about the transactor. For example, a transactor with a low amount of information (one purchase) would have a more general model to the data applied, while as a frequent transactor could have a much more data driven model. 
-
-This technique is generally used in machine learning, but I don't see why we couldn't apply it to logistic regression. 
-
-
-
-
-
-
-## Methodology:
-
-We will generate both linear regression models and Random Forest decision trees to model the data and the source of our data is the Google 'Gstore' where you can purchase google branded products online. 
-
+```
 
 
