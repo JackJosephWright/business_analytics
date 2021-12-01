@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 "Half the money I spend on advertising is wasted, the trouble is I don't know which half"
 -John Wanamaker
 
-One of the largest problems in running a business is identifying who is likely to spend money at your business. Online business' have access to far more data on who is visiting their 'store' than a brick and mortar business, who might only have access to a small amount of data on people who entered the store, but did not buy anything.  *SOME BRIDGE SENTENCE HERE* The dataset we are analyzing is a Google Merchandise Store (also known as GStore, where Google swag is sold) customer dataset. The raw dataset contains 12 columns to predict the transaction revenue per customer. The outcome from this analysis will aid in better use of marketing budgets. This paper will model the customer data, and create predictive models to estimate revenue generated from a holdout set. 
+One of the largest problems in running a business is identifying who is likely to generate revenue. Online business' have access to far more data on who is visiting their 'store' than a brick and mortar business, who might only have access to a small amount of data on people who browsed but bought nothing.  To gain insight into this problem, in this paper we will analyze a dataset from the Google Merchandise Store (also known as GStore, where Google swag is sold) customer database. The raw dataset contains 12 columns to predict the transaction revenue per customer. The outcome from this analysis will aid in better use of marketing budgets. This paper will model the customer data, and create predictive models to estimate revenue generated from a holdout set. 
 
 
 
@@ -70,52 +70,67 @@ There are almost 1 million rows and 55 columns once unpacked, The following is a
 
 fullVisitorId:
 - A unique identifier for each user of the Google Merchandise Store. This will be important for summing each transactors behavior since it is constant between a users unique visits over time. 
+
 channelGrouping:
 - The channel via which the user came to the Store.  This is where the visitors to the Gstore "came from" on the internet. Some examples of categoreis are 'Social' (social media links), Referral or Organic Search.
+
 date:
 - The date on which the user visited the Store.
+
 device:
 - The specifications for the device used to access the Store, such as tablet, phone or desktop. 
+
 geoNetwork:
-- This section contains information about the geography of the user, such as the country, state and city from which they accessed the store. 
+- This section contains information about the geography of the user, such as the country, state and city from which they accessed the store.
+
 socialEngagementType:
 -Engagement type, either "Socially Engaged" or "Not Socially Engaged", referring to social media usage
+
 totals:
 -This section contains aggregate values across the session.
+
 trafficSource:
 -This section contains information about the Traffic Source from which the session originated.
+
 visitId:
-- An identifier for this session. This is part of the value usually stored as the _utmb cookie. This is only unique to the user. For a completely unique ID, you should use a combination of fullVisitorId and visitId.
+- An identifier for this session. This is part of the value usually stored as the _utmb cookie. This is only unique to the user. For a completely unique ID, you should use a
+combination of fullVisitorId and visitId.
+
 visitNumber:
 - The session number for this user. If this is the first session, then this is set to 1.
+
 visitStartTime:
 - The timestamp (expressed as POSIX time).
+
 hits:
 - This row and nested fields are populated for any and all types of hits. Provides a record of all page visits.
+
 customDimensions:
 - This section contains any user-level or session-level custom dimensions that are set for a session. This is a repeated field and has an entry for each dimension that is set.
 totals - This set of columns mostly includes high-level aggregate data
 
-The most notable transformation that is employed is the natural log of the target revenue. As shown in in chart 2, the transactions are on the whole all zero, causing a severe right skew. Taking the log of revenue makes the data more normally distributed, allowing for more precise analysis. This also gives us our first insights into finding the golden 20%, since most of the visitors to the Gstore are not revenue generators.As shown in chart X (pageviews vs revenue) overall in original dataset of 100000 only about 1% of visitors produced renvenue. The only predictor where the 80 20 rule applied was pageviews where 80% of the revenue came from 20% of the users. 
+The most notable transformation that is employed is the natural log of the target revenue. As shown in in chart 2, the transactions are on the whole all zero, causing a severe right skew. Taking the log of revenue makes the data more normally distributed, allowing for more precise analysis. This also gives us our first insights into finding the golden 20%, since most of the visitors to the Gstore are not revenue generators. As shown in chart X (pageviews vs revenue)  only about 1% of visitors to the site produced renvenue, however the 80 20 rule applies to pageviews where 80% of the revenue came from 20% of the users. 
 
-Another notable feature of the data is that 40% of the variables are either sparse or only contain one value, which can be excluded from our analysis for containing no row-wise information. *include an example from rmarkdown of a unique column and why* (kniited html column, printed out) Some columns only have 1 value such as (name 3 colum) SPARSE ones . istrueDirect, only true for 1000 rows.
+Another notable feature of the data is that 40% of the variables are either sparse or only contain one value, which can be excluded from our analysis for containing no row-wise information.  For example, the predictor adwordsClickInfo.isVideoAd is NA for 98% of the data and False() for the remainder. There is no correlation between the positive class and the response variable so it is excluded.  Similar situations occur in 17 of the 55 rows and were dropped before analysis. 
 
 Columns that are duplicated. SessionID and visitID are about the same, no more info. However fullvisitorID is unique. 
+
+One other unique preprocessing decision was made involving the predictors SessionID and visitID. The data in the columns were very similar and therefore did not carry unique information. The usefulness of these columns would be to identify when a user returned to the site, but this is captured in the variable fullvisitorID, so SessionID and visitID were dropped. 
 
 ## Preprocessing
 
 
 Certain features are selected based on the exploratory data analysis. Some of those features are then thresholded based on frequency below 1%. Other features are imputed with knn.
-Step order [here](https://recipes.tidymodels.org/articles/Ordering.html). We thresholded columns with many levels, such as country. where US and Canada were the two most frequent countries, while there were many other countries that only appeared a few dozen times, so they were aggregated into an 'other' category. 
+Step order [12]. We thresholded columns with many levels, such as country. where US and Canada were the two most frequent countries, while there were many other countries that only appeared a few dozen times, so they were aggregated into an 'other' category. 
 
 ## Empirical Results
 
 
-A randomForest model was used to optimize the RMSE and select the optimal number of predictors and node size for our decision trees. Random Forest is a bagging technique that contains a number of decision trees on various subsets of the given dataset and takes the average to improve the predictive accuracy of that dataset.” Instead of relying on one decision tree, the random forest takes the prediction from each tree and based on the majority votes of predictions, and it predicts the final output. The greater number of trees in the forest leads to higher accuracy and prevents the problem of overfitting. [11] Using parallel processing 10 models are trained across a grid of 20 to find the best hyperparameters, mtry and minN.*EXPLAIN WHAT THESE ARE* for the random forest model. The optimal Random Forest regression obtained a .913 RMSE, while the GLM RMSE is 1.044
+A randomForest model was used to optimize the RMSE and select the optimal number of predictors and node size for our decision trees. Random Forest is a bagging technique that contains a number of decision trees on various subsets of the given dataset and takes the average to improve the predictive accuracy of that dataset.” Instead of relying on one decision tree, the random forest takes the prediction from each tree and based on the majority votes of predictions, and it predicts the final output. The greater number of trees in the forest leads to higher accuracy and prevents the problem of over fitting. [11] Using parallel processing 10 models are trained across a grid of 20 to find the best hyperparameters, mtry and minN. Mtry is the number of variables randomly sampled at each split for the random forest model and min_n is the minimum number of data points in a node that are required to be split further [13]. The optimal Random Forest regression obtained a .913 RMSE, while the GLM RMSE is 1.044
 
 
 In chart 3, it is clear that the random forest model is more narrow in its distribution of predicted values, leading to a lower RMSE. 
-Table 1 is the correlation matrix of select variables included in the modeling. A correlation matrix will give decision makers an intuitive understanding of the different factors on purchasing behavior, as well as indication of possible predictors for revenue generating transactors. For example, device category (which hardware people use to access the Gstore) is highly correlated with revenue, as the majority of revenue has come from desktop users, while *SOMETHING ELSE* does not show high correlation with the target variable, and is likely to be eliminated in the model building process
+Table 1 is the correlation matrix of select variables included in the modeling. A correlation matrix will give decision makers an intuitive understanding of the different factors on purchasing behavior, as well as indication of possible predictors for revenue generating transactors. For example, device category (which hardware people use to access the Gstore) is highly correlated with revenue, as the majority of revenue has come from desktop users, while a predictor like GeoNetwork does not show high correlation with the target variable, and is likely to be eliminated in the model building process
 
 
 Table 2 is the feature importance output from our Random Forest regression modeling. In terms of decision tree modeling, the higher up the branch network, the more impact the variable has to selecting which leaf the data belongs to. The ten most important variables for classification are, in order:
@@ -164,16 +179,27 @@ This study generates useful insights for a better understanding of customer beha
 
 ## References
 
-[1] Carla Tardi, 2020. 80-20 Rule. https://www.investopedia.com/terms/1/80-20-rule.asp
+[1] Tardi, Carla .**80-20 Rule**, 2020, https://www.investopedia.com/terms/1/80-20-rule.asp
 
-[6] https://www.seldon.io/what-is-covariate-shift/#:~:text=Covariate%20shift%20is%20a%20specific,training%20environment%20and%20live%20environment.&text=Covariate%20shift%20is%20also%20known,issue%20encountered%20in%20machine%20learning.
+[6] Trotter, Matt. **What is Covariate Shift?**, July 08 2021,
+https://www.seldon.io/what-is-covariate-shift/#:~:text=Covariate%20shift%20is%20a%20specific,training%20environment%20and%20live%20environment.&text=Covariate%20shift%20is%20also%20known,issue%20encountered%20in%20machine%20learning.
 
-[7] https://machinelearningmastery.com/no-free-lunch-theorem-for-machine-learning/
+[7] Brownlee, Jason.**No Free Lunch Theorem for Machine Learning** October 21, 2021, https://machinelearningmastery.com/no-free-lunch-theorem-for-machine-learning/
 
-[8] https://www.springboard.com/blog/business-and-marketing/referral-marketing-what-it-is-and-why-it-works/#:~:text=A%20recent%20Nielsen%20study%20shows,referrals%20from%20people%20they%20know.&text=Referral%20marketing%20leads%20have%20been,generated%20from%20other%20marketing%20channels.
+[8] Kunis, Leigh. **Referral Marketing: What it is and Why it Works**, August 23 2018,
+https://www.springboard.com/blog/business-and-marketing/referral-marketing-what-it-is-and-why-it-works/#:~:text=A%20recent%20Nielsen%20study%20shows,referrals%20from%20people%20they%20know.&text=Referral%20marketing%20leads%20have%20been,generated%20from%20other%20marketing%20channels.
 
-[9] https://www.cbsnews.com/news/90-percent-of-tech-jobs-growth-concentrated-in-just-5-cities-according-to-brookings-institute-report/
+[9] Min, Sarah, **Most US Tech Jobs Clustered i in Just 5 Major Cities**, December 10 2019,
+https://www.cbsnews.com/news/90-percent-of-tech-jobs-growth-concentrated-in-just-5-cities-according-to-brookings-institute-report/
 
-[10] https://www.wired.com/2002/12/apple-its-all-about-the-brand/
+[10] Kahney, Leander **Apple: It's All About the Brand**, December 04 2002,
+https://www.wired.com/2002/12/apple-its-all-about-the-brand/
 
-[11] https://medium.com/geekculture/xgboost-versus-random-forest-898e42870f30
+[11] Gupta, Aman **XGBoost versus Random Forest**, April 26 2021,
+https://medium.com/geekculture/xgboost-versus-random-forest-898e42870f30
+
+[12] **Ordering of Steps** , tidy Recipes,
+https://recipes.tidymodels.org/articles/Ordering.html
+
+[13] **Random Forest**, tidy models,
+https://parsnip.tidymodels.org/reference/rand_forest.html
