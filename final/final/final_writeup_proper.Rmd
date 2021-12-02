@@ -1,8 +1,8 @@
 ---
 title: "Google Gstore Revenue Prediction"
 output:
-  tufte::tufte_html: default
   tufte::tufte_handout: default
+  tufte::tufte_html: default
 ---
 
 ```{r setup, include=FALSE}
@@ -109,19 +109,17 @@ customDimensions:
 - This section contains any user-level or session-level custom dimensions that are set for a session. This is a repeated field and has an entry for each dimension that is set.
 totals - This set of columns mostly includes high-level aggregate data
 
-The most notable transformation that is employed is the natural log of the target revenue. As shown in in chart 2, the transactions are on the whole all zero, causing a severe right skew. Taking the log of revenue makes the data more normally distributed, allowing for more precise analysis. This also gives us our first insights into finding the golden 20%, since most of the visitors to the Gstore are not revenue generators. As shown in chart X (pageviews vs revenue)  only about 1% of visitors to the site produced renvenue, however the 80 20 rule applies to pageviews where 80% of the revenue came from 20% of the users. 
+The most notable transformation that is employed is the natural log of the target revenue. As shown in in chart 2, the transactions are on the whole all zero, causing a severe right skew. Taking the log of revenue makes the data more normally distributed, allowing for more precise analysis. This also gives us our first insights into finding the golden 20%, since most of the visitors to the Gstore are not revenue generators. As shown in chart 2 (pageviews vs revenue)  only about 1% of visitors to the site produced renvenue, however the 80 20 rule applies to pageviews where 80% of the revenue came from 20% of the users. 
 
 Another notable feature of the data is that 40% of the variables are either sparse or only contain one value, which can be excluded from our analysis for containing no row-wise information.  For example, the predictor adwordsClickInfo.isVideoAd is NA for 98% of the data and False() for the remainder. There is no correlation between the positive class and the response variable so it is excluded.  Similar situations occur in 17 of the 55 rows and were dropped before analysis. 
 
-Columns that are duplicated. SessionID and visitID are about the same, no more info. However fullvisitorID is unique. 
 
 One other unique preprocessing decision was made involving the predictors SessionID and visitID. The data in the columns were very similar and therefore did not carry unique information. The usefulness of these columns would be to identify when a user returned to the site, but this is captured in the variable fullvisitorID, so SessionID and visitID were dropped. 
 
 ## Preprocessing
 
 
-Certain features are selected based on the exploratory data analysis. Some of those features are then thresholded based on frequency below 1%. Other features are imputed with knn.
-Step order [12]. We thresholded columns with many levels, such as country. where US and Canada were the two most frequent countries, while there were many other countries that only appeared a few dozen times, so they were aggregated into an 'other' category. 
+Certain features are selected based on the exploratory data analysis. Some of those features are then thresholded based on frequency below 1%. Other features are imputed with knn.[12] We thresholded columns with many levels, such as country. where US and Canada were the two most frequent countries, while there were many other countries that only appeared a few dozen times, so they were aggregated into an 'other' category. 
 
 ## Empirical Results
 
@@ -129,7 +127,7 @@ Step order [12]. We thresholded columns with many levels, such as country. where
 A randomForest model was used to optimize the RMSE and select the optimal number of predictors and node size for our decision trees. Random Forest is a bagging technique that contains a number of decision trees on various subsets of the given dataset and takes the average to improve the predictive accuracy of that dataset.” Instead of relying on one decision tree, the random forest takes the prediction from each tree and based on the majority votes of predictions, and it predicts the final output. The greater number of trees in the forest leads to higher accuracy and prevents the problem of over fitting. [11] Using parallel processing 10 models are trained across a grid of 20 to find the best hyperparameters, mtry and minN. Mtry is the number of variables randomly sampled at each split for the random forest model and min_n is the minimum number of data points in a node that are required to be split further [13]. The optimal Random Forest regression obtained a .913 RMSE, while the GLM RMSE is 1.044
 
 
-In chart 3, it is clear that the random forest model is more narrow in its distribution of predicted values, leading to a lower RMSE. 
+In Chart 3, it is clear that the random forest model is more narrow in its distribution of predicted values, leading to a lower RMSE. 
 Table 1 is the correlation matrix of select variables included in the modeling. A correlation matrix will give decision makers an intuitive understanding of the different factors on purchasing behavior, as well as indication of possible predictors for revenue generating transactors. For example, device category (which hardware people use to access the Gstore) is highly correlated with revenue, as the majority of revenue has come from desktop users, while a predictor like GeoNetwork does not show high correlation with the target variable, and is likely to be eliminated in the model building process
 
 
@@ -170,7 +168,7 @@ Surprisingly, even though Macintosh operating systems are second to Windows OS u
 
 ## Summary and Conclusions
 
-In this paper, we compare the results of a GLM and Random Forest Regression model to accurately predict the revenue generated by a visitor to the Google Gstore.  Several important factors are found to influence a Gstore visitor's decision to make a purchase. The most important predictors point us towards visitors who are cosmopolitan Americans emotionally invested in technology. They were also very likely to be referred to the Gstore by someone they trust. Our predictors line up with business intuition, particuarly the 80 20 rule. For example, Mac OS users accounted for about 60% of the revenue, but only made up 28% of the visitors. While this isn't exactly in line with the 80 20 rule, it still an actionable item to target advertising. The 80-20 rule is a rule of thumb highlighting that an entreprenuer should be looking for small segments of its users that drive profit. 
+In this paper, we compare the results of a GLM and Random Forest Regression model to accurately predict the revenue generated by a visitor to the Google Gstore.  Several important factors are found to influence a Gstore visitor's decision to make a purchase. The most important predictors point us towards visitors who are cosmopolitan Americans emotionally invested in technology. They were also very likely to be referred to the Gstore by someone they trust. Our predictors line up with business intuition, particuarly the 80 20 rule. As seen in Table 3, Mac OS users accounted for about 60% of the revenue, but only made up 28% of the visitors. While this isn't exactly in line with the 80 20 rule, it still an actionable item to target advertising. The 80-20 rule is a rule of thumb highlighting that an entreprenuer should be looking for small segments of its users that drive profit. 
 
 
 
@@ -203,3 +201,24 @@ https://recipes.tidymodels.org/articles/Ordering.html
 
 [13] **Random Forest**, tidy models,
 https://parsnip.tidymodels.org/reference/rand_forest.html
+
+
+
+## Charts
+
+
+
+
+
+![Chart 1](./image/pareto_chart.png "Pareto Chart Example")
+
+
+![Chart 2](./image/paageviews_revenue.png "Pageviews vs Revenue")
+
+![Chart 3](./image/rf_glm.png "comparing glm and randomForest residuals")
+
+
+![Table 2](./image/adContent_revenue.png "feature importance")
+
+
+![Table 3](./image/hits.png)
